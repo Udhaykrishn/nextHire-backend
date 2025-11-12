@@ -23,6 +23,14 @@ async function bootstrap() {
 	const port = configService.get("PORT");
 
 	await app.listen(port);
-	console.log("Nest application successfully started");
+
+	const shutdown = async () => {
+		console.log("Shutting down...");
+		await app.close();
+		process.exit(0);
+	};
+
+	process.on("SIGINT", shutdown);
+	process.on("SIGTERM", shutdown);
 }
 bootstrap();
