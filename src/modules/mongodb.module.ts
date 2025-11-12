@@ -10,13 +10,6 @@ import { ConfigService } from "@nestjs/config";
 @Global()
 @Module({})
 export class MongoDbModule implements OnModuleInit, OnModuleDestroy {
-	onModuleInit() {
-		console.log("mongodb is connected");
-	}
-
-	onModuleDestroy() {
-		console.log("mongodb is destoryed");
-	}
 	static forRootAsync(): DynamicModule {
 		return {
 			module: MongoDbModule,
@@ -29,5 +22,12 @@ export class MongoDbModule implements OnModuleInit, OnModuleDestroy {
 				}),
 			],
 		};
+	}
+	onModuleInit() {
+		console.log("mongodb is connected");
+	}
+
+	onModuleDestroy() {
+		console.log("mongodb is destoryed");
 	}
 }
