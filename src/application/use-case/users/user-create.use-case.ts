@@ -21,7 +21,7 @@ export class CreateUserUseCase
 	async execute(userDto: CreateUserDto): Promise<CreateResponseUserDto> {
 		const checkUserExsitOrNot = await this._userRepository.findByUniqueFields({
 			email: userDto.email,
-			phone:userDto.phone
+			phone: userDto.phone,
 		});
 
 		if (checkUserExsitOrNot) {

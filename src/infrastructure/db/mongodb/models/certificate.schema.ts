@@ -5,23 +5,23 @@ export type CertificateDocument = HydratedDocument<Certificate>;
 
 @Schema({ timestamps: true })
 export class Certificate {
-    @Prop({ required: true })
-    userId: string;
+	@Prop({ required: true })
+	userId: string;
 
-    @Prop({ required: true })
-    certificateName: string;
+	@Prop({ required: true })
+	certificateName: string;
 
-    @Prop()
-    issuingOrganization: string;
+	@Prop()
+	issuingOrganization: string;
 
-    @Prop()
-    issueDate: Date;
+	@Prop()
+	issueDate: Date;
 
-    @Prop()
-    expirationDate: Date;
+	@Prop()
+	expirationDate: Date;
 
-    @Prop()
-    certificateUrl: string;
+	@Prop()
+	certificateUrl: string;
 }
 
 export const CertificateSchema = SchemaFactory.createForClass(Certificate);
