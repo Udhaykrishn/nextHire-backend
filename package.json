@@ -7,7 +7,7 @@
 	"license": "MIT",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/<your-username>/<your-repo-name>.git"
+		"url": "https://github.com/Udhaykrishn/nextHire-backend.git"
 	},
 	"scripts": {
 		"build": "nest build --swc",
@@ -38,7 +38,11 @@
 		"@nestjs/websockets": "^11.1.8",
 		"@sentry/nestjs": "^10.25.0",
 		"@sentry/profiling-node": "^10.25.0",
+		"argon2": "^0.44.0",
+		"class-transformer": "^0.5.1",
+		"class-validator": "^0.14.2",
 		"compression": "^1.8.1",
+		"deep-email-validator": "^0.1.21",
 		"helmet": "^8.1.0",
 		"ioredis": "^5.8.2",
 		"mongoose": "^8.19.3",
