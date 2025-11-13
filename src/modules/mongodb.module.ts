@@ -1,22 +1,23 @@
 import {
 	Global,
 	Module,
-	type DynamicModule,
 	type OnModuleInit,
 	type OnModuleDestroy,
 } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 import { ConfigService } from "@nestjs/config";
+
 @Global()
 @Module({})
 export class MongoDbModule implements OnModuleInit, OnModuleDestroy {
-	static forRootAsync(): DynamicModule {
+	static forRootAsync() {
 		return {
 			module: MongoDbModule,
 			imports: [
 				MongooseModule.forRootAsync({
 					useFactory: (config: ConfigService) => ({
 						uri: config.get<string>("MONGODB_URI"),
+						dbName:"nextHire"
 					}),
 					inject: [ConfigService],
 				}),
