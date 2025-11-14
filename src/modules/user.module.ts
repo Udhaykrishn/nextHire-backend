@@ -9,8 +9,6 @@ import { UserApplicationMapper } from "@/application/mappers/users-application.m
 import { UserPresitanceMapper } from "@/infrastructure/mappers/user-presistance.mapper";
 import { UserRepository } from "@/infrastructure/db/mongodb/repository";
 
-console.log("User name is: ", User.name);
-
 @Module({
 	imports: [
 		MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
