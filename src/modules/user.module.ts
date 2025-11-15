@@ -16,7 +16,6 @@ import {
 import { EmailService } from "@/infrastructure/services/implements/email-service";
 import { PasswordHash } from "@/infrastructure/services/implements/password-service";
 
-
 @Module({
 	imports: [
 		MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
