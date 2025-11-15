@@ -1,4 +1,4 @@
-export class CreateResponseUserDto {
+export class ResponseUserDto {
 	public readonly id: string;
 	public readonly email: string;
 	public readonly name: string;
