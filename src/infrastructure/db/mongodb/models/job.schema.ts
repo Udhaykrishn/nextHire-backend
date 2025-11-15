@@ -35,12 +35,14 @@ export class Jobs {
 	job_shift: string | null;
 
 	@Prop({
-		additions: { type: String, default: null },
-		document_carry: [{ type: String, default: null }],
-		interview_date: { type: String, default: null },
-		interview_location: { type: String, default: null },
-		interview_mode: { type: String, default: null },
-		is_active: { type: Boolean, default: null },
+		type: {
+			additions: { type: String, default: null },
+			document_carry: [{ type: String, default: null }],
+			interview_date: { type: String, default: null },
+			interview_location: { type: String, default: null },
+			interview_mode: { type: String, default: null },
+			is_active: { type: Boolean, default: null },
+		},
 	})
 	walk_in_interview: {
 		additions: string | null;
@@ -55,8 +57,10 @@ export class Jobs {
 	company_id: string | null;
 
 	@Prop({
-		max: { type: String, default: null },
-		min: { type: String, default: null },
+		type: {
+			max: { type: String, default: null },
+			min: { type: String, default: null },
+		},
 	})
 	salary: { max: string | null; min: string | null };
 

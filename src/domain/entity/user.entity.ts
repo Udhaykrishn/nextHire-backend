@@ -1,14 +1,14 @@
-import { Email, Password } from "../value-objects";
+import { USER_STATUS } from "../enums/status/user-status.enum";
 
 export class UserEntity {
 	private readonly _id?: string;
-	private _email: Email;
-	private _password: Password;
+	private _email: string;
+	private _password: string;
 	private _name: string;
 	private _phone: string;
 	private _experience: string = "";
 	private _role_of_title: string = "";
-	private _status: string = "inactive";
+	private _status: USER_STATUS = USER_STATUS.PENDING;
 	private _resume_url: string = "";
 	private _bio: string = "";
 	private _badge: boolean = false;
@@ -28,13 +28,13 @@ export class UserEntity {
 	};
 
 	private constructor(
-		email: Email,
-		password: Password,
+		email: string,
+		password: string,
 		name: string,
 		phone: string,
 		experience: string,
 		role_of_title: string,
-		status: string,
+		status: USER_STATUS,
 		resume_url: string,
 		bio: string,
 		badge: boolean,
@@ -59,14 +59,14 @@ export class UserEntity {
 		this._id = id;
 	}
 
-	static async create(data: {
+	static create(data: {
 		email: string;
 		password: string;
 		name: string;
 		phone: string;
 		experience?: string;
 		role_of_title?: string;
-		status?: string;
+		status?: USER_STATUS;
 		resume_url?: string;
 		bio?: string;
 		badge?: boolean;
@@ -74,17 +74,15 @@ export class UserEntity {
 		subscription?: { current_plan: string; is_subscribed: boolean };
 		social_link?: { linkedin: string; portfolio: string; github: string };
 		id?: string;
-	}): Promise<UserEntity> {
-		const email = Email.create(data.email);
-		const hashedPassword = await Password.create(data.password);
+	}): UserEntity {
 		return new UserEntity(
-			await email,
-			hashedPassword,
+			data.email,
+			data.password,
 			data.name,
 			data.phone,
 			data.experience ?? "",
 			data.role_of_title ?? "",
-			data.status ?? "inactive",
+			data.status ?? USER_STATUS.PENDING,
 			data.resume_url ?? "",
 			data.bio ?? "",
 			data.badge ?? false,
@@ -95,17 +93,16 @@ export class UserEntity {
 		);
 	}
 
-	// Getters
 	get id(): string | undefined {
 		return this._id;
 	}
 
 	get email(): string {
-		return this._email.getValue();
+		return this._email;
 	}
 
 	get password(): string {
-		return this._password.getValue();
+		return this._password;
 	}
 
 	get name(): string {
@@ -168,7 +165,7 @@ export class UserEntity {
 		this._role_of_title = role_of_title;
 	}
 
-	changeStatus(status: string): void {
+	changeStatus(status: USER_STATUS): void {
 		this._status = status;
 	}
 
@@ -203,11 +200,11 @@ export class UserEntity {
 		this._social_link = social_link;
 	}
 
-	async changeEmail(email: string): Promise<void> {
-		this._email = await Email.create(email);
+	changeEmail(newEmail: string): void {
+		this._email = newEmail;
 	}
 
-	async changePassword(plainPassword: string): Promise<void> {
-		this._password = await Password.create(plainPassword);
+	changePassword(newPassword: string): void {
+		this._password = newPassword;
 	}
 }

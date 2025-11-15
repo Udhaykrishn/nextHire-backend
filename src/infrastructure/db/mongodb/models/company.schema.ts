@@ -26,13 +26,13 @@ export class Company {
 	@Prop()
 	website_link: string;
 
-    @Prop()
+	@Prop()
 	description: string;
 
-    @Prop()
+	@Prop()
 	category: string;
 
-    @Prop({default:"HR"})
+	@Prop({ default: "HR" })
 	company_role: string;
 
 	@Prop({ default: false })

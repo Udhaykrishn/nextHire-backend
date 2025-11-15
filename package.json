@@ -17,6 +17,8 @@
 		"start:prod": "node dist/main",
 		"format": "biome format --write .",
 		"lint:fix": "biome check --write .",
+		"git:aa":"git add .",
+		"git:c":"pnpm git:aa && ./auto_commit.sh",
 		"lint": "biome check .",
 		"test": "jest",
 		"test:watch": "jest --watch",

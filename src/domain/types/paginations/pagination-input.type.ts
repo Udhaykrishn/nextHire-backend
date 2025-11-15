@@ -1,5 +1,6 @@
-export type PaginationInputType = {
-	page: number;
-	skip: number;
-	limit: number;
-};
+export enum PaginationInputType {
+	PAGE = "page",
+	SKIP = "skip",
+	LIMIT = "limit",
+	SEARCH = "search",
+}

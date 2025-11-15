@@ -17,7 +17,7 @@ export class MongoDbModule implements OnModuleInit, OnModuleDestroy {
 				MongooseModule.forRootAsync({
 					useFactory: (config: ConfigService) => ({
 						uri: config.get<string>("MONGODB_URI"),
-						dbName:"nextHire"
+						dbName: "nextHire",
 					}),
 					inject: [ConfigService],
 				}),

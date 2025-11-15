@@ -1,5 +1,6 @@
+import { USER_STATUS } from "@/domain/enums/status/user-status.enum";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import type { HydratedDocument } from "mongoose";
+import type { HydratedDocument, InferSchemaType } from "mongoose";
 
 export type UserDocument = HydratedDocument<User>;
 
@@ -14,7 +15,7 @@ export class User {
 	@Prop({ required: true })
 	name: string;
 
-    @Prop({ required: true })
+	@Prop({ required: true })
 	phone: string;
 
 	@Prop()
@@ -23,8 +24,12 @@ export class User {
 	@Prop()
 	role_of_title: string;
 
-	@Prop()
-	status: string;
+	@Prop({
+		type: String,
+		default: USER_STATUS.PENDING,
+		enum: USER_STATUS,
+	})
+	status: USER_STATUS;
 
 	@Prop()
 	resume_url: string;
@@ -43,6 +48,7 @@ export class User {
 			current_plan: { type: String, default: "free" },
 			is_subscribed: { type: Boolean, default: false },
 		},
+		_id: false,
 	})
 	subscription: {
 		current_plan: string;
@@ -55,6 +61,7 @@ export class User {
 			portfolio: { type: String },
 			github: { type: String },
 		},
+		_id: false,
 	})
 	social_link: {
 		linkedin: string;
@@ -64,3 +71,4 @@ export class User {
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
+export type UserType = InferSchemaType<typeof UserSchema> & { _id: string };
