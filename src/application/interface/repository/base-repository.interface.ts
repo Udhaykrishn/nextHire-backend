@@ -4,7 +4,7 @@ export interface IBaseRepository<T> {
 	findAll(): Promise<T[]>;
 	findOne(data: Partial<T>): Promise<T | null>;
 	deleteById(id: string): Promise<boolean>;
-	findByIdAndUpdate(id: string, update: T): Promise<T | null>;
+	findByIdAndUpdate(id: string, update: Partial<T>): Promise<T | null>;
 
 	findByUniqueFields(fields: Partial<T>): Promise<T | null>;
 }

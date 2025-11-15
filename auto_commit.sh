@@ -61,9 +61,9 @@ while read -r LINE; do
   # Create a commit message with details
   COMMIT_MESSAGE="$TYPE: update $FILE
 
-Status: $STATUS
-Details:
-$DIFF"
+  Status: $STATUS
+  Details:
+  $DIFF"
 
   # Add file to staging area
   git add "$FILE"

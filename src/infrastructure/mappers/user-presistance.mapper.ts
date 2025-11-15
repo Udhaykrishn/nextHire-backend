@@ -1,6 +1,7 @@
 import { UserEntity } from "@/domain/entity/user.entity";
 import type { IUserPresitanceMapper } from "@/application/interface/mappers/user-presistance.mapper";
 import type { UserType } from "../db/mongodb/models/user.schema";
+import type { USER_STATUS } from "@/domain/enums/status/user-status.enum";
 
 export class UserPresitanceMapper
 	implements IUserPresitanceMapper<UserEntity, UserType>
@@ -14,7 +15,7 @@ export class UserPresitanceMapper
 			phone: user.phone,
 			experience: user.experience,
 			role_of_title: user.role_of_title,
-			status: user.status,
+			status: user.status as USER_STATUS,
 			resume_url: user.resume_url,
 			bio: user.bio,
 			badge: user.badge,

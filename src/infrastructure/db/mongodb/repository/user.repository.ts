@@ -6,11 +6,9 @@ import type { IUserRepository } from "@/application/interface/repository";
 import { User } from "../models";
 import type { Model } from "mongoose";
 import { USER_MAPPER } from "@/application/enums/tokens/user-mapper.enum";
-import type {
-	PaginationInputType,
-	PaginationResponse,
-} from "@/domain/types/paginations";
+import type { PaginationResponse } from "@/domain/types/paginations";
 import type { IUserPresitanceMapper } from "@/application/interface/mappers/user-presistance.mapper";
+import type { PaginationDto } from "@/application/dto/pagiation";
 import type { UserType } from "../models/user.schema";
 
 @Injectable()
@@ -27,11 +25,11 @@ export class UserRepository
 	}
 
 	async findAllUsers(
-		pages: PaginationInputType,
+		pages: PaginationDto,
 	): Promise<PaginationResponse<UserEntity> | null> {
 		const docs = await this.userModel
 			.find()
-			.skip(pages.skip)
+			.skip(pages.page)
 			.limit(pages.limit)
 			.exec();
 		const total = await this.userModel.countDocuments();

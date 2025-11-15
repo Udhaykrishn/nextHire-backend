@@ -1,7 +1,7 @@
 import type { IBaseRepository } from "@/application/interface/repository";
 import type { IBaseMapper } from "@/application/mappers/base-repository.mapper";
 import { Injectable } from "@nestjs/common";
-import type { Model } from "mongoose";
+import type { Model, UpdateQuery } from "mongoose";
 
 @Injectable()
 export abstract class BaseRepository<TEntity, TDocument>
@@ -13,7 +13,6 @@ export abstract class BaseRepository<TEntity, TDocument>
 	) {}
 
 	async findOne(filter: Partial<TEntity>): Promise<TEntity | null> {
-		console.log("find one filter is: ", filter);
 		const doc = await this.model.findOne(filter).exec();
 		return doc ? this.mapper.fromMongo(doc) : null;
 	}
@@ -35,13 +34,16 @@ export abstract class BaseRepository<TEntity, TDocument>
 
 	async findByIdAndUpdate(
 		id: string,
-		updateDto: TEntity,
+		updateDto: UpdateQuery<Partial<TEntity>>,
 	): Promise<TEntity | null> {
-		const mongoUpdate = this.mapper.toMongo(updateDto);
-		const updated = await this.model
-			.findByIdAndUpdate(id, { mongoUpdate }, { new: true })
+		const mongoUpdate: UpdateQuery<TDocument> = this.mapper.toMongo(updateDto);
+
+
+		const updatedDoc = await this.model
+			.findByIdAndUpdate(id, mongoUpdate, { new: true })
 			.exec();
-		return updated ? this.mapper.fromMongo(updated) : null;
+
+		return updatedDoc ? this.mapper.fromMongo(updatedDoc) : null;
 	}
 
 	async deleteById(id: string): Promise<boolean> {

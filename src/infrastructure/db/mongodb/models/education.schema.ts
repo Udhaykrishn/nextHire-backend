@@ -5,26 +5,26 @@ export type EducationDocument = HydratedDocument<Education>;
 
 @Schema({ timestamps: true })
 export class Education {
-    @Prop({ required: true })
-    userId: string;
+	@Prop({ required: true })
+	userId: string;
 
-    @Prop({ required: true })
-    institutionName: string;
+	@Prop({ required: true })
+	institutionName: string;
 
-    @Prop()
-    degree: string;
+	@Prop()
+	degree: string;
 
-    @Prop()
-    fieldOfStudy: string;
+	@Prop()
+	fieldOfStudy: string;
 
-    @Prop()
-    startDate: Date;
+	@Prop()
+	startDate: Date;
 
-    @Prop()
-    endDate: Date;
+	@Prop()
+	endDate: Date;
 
-    @Prop()
-    gpa: string;
+	@Prop()
+	gpa: string;
 }
 
 export const EducationSchema = SchemaFactory.createForClass(Education);
