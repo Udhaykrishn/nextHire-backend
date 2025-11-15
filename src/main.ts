@@ -5,11 +5,12 @@ import compression from "compression";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import { helmetConfigOptions } from "@/presentation/config";
-import { ValidationPipe } from "@nestjs/common";
+import { ConsoleLogger, ValidationPipe } from "@nestjs/common";
+import { GlobalExceptionFilter } from "./presentation/filter/global-exception.filter";
 
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule, {
-		logger: ["error", "warn"],
+		logger: new ConsoleLogger({ json: true }),
 	});
 
 	app.enableCors();
@@ -27,6 +28,8 @@ async function bootstrap() {
 			skipMissingProperties: true,
 		}),
 	);
+
+	app.useGlobalFilters(new GlobalExceptionFilter());
 
 	const configService = app.get(ConfigService);
 	const port = configService.get("PORT");
