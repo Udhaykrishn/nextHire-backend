@@ -38,7 +38,6 @@ export abstract class BaseRepository<TEntity, TDocument>
 	): Promise<TEntity | null> {
 		const mongoUpdate: UpdateQuery<TDocument> = this.mapper.toMongo(updateDto);
 
-
 		const updatedDoc = await this.model
 			.findByIdAndUpdate(id, mongoUpdate, { new: true })
 			.exec();
