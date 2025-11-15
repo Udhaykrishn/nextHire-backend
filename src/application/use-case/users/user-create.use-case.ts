@@ -11,7 +11,9 @@ import type {
 } from "@/infrastructure/services/interface";
 import { UserEntity } from "@/domain/entity/user.entity";
 import { USER_MESSAGES } from "@/domain/enums";
-import { Inject, Injectable, NotFoundException } from "@nestjs/common";
+import { AlreadyExistsException } from "@/domain/exceptions/already-exists.exception";
+import { Inject, Injectable } from "@nestjs/common";
+
 @Injectable()
 export class CreateUserUseCase
 	implements IExecutable<CreateUserDto, ResponseUserDto>
@@ -39,7 +41,7 @@ export class CreateUserUseCase
 		});
 
 		if (checkUserExsitOrNot) {
-			throw new NotFoundException(USER_MESSAGES.USER_ALREADY_EXSITS);
+			throw new AlreadyExistsException(USER_MESSAGES.USER_ALREADY_EXSITS);
 		}
 
 		const hashedPassword = await this._passwordHasher.hash(userDto.password);
