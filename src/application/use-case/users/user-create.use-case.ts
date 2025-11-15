@@ -12,7 +12,7 @@ import type {
 import { UserEntity } from "@/domain/entity/user.entity";
 import { USER_MESSAGES } from "@/domain/enums";
 import { AlreadyExistsException } from "@/domain/exceptions/already-exists.exception";
-import { Inject, Injectable } from "@nestjs/common";
+import { Inject, Injectable, NotFoundException } from "@nestjs/common";
 
 @Injectable()
 export class CreateUserUseCase
