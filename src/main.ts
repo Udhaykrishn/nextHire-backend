@@ -5,15 +5,19 @@ import compression from "compression";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import { helmetConfigOptions } from "@/presentation/config";
-import { ConsoleLogger, ValidationPipe } from "@nestjs/common";
+import { ValidationPipe } from "@nestjs/common";
 import { GlobalExceptionFilter } from "./presentation/filter/global-exception.filter";
 
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule, {
-		logger: new ConsoleLogger({ json: true }),
+		logger: ["error", "warn", "log", "debug"],
+		bufferLogs: true,
 	});
 
-	app.enableCors();
+	app.enableCors({
+		origin: process.env.FRONTEND_API,
+		credentials: true,
+	});
 	app.use(helmet(helmetConfigOptions));
 
 	app.use(cookieParser());
@@ -25,11 +29,13 @@ async function bootstrap() {
 			transform: true,
 			whitelist: true,
 			forbidNonWhitelisted: true,
-			skipMissingProperties: true,
+			forbidUnknownValues: true,
+			transformOptions: { enableImplicitConversion: true },
 		}),
 	);
 
 	app.useGlobalFilters(new GlobalExceptionFilter());
+	app.setGlobalPrefix("api/v1");
 
 	const configService = app.get(ConfigService);
 	const port = configService.get("PORT");

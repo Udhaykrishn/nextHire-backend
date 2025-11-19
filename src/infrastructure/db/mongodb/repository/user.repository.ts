@@ -27,9 +27,10 @@ export class UserRepository
 	async findAllUsers(
 		pages: PaginationDto,
 	): Promise<PaginationResponse<UserEntity> | null> {
+		const skip = (pages.page - 1) * pages.limit;
 		const docs = await this.userModel
 			.find()
-			.skip(pages.page)
+			.skip(skip)
 			.limit(pages.limit)
 			.exec();
 		const total = await this.userModel.countDocuments();

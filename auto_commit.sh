@@ -1,9 +1,14 @@
 #!/bin/bash
 
-# Define directories or file types to exclude
-EXCLUDE_PATTERNS=("filter" "middleware" "node_modules" "dist" "test" "spec")
+EXCLUDE_PATTERNS=("node_modules" "dist" "test" "spec")
+LOG_FILE="commit-log.log"
 
-# Function to check if a file should be excluded
+RUN_TIME=$(date +"%A %d %B %Y %I:%M:%S %p %Z")
+
+echo "" >> "$LOG_FILE"
+echo "Commit log - $RUN_TIME" >> "$LOG_FILE"
+echo "-------------------------" >> "$LOG_FILE"
+
 should_exclude() {
   for pattern in "${EXCLUDE_PATTERNS[@]}"; do
     if [[ "$1" == *"$pattern"* ]]; then
@@ -13,61 +18,39 @@ should_exclude() {
   return 1
 }
 
-# Get all changes (modified, added, deleted)
 CHANGES=$(git status --porcelain)
 
-# Loop through each change
 while read -r LINE; do
-  # Extract status and file path
   STATUS=${LINE:0:2}
   FILE=${LINE:3}
 
-  # Skip excluded files
   if should_exclude "$FILE"; then
     echo "Skipping excluded file: $FILE"
     continue
   fi
 
-  # Determine the type of change (feat, fix, chore, etc.)
-  if [[ "$FILE" == *"dto"* ]]; then
-    TYPE="feat"
-  elif [[ "$FILE" == *"enum"* ]]; then
-    TYPE="feat"
-  elif [[ "$FILE" == *"interface"* ]]; then
-    TYPE="feat"
-  elif [[ "$FILE" == *"use-case"* ]]; then
-    TYPE="feat"
-  elif [[ "$FILE" == *"entity"* ]]; then
-    TYPE="feat"
-  elif [[ "$FILE" == *"schema"* ]]; then
-    TYPE="feat"
-  elif [[ "$FILE" == *"repository"* ]]; then
-    TYPE="feat"
-  elif [[ "$FILE" == *"mapper"* ]]; then
-    TYPE="feat"
-  elif [[ "$FILE" == *"module"* ]]; then
-    TYPE="feat"
-  elif [[ "$FILE" == *"controller"* ]]; then
-    TYPE="feat"
-  elif [[ "$FILE" == *"service"* ]]; then
-    TYPE="feat"
-  else
-    TYPE="chore"
-  fi
-
-  # Get the diff of the file to include in the commit message
   DIFF=$(git diff --cached "$FILE")
 
-  # Create a commit message with details
-  COMMIT_MESSAGE="$TYPE: update $FILE
+  COMMIT_MESSAGE=$(echo "$DIFF" | ts-node ./git-commit.ts 2> /tmp/ts_node_error.txt)
+  TS_ERROR=$(cat /tmp/ts_node_error.txt)
 
-  Status: $STATUS
-  Details:
-  $DIFF"
+  if [[ -n "$TS_ERROR" || -z "$COMMIT_MESSAGE" ]]; then
+    ERROR_TIME=$(date +"%A %d %B %Y %I:%M:%S %p %Z")
+    echo "Skipping file due to AI error or empty commit message: $FILE"
+    echo "Time: $ERROR_TIME" >> "$LOG_FILE"
+    echo "File: $FILE" >> "$LOG_FILE"
+    if [[ -n "$TS_ERROR" ]]; then
+      echo "Error: $TS_ERROR" >> "$LOG_FILE"
+    else
+      echo "Error: Empty commit message (possibly API limit or request rejected)" >> "$LOG_FILE"
+    fi
+    echo "-------------------------" >> "$LOG_FILE"
+    continue
+  fi
 
-  # Add file to staging area
   git add "$FILE"
-
-  # Commit with the generated message
   git commit -m "$COMMIT_MESSAGE"
+
 done <<< "$CHANGES"
+
+echo "Finished auto-commit. See $LOG_FILE for skipped files."

@@ -3,4 +3,5 @@ export enum USER_ROUTERS {
 	ROUTER = "user",
 	ID_PARAM = "id",
 	BLOCK = ":id/block",
+	CHNAGE_PASWORD = ":id/chagen-password",
 }

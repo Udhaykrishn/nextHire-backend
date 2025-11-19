@@ -2,10 +2,9 @@ import {
 	IsOptional,
 	IsString,
 	IsNumber,
-	Min,
-	Max,
 	MaxLength,
 	MinLength,
+	IsPositive,
 } from "class-validator";
 import { Type } from "class-transformer";
 
@@ -17,14 +16,12 @@ export class PaginationDto {
 	search?: string;
 
 	@Type(() => Number)
-	@IsNumber()
-	@Min(1, { message: "Page must be at least 1" })
-	@Max(200, { message: "Page cannot exceed 200" })
+	@IsNumber({}, { message: "Page must be a number" })
+	@IsPositive({ message: "Page must be a positive number" })
 	page: number;
 
 	@Type(() => Number)
-	@IsNumber()
-	@Min(1, { message: "Limit must be at least 1" })
-	@Max(100, { message: "Limit cannot exceed 100" })
+	@IsNumber({}, { message: "Limit must be a number" })
+	@IsPositive({ message: "Limit must be a positive number" })
 	limit: number;
 }
