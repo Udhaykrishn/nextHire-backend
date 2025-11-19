@@ -49,7 +49,7 @@ export async function getCommitMessage(
 
       // Return trimmed commit message
       return response.text?.trim() as string;
-    } catch (err: any) {
+    } catch (err) {
       console.warn(
         `Attempt ${attempt + 1} failed: ${err?.message || err}. Retrying in ${delayMs}ms...`
       );
