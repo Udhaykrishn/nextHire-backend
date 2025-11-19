@@ -3,9 +3,10 @@
 EXCLUDE_PATTERNS=("node_modules" "dist" "test" "spec")
 LOG_FILE="commit-log.log"
 
-# Append a new run header
+RUN_TIME=$(date +"%A %d %B %Y %I:%M:%S %p %Z")
+
 echo "" >> "$LOG_FILE"
-echo "Commit log - $(date +"%Y-%m-%d %H:%M:%S")" >> "$LOG_FILE"
+echo "Commit log - $RUN_TIME" >> "$LOG_FILE"
 echo "-------------------------" >> "$LOG_FILE"
 
 should_exclude() {
@@ -30,13 +31,11 @@ while read -r LINE; do
 
   DIFF=$(git diff --cached "$FILE")
 
-  # Generate AI commit message (ts-node output + capture stderr)
   COMMIT_MESSAGE=$(echo "$DIFF" | ts-node ./git-commit.ts 2> /tmp/ts_node_error.txt)
   TS_ERROR=$(cat /tmp/ts_node_error.txt)
 
-  # If AI failed or returned empty message, skip committing
   if [[ -n "$TS_ERROR" || -z "$COMMIT_MESSAGE" ]]; then
-    ERROR_TIME=$(date +"%Y-%m-%d %H:%M:%S")
+    ERROR_TIME=$(date +"%A %d %B %Y %I:%M:%S %p %Z")
     echo "Skipping file due to AI error or empty commit message: $FILE"
     echo "Time: $ERROR_TIME" >> "$LOG_FILE"
     echo "File: $FILE" >> "$LOG_FILE"
@@ -49,7 +48,6 @@ while read -r LINE; do
     continue
   fi
 
-  # Commit the file if AI message is valid
   git add "$FILE"
   git commit -m "$COMMIT_MESSAGE"
 
