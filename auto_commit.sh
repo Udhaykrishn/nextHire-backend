@@ -3,8 +3,9 @@
 EXCLUDE_PATTERNS=("node_modules" "dist" "test" "spec")
 LOG_FILE="commit-log.log"
 
-# Initialize log file
-echo "Commit log - $(date)" > "$LOG_FILE"
+# Append a new run header
+echo "" >> "$LOG_FILE"
+echo "Commit log - $(date +"%Y-%m-%d %H:%M:%S")" >> "$LOG_FILE"
 echo "-------------------------" >> "$LOG_FILE"
 
 should_exclude() {
@@ -35,7 +36,9 @@ while read -r LINE; do
 
   # If AI failed or returned empty message, skip committing
   if [[ -n "$TS_ERROR" || -z "$COMMIT_MESSAGE" ]]; then
+    ERROR_TIME=$(date +"%Y-%m-%d %H:%M:%S")
     echo "Skipping file due to AI error or empty commit message: $FILE"
+    echo "Time: $ERROR_TIME" >> "$LOG_FILE"
     echo "File: $FILE" >> "$LOG_FILE"
     if [[ -n "$TS_ERROR" ]]; then
       echo "Error: $TS_ERROR" >> "$LOG_FILE"
