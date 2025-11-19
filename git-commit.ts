@@ -9,12 +9,10 @@ if (!apiKey) {
 
 const ai = new GoogleGenAI({ apiKey });
 
-// Utility: sleep for X milliseconds
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-// Generate commit message with retry + delay
 export async function getCommitMessage(
   diff: string,
   retries = 3,
@@ -47,7 +45,6 @@ export async function getCommitMessage(
         },
       });
 
-      // Return trimmed commit message
       return response.text?.trim() as string;
     } catch (err) {
       console.warn(
@@ -58,10 +55,9 @@ export async function getCommitMessage(
   }
 
   console.error("Failed to generate commit message after retries, using fallback.");
-  return "chore: update files"; // fallback message
+  return "chore: update files"; 
 }
 
-// CLI usage: read diffs from stdin
 if (require.main === module) {
   (async () => {
     let diff = "";
@@ -70,8 +66,7 @@ if (require.main === module) {
     });
 
     process.stdin.on("end", async () => {
-      // Add small delay between requests if batching multiple diffs
-      await sleep(500); // optional initial delay
+      await sleep(500);
       const msg = await getCommitMessage(diff);
       console.log(msg);
     });
