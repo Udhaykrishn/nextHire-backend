@@ -71,4 +71,7 @@ export class User {
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
-export type UserType = InferSchemaType<typeof UserSchema> & { _id: string };
+export type UserType = InferSchemaType<typeof UserSchema> & {
+	_id: string;
+	createdAt: Date;
+};

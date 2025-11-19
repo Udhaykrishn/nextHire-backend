@@ -26,6 +26,7 @@ export class UserEntity {
 		portfolio: "",
 		github: "",
 	};
+	_createdAt: Date;
 
 	private constructor(
 		email: string,
@@ -41,6 +42,7 @@ export class UserEntity {
 		google_id: string,
 		subscription: { current_plan: string; is_subscribed: boolean },
 		social_link: { linkedin: string; portfolio: string; github: string },
+		createdAt: Date,
 		id?: string,
 	) {
 		this._email = email;
@@ -56,6 +58,7 @@ export class UserEntity {
 		this._google_id = google_id;
 		this._subscription = subscription;
 		this._social_link = social_link;
+		this._createdAt = createdAt;
 		this._id = id;
 	}
 
@@ -73,6 +76,7 @@ export class UserEntity {
 		google_id?: string;
 		subscription?: { current_plan: string; is_subscribed: boolean };
 		social_link?: { linkedin: string; portfolio: string; github: string };
+		createdAt?: Date;
 		id?: string;
 	}): UserEntity {
 		return new UserEntity(
@@ -89,6 +93,7 @@ export class UserEntity {
 			data.google_id ?? "",
 			data.subscription ?? { current_plan: "free", is_subscribed: false },
 			data.social_link ?? { linkedin: "", portfolio: "", github: "" },
+			data.createdAt ?? new Date(),
 			data.id,
 		);
 	}
@@ -149,6 +154,10 @@ export class UserEntity {
 		return this._social_link;
 	}
 
+	get createdAt(): Date {
+		return this._createdAt;
+	}
+
 	changeName(name: string): void {
 		this._name = name;
 	}
@@ -206,5 +215,9 @@ export class UserEntity {
 
 	changePassword(newPassword: string): void {
 		this._password = newPassword;
+	}
+
+	changeDate(date: Date): void {
+		this._createdAt = date;
 	}
 }
