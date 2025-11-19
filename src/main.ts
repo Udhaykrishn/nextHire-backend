@@ -7,8 +7,10 @@ import cookieParser from "cookie-parser";
 import { helmetConfigOptions } from "@/presentation/config";
 import { ValidationPipe } from "@nestjs/common";
 import { GlobalExceptionFilter } from "./presentation/filter/global-exception.filter";
+import { otelSDK } from "./otel";
 
 async function bootstrap() {
+  otelSDK.start()
 	const app = await NestFactory.create(AppModule, {
 		logger: ["error", "warn", "log", "debug"],
 		bufferLogs: true,
@@ -19,9 +21,7 @@ async function bootstrap() {
 		credentials: true,
 	});
 	app.use(helmet(helmetConfigOptions));
-
 	app.use(cookieParser());
-
 	app.use(compression());
 
 	app.useGlobalPipes(
@@ -39,16 +39,17 @@ async function bootstrap() {
 
 	const configService = app.get(ConfigService);
 	const port = configService.get("PORT");
-
 	await app.listen(port);
 
 	const shutdown = async () => {
 		console.log("Shutting down...");
 		await app.close();
+    await otelSDK.shutdown()
 		process.exit(0);
 	};
 
 	process.on("SIGINT", shutdown);
 	process.on("SIGTERM", shutdown);
 }
+
 bootstrap();
