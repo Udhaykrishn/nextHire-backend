@@ -10,8 +10,9 @@ import {
 	Patch,
 	Post,
 	Query,
+	UseGuards,
 } from "@nestjs/common";
-import { USER_ROUTERS } from "../enums";
+import { ROLES, USER_ROUTERS } from "@/presentation/enums";
 import { USERS_TOKEN } from "@/application/enums/tokens";
 import type { IExecutable } from "@/application/interface/executable.interface";
 import type { CreateUserDto } from "@/application/dto/users/user-create.dto";
@@ -21,8 +22,11 @@ import {
 	type PaginationResponse,
 	PaginationInputType,
 } from "@/domain/types/paginations";
-import type { UpdateUserDto } from "@/application/dto/users";
+import type { ChangePasswordDto, UpdateUserDto } from "@/application/dto/users";
+import { AuthGuard, RoleGuard } from "@/presentation/guards";
+import { Roles } from "@/presentation/decorators";
 
+@UseGuards(AuthGuard, RoleGuard)
 @Controller(USER_ROUTERS.ROUTER)
 export class UserController {
 	constructor(
@@ -43,6 +47,11 @@ export class UserController {
 		>,
 		@Inject(USERS_TOKEN.USER_BLOCK_UNBLOCK_USE_CASE)
 		private readonly _blockUnblockUseCase: IExecutable<string, ResponseUserDto>,
+		@Inject(USERS_TOKEN.CHANGE_PASSWORD_USE_CASE)
+		private readonly _changePasswordUseCase: IExecutable<
+			{ userId: string; dto: ChangePasswordDto },
+			ResponseUserDto
+		>,
 	) {}
 
 	@Post(USER_ROUTERS.DEFAULT)
@@ -52,6 +61,7 @@ export class UserController {
 	}
 
 	@Patch(USER_ROUTERS.BLOCK)
+	@Roles(ROLES.ADMIN)
 	@HttpCode(HttpStatus.OK)
 	async blockAndUnblock(
 		@Param(USER_ROUTERS.ID_PARAM) userId: string,
@@ -66,6 +76,18 @@ export class UserController {
 		@Body() updateDto: UpdateUserDto,
 	): Promise<ResponseUserDto> {
 		return this._updateUserUseCase.execute({ data: updateDto, userId });
+	}
+
+	@Patch(USER_ROUTERS.CHNAGE_PASWORD)
+	@HttpCode(HttpStatus.OK)
+	async changePassword(
+		@Param(USER_ROUTERS.ID_PARAM) userId: string,
+		@Body() changePasswordDto: ChangePasswordDto,
+	): Promise<ResponseUserDto> {
+		return this._changePasswordUseCase.execute({
+			dto: changePasswordDto,
+			userId,
+		});
 	}
 
 	@Get(USER_ROUTERS.DEFAULT)
