@@ -3,16 +3,12 @@ import { validate } from "deep-email-validator";
 import type { IEmailService } from "../interface/email-service.interface";
 
 @Injectable()
-export class EmailService implements IEmailService {
+export class EmailValidator implements IEmailService {
 	async validate(email: string): Promise<boolean> {
-		const { valid } = await validate({
-			email,
-			validateDisposable: true,
-			validateMx: true,
-			validateRegex: true,
-			validateSMTP: true,
-			validateTypo: true,
-		});
+		const { valid, reason, validators } = await validate(email);
+
+		console.log("reason ", reason);
+		console.log("validators", validators);
 
 		return valid;
 	}

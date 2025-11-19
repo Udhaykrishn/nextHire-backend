@@ -22,6 +22,7 @@ export class UserPresitanceMapper
 			google_id: user.google_id,
 			subscription: user.subscription,
 			social_link: user.social_link,
+			createdAt: user.createdAt,
 		};
 	}
 
@@ -41,6 +42,7 @@ export class UserPresitanceMapper
 			google_id: doc.google_id,
 			subscription: doc.subscription,
 			social_link: doc.social_link,
+			createdAt: doc.createdAt,
 		});
 	}
 }
