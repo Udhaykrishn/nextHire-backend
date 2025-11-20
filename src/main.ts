@@ -10,7 +10,7 @@ import { GlobalExceptionFilter } from "./presentation/filter/global-exception.fi
 import { otelSDK } from "./otel";
 
 async function bootstrap() {
-  otelSDK.start()
+	otelSDK.start();
 	const app = await NestFactory.create(AppModule, {
 		logger: ["error", "warn", "log", "debug"],
 		bufferLogs: true,
@@ -44,7 +44,7 @@ async function bootstrap() {
 	const shutdown = async () => {
 		console.log("Shutting down...");
 		await app.close();
-    await otelSDK.shutdown()
+		await otelSDK.shutdown();
 		process.exit(0);
 	};
 
