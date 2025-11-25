@@ -12,8 +12,8 @@ import { otelSDK } from "./otel";
 async function bootstrap() {
 	otelSDK.start();
 	const app = await NestFactory.create(AppModule, {
-		logger: ["error", "warn", "log", "debug"],
-		bufferLogs: true,
+		logger: ["error", "warn","debug"],
+		autoFlushLogs:true
 	});
 
 	app.enableCors({

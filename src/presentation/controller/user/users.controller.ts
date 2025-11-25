@@ -25,8 +25,9 @@ import {
 import type { ChangePasswordDto, UpdateUserDto } from "@/application/dto/users";
 import { AuthGuard, RoleGuard } from "@/presentation/guards";
 import { Roles } from "@/presentation/decorators";
+import { UserBlockedGuard } from "@/presentation/guards/block";
 
-@UseGuards(AuthGuard, RoleGuard)
+// @UseGuards(AuthGuard, RoleGuard)
 @Controller(USER_ROUTERS.ROUTER)
 export class UserController {
 	constructor(
@@ -69,6 +70,7 @@ export class UserController {
 		return this._blockUnblockUseCase.execute(userId);
 	}
 
+	@UseGuards(UserBlockedGuard)
 	@Patch(`:${USER_ROUTERS.ID_PARAM}`)
 	@HttpCode(HttpStatus.OK)
 	async update(
@@ -78,6 +80,7 @@ export class UserController {
 		return this._updateUserUseCase.execute({ data: updateDto, userId });
 	}
 
+	@UseGuards(UserBlockedGuard)
 	@Patch(USER_ROUTERS.CHNAGE_PASWORD)
 	@HttpCode(HttpStatus.OK)
 	async changePassword(
@@ -91,6 +94,7 @@ export class UserController {
 	}
 
 	@Get(USER_ROUTERS.DEFAULT)
+	// @Roles(ROLES.ADMIN)
 	@HttpCode(HttpStatus.OK)
 	async getAllUsers(
 		@Query(PaginationInputType.SEARCH) search?: string,

@@ -5,7 +5,24 @@ import {
 	IsNotEmpty,
 	IsAlpha,
 	IsPhoneNumber,
+	ValidatorConstraint,
+	ValidatorConstraintInterface,
+	ValidationArguments,
+	Validate,
 } from "class-validator";
+
+@ValidatorConstraint({ name: "MatchPassword", async: false })
+export class MatchPasswordConstraint implements ValidatorConstraintInterface {
+	validate(confirmPassword: string, args: ValidationArguments) {
+		const object = args.object as UserSignupDto;
+		const password = (object as any)[args.constraints[0]];
+		return confirmPassword === password;
+	}
+
+	defaultMessage(args: ValidationArguments) {
+		return "Password and confirm password do not match";
+	}
+}
 
 export class UserSignupDto {
 	@IsEmail()
@@ -15,17 +32,25 @@ export class UserSignupDto {
 	@IsString()
 	@IsStrongPassword({
 		minLength: 6,
+		minLowercase: 1,
+		minUppercase: 1,
 		minNumbers: 1,
 		minSymbols: 1,
-		minUppercase: 1,
 	})
 	password: string;
 
+	@IsNotEmpty()
+	@IsString()
+	@Validate(MatchPasswordConstraint, ["password"])
+	confirmPassword: string;
+
+	@IsNotEmpty()
 	@IsString()
 	@IsPhoneNumber("IN")
-	@IsNotEmpty()
 	phone: string;
 
+	@IsNotEmpty()
+	@IsString()
 	@IsAlpha()
 	name: string;
 }

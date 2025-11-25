@@ -16,7 +16,7 @@ export class GetAllUsersUseCase
 {
 	constructor(
 		@Inject(USER_MAPPER.USER_APPLICATION)
-		private readonly _mapper: IUserApplicationMappers,
+		private readonly _mapper: IUserApplicationMappers<UserEntity>,
 		@Inject(USERS_TOKEN.USER_REPOSITORY)
 		private readonly _userRepository: IUserRepository<UserEntity>,
 	) {}
