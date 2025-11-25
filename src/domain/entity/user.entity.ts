@@ -1,4 +1,4 @@
-import { USER_STATUS } from "../enums/status/user-status.enum";
+import { USER_STATUS } from "../enums/status";
 
 export class UserEntity {
 	private readonly _id?: string;
@@ -22,10 +22,10 @@ export class UserEntity {
 		portfolio: string;
 		github: string;
 	} = {
-		linkedin: "",
-		portfolio: "",
-		github: "",
-	};
+			linkedin: "",
+			portfolio: "",
+			github: "",
+		};
 	_createdAt: Date;
 
 	private constructor(
@@ -66,7 +66,7 @@ export class UserEntity {
 		email: string;
 		password: string;
 		name: string;
-		phone: string;
+		phone?: string;
 		experience?: string;
 		role_of_title?: string;
 		status?: USER_STATUS;
@@ -83,7 +83,7 @@ export class UserEntity {
 			data.email,
 			data.password,
 			data.name,
-			data.phone,
+			data.phone ?? "",
 			data.experience ?? "",
 			data.role_of_title ?? "",
 			data.status ?? USER_STATUS.PENDING,

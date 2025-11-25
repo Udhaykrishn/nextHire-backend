@@ -13,7 +13,7 @@ import { Inject, Injectable } from "@nestjs/common";
 export class GetOneUserUseCase implements IExecutable<string, ResponseUserDto> {
 	constructor(
 		@Inject(USER_MAPPER.USER_APPLICATION)
-		private readonly _userMapper: IUserApplicationMappers,
+		private readonly _userMapper: IUserApplicationMappers<UserEntity>,
 		@Inject(USERS_TOKEN.USER_REPOSITORY)
 		private readonly _userRepository: IUserRepository<UserEntity>,
 	) {}

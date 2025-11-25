@@ -7,7 +7,6 @@ import type { IUserRepository } from "@/application/interface/repository";
 import type { UserEntity } from "@/domain/entity/user.entity";
 import { USER_MESSAGES } from "@/domain/enums";
 import { USER_STATUS } from "@/domain/enums/status/user-status.enum";
-import { UserType } from "@/infrastructure/db/mongodb/models/user.schema";
 import { NotFoundException } from "@nestjs/common";
 import { Inject, Injectable } from "@nestjs/common";
 
@@ -17,7 +16,7 @@ export class BlockUnblockUserUseCase
 {
 	constructor(
 		@Inject(USER_MAPPER.USER_APPLICATION)
-		private readonly _userMapper: IUserApplicationMappers<UserType>,
+		private readonly _userMapper: IUserApplicationMappers<UserEntity>,
 		@Inject(USERS_TOKEN.USER_REPOSITORY)
 		private readonly _userRepository: IUserRepository<UserEntity>,
 	) {}

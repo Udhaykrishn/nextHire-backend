@@ -8,7 +8,7 @@ import type {
 } from "@/infrastructure/services/interface";
 import { USER_MESSAGES } from "@/domain/enums";
 import { REDIS_KEYS } from "@/domain/enums/keys";
-import { VerifyOTPDto } from "@/application/dto/auth/users/otp";
+import { VerifyOTPDto } from "@/application/dto/auth/otp";
 
 @Injectable()
 export class UserResendOtpUseCase

@@ -1,23 +1,25 @@
-import { Injectable, Inject } from "@nestjs/common";
+import { Injectable, Inject, BadRequestException } from "@nestjs/common";
 import { IExecutable } from "@/application/interface/executable.interface";
 import type { IUserRepository } from "@/application/interface/repository";
 import { UserEntity } from "@/domain/entity";
 import { COMMON_TOKEN, USERS_TOKEN } from "@/application/enums/tokens";
 import type {
 	IJwtService,
+	IPasswordHash,
 	IRedisService,
 } from "@/infrastructure/services/interface";
-import type { UserLoginDto } from "@/application/dto/auth";
-import { UserLoginResponseDto } from "@/application/dto/auth/users/login/auth-login-response.dto";
-import { USER_ROLE } from "@/domain/enums";
+import { USER_MESSAGES, USER_ROLE, USER_STATUS } from "@/domain/enums";
 import { v4 as uuid } from "uuid";
 import { COOKIE_MAX_AGE_CONSTANT } from "@/domain/constants/cookie.constant";
 import { REDIS_KEYS } from "@/domain/enums/keys";
+import {
+	UserLoginDto,
+	UserLoginResponseDto,
+} from "@/application/dto/auth/users";
 
 @Injectable()
 export class UserLoginUseCase
-	implements IExecutable<UserLoginDto, UserLoginResponseDto>
-{
+	implements IExecutable<UserLoginDto, UserLoginResponseDto> {
 	constructor(
 		@Inject(USERS_TOKEN.USER_REPOSITORY)
 		private readonly _userRepository: IUserRepository<UserEntity>,
@@ -25,20 +27,26 @@ export class UserLoginUseCase
 		private readonly _jwtService: IJwtService,
 		@Inject(COMMON_TOKEN.REDIS_SERVICE)
 		private readonly _redisService: IRedisService,
-	) {}
+		@Inject(COMMON_TOKEN.PASSWORD_HASH)
+		private readonly _passwordHash: IPasswordHash,
+	) { }
 
 	async execute(dto: UserLoginDto): Promise<UserLoginResponseDto> {
 		const auth = await this._userRepository.findOne({ email: dto.email });
 		if (!auth) throw new Error("User not found");
 
-		// const isMatch = await this._passwordHash.compare(
-		// 	auth.password,
-		// 	dto.password,
-		// );
+		if (auth.status === USER_STATUS.BLOCK) {
+			throw new BadRequestException(USER_MESSAGES.USER_BLOCKED_BY_ADMIN);
+		}
 
-		// if (!isMatch) {
-		// 	throw new BadRequestException("Invalid credintails");
-		// }
+		const isMatch = await this._passwordHash.compare(
+			auth.password,
+			dto.password,
+		);
+
+		if (!isMatch) {
+			throw new BadRequestException("Invalid credintails");
+		}
 
 		const payload = {
 			id: auth.id as string,
