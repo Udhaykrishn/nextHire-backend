@@ -4,3 +4,5 @@ export { GetAllUsersUseCase } from "./user-get-all.use-case";
 export { GetOneUserUseCase } from "./user-get-one.use-case";
 export { UpdateUserUseCase } from "./user-update.use-case";
 export { UserChangePasswordUseCase } from "./user-change-password.use-case";
+export { CheckUserBlockedUseCase } from "./user-check-status-blocked.use-case";
+export { FindUserByEmailUseCase } from "./find-user-by-email.use-case";

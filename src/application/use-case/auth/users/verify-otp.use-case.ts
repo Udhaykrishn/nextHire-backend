@@ -18,7 +18,7 @@ import { REDIS_KEYS } from "@/domain/enums/keys";
 import {
 	VerifyOTPDto,
 	VerifyResponseOTPDto,
-} from "@/application/dto/auth/users/otp";
+} from "@/application/dto/auth/otp";
 import type { IUserApplicationMappers } from "@/application/interface/mappers/user-application-mapper.interface";
 import { UserType } from "@/infrastructure/db/mongodb/models/user.schema";
 

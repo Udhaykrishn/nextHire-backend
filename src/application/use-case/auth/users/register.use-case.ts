@@ -19,11 +19,11 @@ import { UserSignupDto } from "@/application/dto/auth/users/signup/user-signup.d
 import { UserSignResponseDto } from "@/application/dto/auth/users/signup/user-signup-res.dto";
 import type { IUserApplicationMappers } from "@/application/interface/mappers/user-application-mapper.interface";
 import { UserType } from "@/infrastructure/db/mongodb/models/user.schema";
+import { REDIS_KEYS } from "@/domain/enums/keys";
 
 @Injectable()
 export class UserRegisterUseCase
-	implements IExecutable<UserSignupDto, UserSignResponseDto>
-{
+	implements IExecutable<UserSignupDto, UserSignResponseDto> {
 	constructor(
 		@Inject(USERS_TOKEN.USER_REPOSITORY)
 		private readonly _userRepository: IUserRepository<UserEntity>,
@@ -39,14 +39,14 @@ export class UserRegisterUseCase
 		private readonly _emailService: IMailSender,
 		@Inject(USER_MAPPER.USER_APPLICATION)
 		private readonly _userMapper: IUserApplicationMappers<UserType>,
-	) {}
+	) { }
 
 	async execute(dto: UserSignupDto): Promise<UserSignResponseDto> {
-		const email = await this._emailValidation.validate(dto.email);
+		// const email = await this._emailValidation.validate(dto.email);
 
-		if (!email) {
-			throw new UnauthorizedException("Invalid email address founded");
-		}
+		// if (!email) {
+		// 	throw new UnauthorizedException("Invalid email address founded");
+		// }
 
 		const password = await this._passwordHash.hash(dto.password);
 
@@ -64,10 +64,10 @@ export class UserRegisterUseCase
 
 		console.log("otp is: ", otp);
 
-		await this._redisService.set(`otp:${user.email}`, otp, 300);
+		await this._redisService.set(REDIS_KEYS.OTP.concat(user.email), otp, 300);
 
 		await this._redisService.set(
-			`verify-pending:${user.email}`,
+			REDIS_KEYS.VERIFY_OTP.concat(user.email),
 			JSON.stringify({
 				...this._userMapper.toResponse(user),
 				password: user.password,

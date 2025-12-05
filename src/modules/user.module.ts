@@ -1,7 +1,7 @@
 import { Module } from "@nestjs/common";
 import { UserLiteModule } from "./user/user-db.module";
 import { UserController } from "@/presentation/controller/user";
-import { CommonModule } from "./user/common.module";
+import { CommonModule } from "./common.module";
 import { APP_GUARD } from "@nestjs/core";
 import { AuthGuard, RefreshGuard, RoleGuard } from "@/presentation/guards";
 import { UserCrudModule } from "./user/user-curd.module";

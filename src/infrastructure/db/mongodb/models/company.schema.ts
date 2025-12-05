@@ -1,10 +1,10 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import type { HydratedDocument } from "mongoose";
+import type { HydratedDocument, InferSchemaType } from "mongoose";
 
-export type CompanyDocument = HydratedDocument<Company>;
+export type RecruiterDocument = HydratedDocument<Recruiter>;
 
 @Schema({ timestamps: true })
-export class Company {
+export class Recruiter {
 	@Prop({ required: true, unique: true, index: true })
 	email: string;
 
@@ -53,4 +53,7 @@ export class Company {
 	};
 }
 
-export const CompanySchema = SchemaFactory.createForClass(Company);
+export const Recruiterschema = SchemaFactory.createForClass(Recruiter);
+export type RecruiterType = InferSchemaType<typeof Recruiterschema> & {
+	_id: string;
+};

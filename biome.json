@@ -7,11 +7,18 @@
 	},
 	"files": {
 		"ignoreUnknown": true,
-		"includes": ["**", "!!**/dist", "!!**/build", "!!**/node_modules"]
+		"includes": [
+			"**",
+			"!!**/dist",
+			"!!**/build",
+			"!!**/node_modules"
+		]
 	},
 	"formatter": {
 		"enabled": true,
-		"indentStyle": "tab"
+		"indentStyle": "tab",
+		"lineWidth": 120,
+		"indentWidth": 4
 	},
 	"linter": {
 		"enabled": true,
