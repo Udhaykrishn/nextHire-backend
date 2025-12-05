@@ -10,17 +10,21 @@ import { GlobalExceptionFilter } from "./presentation/filter/global-exception.fi
 import { otelSDK } from "./otel";
 import { ResponseInterceptor } from "./presentation/interceptors/response.intercepotor";
 
+
 async function bootstrap() {
 	otelSDK.start();
 	const app = await NestFactory.create(AppModule, {
 		logger: ["error", "warn", "debug"],
-		autoFlushLogs: true
+		autoFlushLogs: true,
+		bodyParser: true,
 	});
 
 	app.enableCors({
 		origin: process.env.FRONTEND_API,
 		credentials: true,
 	});
+
+
 	app.use(helmet(helmetConfigOptions));
 	app.use(cookieParser());
 	app.use(compression());
