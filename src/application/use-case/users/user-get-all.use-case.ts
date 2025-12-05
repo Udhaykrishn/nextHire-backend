@@ -12,19 +12,19 @@ import { Inject, Injectable, NotFoundException } from "@nestjs/common";
 
 @Injectable()
 export class GetAllUsersUseCase
-	implements IExecutable<PaginationDto, PaginationResponse<ResponseUserDto>>
-{
+	implements IExecutable<PaginationDto, PaginationResponse<ResponseUserDto>> {
 	constructor(
 		@Inject(USER_MAPPER.USER_APPLICATION)
 		private readonly _mapper: IUserApplicationMappers<UserEntity>,
 		@Inject(USERS_TOKEN.USER_REPOSITORY)
 		private readonly _userRepository: IUserRepository<UserEntity>,
-	) {}
+	) { }
 
 	async execute(
 		paginationDto: PaginationDto,
 	): Promise<PaginationResponse<ResponseUserDto>> {
 		const users = await this._userRepository.findAllUsers(paginationDto);
+
 
 		if (!users) {
 			throw new NotFoundException(USER_MESSAGES.USER_NOT_FOUND);
