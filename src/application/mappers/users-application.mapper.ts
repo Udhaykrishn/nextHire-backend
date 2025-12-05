@@ -4,8 +4,7 @@ import { IUserApplicationMappers } from "../interface/mappers/user-application-m
 import { UserType } from "@/infrastructure/db/mongodb/models/user.schema";
 import { USER_STATUS } from "@/domain/enums";
 
-export class UserApplicationMapper
-	implements IUserApplicationMappers<UserType> {
+export class UserApplicationMapper implements IUserApplicationMappers<UserType> {
 	toResponse(user: UserEntity): ResponseUserDto {
 		return {
 			id: user.id as string,

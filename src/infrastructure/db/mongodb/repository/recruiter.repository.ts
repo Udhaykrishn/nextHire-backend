@@ -18,30 +18,19 @@ export class RecruiterRepository
 	constructor(
 		@InjectModel(Recruiter.name) private recruiterModel: Model<RecruiterType>,
 		@Inject(RECRUITER_MAPPER.RECRUITER_PRESISTANCE)
-		recruiterPresistanceMapper: IRecruiterPresitanceMapper<
-			RecruiterEntity,
-			RecruiterType
-		>,
+		recruiterPresistanceMapper: IRecruiterPresitanceMapper<RecruiterEntity, RecruiterType>,
 	) {
 		super(recruiterModel, recruiterPresistanceMapper);
 	}
 
-	async findAllRecruiters(
-		pages: PaginationDto,
-	): Promise<PaginationResponse<RecruiterEntity> | null> {
+	async findAllRecruiters(pages: PaginationDto): Promise<PaginationResponse<RecruiterEntity> | null> {
 		const skip = (pages.page - 1) * pages.limit;
 
-		const docs = await this.recruiterModel
-			.find()
-			.skip(skip)
-			.limit(pages.limit)
-			.exec();
+		const docs = await this.recruiterModel.find().skip(skip).limit(pages.limit).exec();
 
 		const total = await this.recruiterModel.countDocuments();
 
-		const data = await Promise.all(
-			docs.map((doc) => this.mapper.fromMongo(doc)),
-		);
+		const data = await Promise.all(docs.map((doc) => this.mapper.fromMongo(doc)));
 
 		return {
 			data,

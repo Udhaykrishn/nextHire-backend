@@ -3,12 +3,12 @@ declare global {
 		interface Request {
 			sessionId: string;
 			user: {
-				email: string,
-				id: string,
-				role: string
-			}
+				email: string;
+				id: string;
+				role: string;
+			};
 		}
 	}
 }
 
-export { };
+export {};

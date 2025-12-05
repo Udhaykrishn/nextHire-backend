@@ -12,9 +12,7 @@ export class EmailQueueProcessor extends WorkerHost {
 		super();
 	}
 
-	async process(job: {
-		data: { email: string; otp: string; name: string };
-	}): Promise<void> {
+	async process(job: { data: { email: string; otp: string; name: string } }): Promise<void> {
 		const { email, otp, name } = job.data;
 		await this.mailService.sendOtp(email, otp, name);
 	}

@@ -4,5 +4,5 @@ export enum RECRUITER_ROUTERS {
 	ID_PARAM = "id",
 	BLOCK = ":id/block",
 	CHANGE_PASSWORD = ":id/change-password",
-	UPLOAD_PROFILE_IMAGE = 'profile/upload',
+	UPLOAD_PROFILE_IMAGE = "profile/upload",
 }

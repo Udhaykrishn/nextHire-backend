@@ -7,12 +7,7 @@ export const optional: CookieOptions = {
 	path: "/",
 };
 
-export function setCookie(
-	res: Response,
-	key: string,
-	value: string,
-	maxAge: number,
-) {
+export function setCookie(res: Response, key: string, value: string, maxAge: number) {
 	res.cookie(key, value, { ...optional, maxAge });
 }
 

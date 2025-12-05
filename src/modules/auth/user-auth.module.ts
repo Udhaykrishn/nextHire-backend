@@ -13,10 +13,7 @@ import { UserLogoutUseCase } from "@/application/use-case/auth/users";
 import { GoogleAuthUseCase } from "@/application/use-case/auth/users/google-auth.case-use";
 
 @Module({
-	imports: [
-		UserLiteModule,
-		CommonModule,
-	],
+	imports: [UserLiteModule, CommonModule],
 	controllers: [AuthUserController],
 	providers: [
 		{
@@ -53,4 +50,4 @@ import { GoogleAuthUseCase } from "@/application/use-case/auth/users/google-auth
 		},
 	],
 })
-export class UserAuthModule { }
+export class UserAuthModule {}

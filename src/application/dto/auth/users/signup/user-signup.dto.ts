@@ -15,12 +15,8 @@ import {
 export class MatchPasswordConstraint implements ValidatorConstraintInterface {
 	validate(confirmPassword: string, args: ValidationArguments) {
 		const object = args.object as UserSignupDto;
-		const password = (object as any)[args.constraints[0]];
+		const password = object[args.constraints[0]];
 		return confirmPassword === password;
-	}
-
-	defaultMessage(args: ValidationArguments) {
-		return "Password and confirm password do not match";
 	}
 }
 

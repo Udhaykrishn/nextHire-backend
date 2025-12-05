@@ -24,5 +24,4 @@ export class CompanyInterviewer {
 	department: string;
 }
 
-export const CompanyInterviewerSchema =
-	SchemaFactory.createForClass(CompanyInterviewer);
+export const CompanyInterviewerSchema = SchemaFactory.createForClass(CompanyInterviewer);

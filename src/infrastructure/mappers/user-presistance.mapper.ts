@@ -2,8 +2,7 @@ import { UserEntity } from "@/domain/entity/user.entity";
 import type { IUserPresitanceMapper } from "@/application/interface/mappers/user-presistance.mapper";
 import type { UserType } from "../db/mongodb/models/user.schema";
 
-export class UserPresitanceMapper
-	implements IUserPresitanceMapper<UserEntity, UserType> {
+export class UserPresitanceMapper implements IUserPresitanceMapper<UserEntity, UserType> {
 	toMongo(user: UserEntity) {
 		return {
 			_id: user.id as string,

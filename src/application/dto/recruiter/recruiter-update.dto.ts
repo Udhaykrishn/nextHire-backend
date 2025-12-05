@@ -1,12 +1,4 @@
-import {
-	IsEmail,
-	IsString,
-	IsOptional,
-	IsUrl,
-	MinLength,
-	MaxLength,
-	IsPhoneNumber,
-} from "class-validator";
+import { IsEmail, IsString, IsOptional, IsUrl, MinLength, MaxLength, IsPhoneNumber } from "class-validator";
 
 export class UpdateRecruiterDto {
 	@IsOptional()

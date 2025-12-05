@@ -24,5 +24,4 @@ export class SubscriptionHistory {
 	role: string;
 }
 
-export const SubscriptionHistorySchema =
-	SchemaFactory.createForClass(SubscriptionHistory);
+export const SubscriptionHistorySchema = SchemaFactory.createForClass(SubscriptionHistory);

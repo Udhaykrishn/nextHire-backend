@@ -1,10 +1,5 @@
 import Redis from "ioredis";
-import {
-	Injectable,
-	Logger,
-	type OnModuleInit,
-	type OnModuleDestroy,
-} from "@nestjs/common";
+import { Injectable, Logger, type OnModuleInit, type OnModuleDestroy } from "@nestjs/common";
 
 @Injectable()
 export class RedisClient implements OnModuleInit, OnModuleDestroy {
@@ -16,26 +11,17 @@ export class RedisClient implements OnModuleInit, OnModuleDestroy {
 			const url = process.env.REDIS_URL || "";
 
 			RedisClient.instance = new Redis(url, {
-				retryStrategy: (times) =>
-					times > 10 ? null : Math.min(times * 500, 3000),
+				retryStrategy: (times) => (times > 10 ? null : Math.min(times * 500, 3000)),
 				maxRetriesPerRequest: 3,
 				lazyConnect: false,
 				enableOfflineQueue: true,
 			});
 
-			RedisClient.instance.on("connect", () =>
-				console.log("Redis connected successfully"),
-			);
+			RedisClient.instance.on("connect", () => console.log("Redis connected successfully"));
 			RedisClient.instance.on("ready", () => console.log("Redis is ready"));
-			RedisClient.instance.on("error", (err) =>
-				console.error("Redis error:", err.message),
-			);
-			RedisClient.instance.on("close", () =>
-				console.warn("Redis connection closed"),
-			);
-			RedisClient.instance.on("reconnecting", ({ delay }) =>
-				console.log(`Redis reconnecting in ${delay}ms...`),
-			);
+			RedisClient.instance.on("error", (err) => console.error("Redis error:", err.message));
+			RedisClient.instance.on("close", () => console.warn("Redis connection closed"));
+			RedisClient.instance.on("reconnecting", ({ delay }) => console.log(`Redis reconnecting in ${delay}ms...`));
 		}
 		return RedisClient.instance;
 	}

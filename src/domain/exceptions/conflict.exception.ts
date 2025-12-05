@@ -3,11 +3,7 @@ import { AppException } from "./app.exception";
 
 export class ConflictException extends AppException {
 	constructor(field: string) {
-		super(
-			"RESOURCE_CONFLICT",
-			`${capitalize(field)} already exists`,
-			HttpStatus.CONFLICT,
-		);
+		super("RESOURCE_CONFLICT", `${capitalize(field)} already exists`, HttpStatus.CONFLICT);
 	}
 }
 

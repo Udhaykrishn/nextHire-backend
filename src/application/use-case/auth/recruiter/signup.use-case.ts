@@ -10,23 +10,15 @@ import type {
 	IRedisService,
 } from "@/infrastructure/services/interface";
 import { REDIS_KEYS } from "@/domain/enums/keys";
-import {
-	RECRUITER_MAPPER,
-	RECRUITER_TOKEN,
-} from "@/application/enums/recruiter";
+import { RECRUITER_MAPPER, RECRUITER_TOKEN } from "@/application/enums/recruiter";
 import type { IRecruiterRepository } from "@/application/interface/repository";
 import type { IRecruiterApplicationMappers } from "@/application/interface/mappers/recruiter";
 import { RECRUITER_MESSAGES } from "@/domain/enums/messages";
-import {
-	RecruiterSignResponseDto,
-	RecruiterSignupDto,
-} from "@/application/dto/auth/recruiter/signup";
+import { RecruiterSignResponseDto, RecruiterSignupDto } from "@/application/dto/auth/recruiter/signup";
 import { USER_ROLE } from "@/domain/enums";
 
 @Injectable()
-export class RecruiterRegisterUseCase
-	implements IExecutable<RecruiterSignupDto, RecruiterSignResponseDto>
-{
+export class RecruiterRegisterUseCase implements IExecutable<RecruiterSignupDto, RecruiterSignResponseDto> {
 	constructor(
 		@Inject(RECRUITER_TOKEN.RECRUITER_REPOSITORY)
 		private readonly _recruiterRepository: IRecruiterRepository<RecruiterEntity>,
@@ -69,23 +61,17 @@ export class RecruiterRegisterUseCase
 			email: recruiter.email,
 		});
 		if (existingRecruiter) {
-			throw new UnauthorizedException(
-				RECRUITER_MESSAGES.RECRUITER_ALREADY_EXISTS,
-			);
+			throw new UnauthorizedException(RECRUITER_MESSAGES.RECRUITER_ALREADY_EXISTS);
 		}
 
 		const otp = this._otpService.generate(6);
 
 		console.log("Recruiter OTP:", otp);
 
-		await this._redisService.set(
-			REDIS_KEYS.OTP.concat(recruiter.email).concat(":",USER_ROLE.RECRUITER),
-			otp,
-			300,
-		);
+		await this._redisService.set(REDIS_KEYS.OTP.concat(recruiter.email).concat(":", USER_ROLE.RECRUITER), otp, 300);
 
 		await this._redisService.set(
-			REDIS_KEYS.VERIFY_OTP.concat(recruiter.email).concat(":",USER_ROLE.RECRUITER),
+			REDIS_KEYS.VERIFY_OTP.concat(recruiter.email).concat(":", USER_ROLE.RECRUITER),
 			JSON.stringify({
 				...this._recruiterMapper.toResponse(recruiter),
 				password: recruiter.password,
