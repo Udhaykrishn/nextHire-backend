@@ -29,7 +29,7 @@ export class User {
 		default: USER_STATUS.PENDING,
 		enum: USER_STATUS,
 	})
-	status: USER_STATUS;
+	status: string;
 
 	@Prop()
 	resume_url: string;
@@ -53,6 +53,18 @@ export class User {
 	subscription: {
 		current_plan: string;
 		is_subscribed: boolean;
+	};
+
+	@Prop({
+		type: {
+			key: { type: String },
+			url: { type: String }
+		},
+		_id: false,
+	})
+	profile_url: {
+		key: string;
+		url: string;
 	};
 
 	@Prop({
