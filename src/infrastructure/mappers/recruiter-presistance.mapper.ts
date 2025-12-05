@@ -3,8 +3,7 @@ import { RecruiterType } from "../db/mongodb/models/company.schema";
 import { IRecruiterPresitanceMapper } from "@/application/interface/mappers/recruiter/presistance.mapper";
 
 export class RecruiterPresitanceMapper
-	implements IRecruiterPresitanceMapper<RecruiterEntity, RecruiterType>
-{
+	implements IRecruiterPresitanceMapper<RecruiterEntity, RecruiterType> {
 	toMongo(recruiter: RecruiterEntity): RecruiterType {
 		return {
 			_id: recruiter.id as string,
@@ -15,11 +14,12 @@ export class RecruiterPresitanceMapper
 			GSTIN: recruiter.GSTIN,
 			status: recruiter.status,
 			website_link: recruiter.website_link,
-			description: recruiter.description ,
+			description: recruiter.description,
 			category: recruiter.category,
 			company_role: recruiter.company_role,
 			is_verified_company: recruiter.is_verified_company,
 			admin_approved: recruiter.admin_approved,
+			profile_url: recruiter.profile_url,
 			subscription: recruiter.subscription,
 		};
 	}
@@ -31,7 +31,6 @@ export class RecruiterPresitanceMapper
 			password: doc.password,
 			name: doc.name,
 			phone: doc.phone,
-
 			GSTIN: doc.GSTIN ?? "",
 			status: doc.status ?? "pending",
 			website_link: doc.website_link ?? "",
