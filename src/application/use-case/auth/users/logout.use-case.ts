@@ -1,17 +1,9 @@
-import {
-	Injectable,
-	Inject,
-	BadRequestException,
-	UnauthorizedException,
-} from "@nestjs/common";
+import { Injectable, Inject, BadRequestException, UnauthorizedException } from "@nestjs/common";
 import { IExecutable } from "@/application/interface/executable.interface";
 import type { IUserRepository } from "@/application/interface/repository";
 import { UserEntity } from "@/domain/entity";
 import { COMMON_TOKEN, USERS_TOKEN } from "@/application/enums/tokens";
-import type {
-	IJwtService,
-	IRedisService,
-} from "@/infrastructure/services/interface";
+import type { IJwtService, IRedisService } from "@/infrastructure/services/interface";
 import { USER_MESSAGES } from "@/domain/enums";
 import { REDIS_KEYS } from "@/domain/enums/keys";
 
@@ -27,9 +19,7 @@ export class UserLogoutUseCase implements IExecutable<string, boolean> {
 	) {}
 
 	async execute(sessionId: string): Promise<boolean> {
-		const refreshToken = await this._redisService.get(
-			REDIS_KEYS.REFRESH.concat(sessionId),
-		);
+		const refreshToken = await this._redisService.get(REDIS_KEYS.REFRESH.concat(sessionId));
 
 		if (!refreshToken) {
 			throw new UnauthorizedException("Token missing ");

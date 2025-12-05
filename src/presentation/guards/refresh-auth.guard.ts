@@ -1,9 +1,4 @@
-import {
-	Injectable,
-	UnauthorizedException,
-	type CanActivate,
-	type ExecutionContext,
-} from "@nestjs/common";
+import { Injectable, UnauthorizedException, type CanActivate, type ExecutionContext } from "@nestjs/common";
 
 @Injectable()
 export class RefreshGuard implements CanActivate {

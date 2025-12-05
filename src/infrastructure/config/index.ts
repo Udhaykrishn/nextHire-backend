@@ -1,1 +1,1 @@
-export { type EnvConfig, envSchema } from "./env.schema" 
+export { type EnvConfig, envSchema } from "./env.schema";

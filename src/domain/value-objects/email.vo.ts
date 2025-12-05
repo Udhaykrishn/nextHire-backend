@@ -12,9 +12,7 @@ export class Email {
 			validateRegex: true,
 		});
 		if (!valid) {
-			throw new NotFoundException(
-				`Invalid email: ${reason || "Unknown error"}`,
-			);
+			throw new NotFoundException(`Invalid email: ${reason || "Unknown error"}`);
 		}
 		return new Email(value);
 	}

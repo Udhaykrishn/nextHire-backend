@@ -1,10 +1,5 @@
 import { COMMON_TOKEN } from "@/application/enums/tokens";
-import {
-	EmailValidator,
-	MailSender,
-	OtpService,
-	PasswordHash,
-} from "@/infrastructure/services/implements";
+import { EmailValidator, MailSender, OtpService, PasswordHash } from "@/infrastructure/services/implements";
 import { Module } from "@nestjs/common";
 
 @Module({

@@ -11,10 +11,7 @@ import { NotFoundException } from "@nestjs/common";
 import { Inject, Injectable } from "@nestjs/common";
 
 @Injectable()
-export class UpdateUserUseCase
-	implements
-		IExecutable<{ userId: string; data: UpdateUserDto }, ResponseUserDto>
-{
+export class UpdateUserUseCase implements IExecutable<{ userId: string; data: UpdateUserDto }, ResponseUserDto> {
 	constructor(
 		@Inject(USER_MAPPER.USER_APPLICATION)
 		private readonly _userMapper: IUserApplicationMappers<UserEntity>,
@@ -22,13 +19,7 @@ export class UpdateUserUseCase
 		private readonly _userRepository: IUserRepository<UserEntity>,
 	) {}
 
-	async execute({
-		userId,
-		data,
-	}: {
-		userId: string;
-		data: UpdateUserDto;
-	}): Promise<ResponseUserDto> {
+	async execute({ userId, data }: { userId: string; data: UpdateUserDto }): Promise<ResponseUserDto> {
 		const user = await this._userRepository.findById(userId);
 
 		if (!user) {
@@ -60,10 +51,7 @@ export class UpdateUserUseCase
 			user.changeSocialLink(data.social_link);
 		}
 
-		const updatedUser = await this._userRepository.findByIdAndUpdate(
-			userId,
-			user,
-		);
+		const updatedUser = await this._userRepository.findByIdAndUpdate(userId, user);
 
 		if (!updatedUser) {
 			throw new NotFoundException("Failed to update");

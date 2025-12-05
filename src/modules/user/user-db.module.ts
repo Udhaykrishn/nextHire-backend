@@ -22,11 +22,6 @@ import { MongooseModule } from "@nestjs/mongoose";
 			useClass: UserRepository,
 		},
 	],
-	exports: [
-		MongooseModule,
-		USER_MAPPER.USER_PRESISTANCE,
-		USER_MAPPER.USER_APPLICATION,
-		USERS_TOKEN.USER_REPOSITORY,
-	],
+	exports: [MongooseModule, USER_MAPPER.USER_PRESISTANCE, USER_MAPPER.USER_APPLICATION, USERS_TOKEN.USER_REPOSITORY],
 })
 export class UserLiteModule {}

@@ -1,13 +1,7 @@
 import { USERS_TOKEN } from "@/application/enums/tokens";
 import type { IExecutable } from "@/application/interface/executable.interface";
 import { ROLES } from "@/presentation/enums";
-import {
-	CanActivate,
-	ExecutionContext,
-	ForbiddenException,
-	Inject,
-	Injectable,
-} from "@nestjs/common";
+import { CanActivate, ExecutionContext, ForbiddenException, Inject, Injectable } from "@nestjs/common";
 
 @Injectable()
 export class UserBlockedGuard implements CanActivate {

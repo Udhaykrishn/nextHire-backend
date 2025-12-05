@@ -1,11 +1,4 @@
-import {
-	IsOptional,
-	IsString,
-	IsNumber,
-	MaxLength,
-	MinLength,
-	IsPositive,
-} from "class-validator";
+import { IsOptional, IsString, IsNumber, MaxLength, MinLength, IsPositive } from "class-validator";
 import { Type } from "class-transformer";
 
 export class PaginationDto {
