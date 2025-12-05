@@ -1,11 +1,12 @@
 import {
 	Global,
 	Module,
-	type OnModuleInit,
-	type OnModuleDestroy,
+	OnModuleInit,
+	OnModuleDestroy,
 } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 import { ConfigService } from "@nestjs/config";
+import { EnvConfig } from "@/infrastructure/config";
 
 @Global()
 @Module({})
@@ -15,20 +16,23 @@ export class MongoDbModule implements OnModuleInit, OnModuleDestroy {
 			module: MongoDbModule,
 			imports: [
 				MongooseModule.forRootAsync({
-					useFactory: (config: ConfigService) => ({
-						uri: config.get<string>("MONGODB_URI"),
-						dbName: "nextHire",
-					}),
+					useFactory: (config: ConfigService<EnvConfig>) => {
+						return {
+							uri: config.get("MONGODB_URI"),
+							dbName: "nextHire",
+						};
+					},
 					inject: [ConfigService],
 				}),
 			],
 		};
 	}
+
 	onModuleInit() {
 		console.log("mongodb is connected");
 	}
 
 	onModuleDestroy() {
-		console.log("mongodb is destoryed");
+		console.log("mongodb is destroyed");
 	}
 }
