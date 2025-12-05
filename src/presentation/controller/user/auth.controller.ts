@@ -105,6 +105,8 @@ export class AuthUserController {
 			token.accessToken,
 			COOKIE_MAX_AGE_CONSTANT.ACCESS_TOKEN_1_HOUR,
 		);
+
+		return { success: true }
 	}
 
 	@UseGuards(RefreshGuard)
