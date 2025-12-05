@@ -8,12 +8,13 @@ import { helmetConfigOptions } from "@/presentation/config";
 import { ValidationPipe } from "@nestjs/common";
 import { GlobalExceptionFilter } from "./presentation/filter/global-exception.filter";
 import { otelSDK } from "./otel";
+import { ResponseInterceptor } from "./presentation/interceptors/response.intercepotor";
 
 async function bootstrap() {
 	otelSDK.start();
 	const app = await NestFactory.create(AppModule, {
-		logger: ["error", "warn","debug"],
-		autoFlushLogs:true
+		logger: ["error", "warn", "debug"],
+		autoFlushLogs: true
 	});
 
 	app.enableCors({
@@ -35,6 +36,7 @@ async function bootstrap() {
 	);
 
 	app.useGlobalFilters(new GlobalExceptionFilter());
+	app.useGlobalInterceptors(new ResponseInterceptor());
 	app.setGlobalPrefix("api/v1");
 
 	const configService = app.get(ConfigService);
