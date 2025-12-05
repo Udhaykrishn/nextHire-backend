@@ -8,8 +8,12 @@ export class UserEntity {
 	private _phone: string;
 	private _experience: string = "";
 	private _role_of_title: string = "";
-	private _status: USER_STATUS = USER_STATUS.PENDING;
+	private _status: string = USER_STATUS.PENDING;
 	private _resume_url: string = "";
+	private _profile_url: { key: string; url: string } = {
+		key: "",
+		url: "",
+	};
 	private _bio: string = "";
 	private _badge: boolean = false;
 	private _google_id: string = "";
@@ -35,13 +39,14 @@ export class UserEntity {
 		phone: string,
 		experience: string,
 		role_of_title: string,
-		status: USER_STATUS,
+		status: string,
 		resume_url: string,
 		bio: string,
 		badge: boolean,
 		google_id: string,
 		subscription: { current_plan: string; is_subscribed: boolean },
 		social_link: { linkedin: string; portfolio: string; github: string },
+		profile_url: { key: string; url: string },
 		createdAt: Date,
 		id?: string,
 	) {
@@ -58,6 +63,7 @@ export class UserEntity {
 		this._google_id = google_id;
 		this._subscription = subscription;
 		this._social_link = social_link;
+		this._profile_url = profile_url;
 		this._createdAt = createdAt;
 		this._id = id;
 	}
@@ -69,13 +75,14 @@ export class UserEntity {
 		phone?: string;
 		experience?: string;
 		role_of_title?: string;
-		status?: USER_STATUS;
+		status?: string;
 		resume_url?: string;
 		bio?: string;
 		badge?: boolean;
 		google_id?: string;
 		subscription?: { current_plan: string; is_subscribed: boolean };
 		social_link?: { linkedin: string; portfolio: string; github: string };
+		profile_url: { key: string, url: string }
 		createdAt?: Date;
 		id?: string;
 	}): UserEntity {
@@ -93,6 +100,7 @@ export class UserEntity {
 			data.google_id ?? "",
 			data.subscription ?? { current_plan: "free", is_subscribed: false },
 			data.social_link ?? { linkedin: "", portfolio: "", github: "" },
+			data.profile_url ?? { key: "", url: "" },
 			data.createdAt ?? new Date(),
 			data.id,
 		);
@@ -148,6 +156,10 @@ export class UserEntity {
 
 	get subscription(): { current_plan: string; is_subscribed: boolean } {
 		return this._subscription;
+	}
+
+	get profile_url(): { key: string; url: string } {
+		return this._profile_url;
 	}
 
 	get social_link(): { linkedin: string; portfolio: string; github: string } {
@@ -211,6 +223,10 @@ export class UserEntity {
 
 	changeEmail(newEmail: string): void {
 		this._email = newEmail;
+	}
+
+	changeProfileUrl(key: string, url: string): void {
+		this._profile_url = { key, url };
 	}
 
 	changePassword(newPassword: string): void {

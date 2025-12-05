@@ -4,5 +4,6 @@ export enum USER_ROUTERS {
 	ID_PARAM = "id",
 	BLOCK = ":id/block",
 	CHNAGE_PASWORD = ":id/change-password",
-	PROFILE = 'profile'
+	PROFILE = 'profile',
+	UPLOAD_PROFILE_IMAGE = 'profile/upload',
 }

@@ -43,6 +43,18 @@ export class Recruiter {
 
 	@Prop({
 		type: {
+			key: { type: String },
+			url: { type: String },
+		},
+		_id: false,
+	})
+	profile_url: {
+		key: string;
+		url: string;
+	};
+
+	@Prop({
+		type: {
 			current_plan: { type: String, default: "free" },
 			is_subscribed: { type: Boolean, default: false },
 		},

@@ -9,8 +9,10 @@ import {
 	GetOneRecruiterUseCase,
 	RecruiterChangePasswordUseCase,
 	UpdateRecruiterUseCase,
+	UploadRecruiterProfileImageUseCase,
 } from "@/application/use-case/recuriters";
 import { CheckRecruiterBlockedUseCase } from "@/application/use-case/recuriters";
+import { S3Service } from "@/infrastructure/services/implements";
 
 @Module({
 	imports: [RecruiterLiteModule, CommonModule],
@@ -43,6 +45,14 @@ import { CheckRecruiterBlockedUseCase } from "@/application/use-case/recuriters"
 			provide: RECRUITER_TOKEN.CHECK_RECRUITER_BLOCKED_USE_CASE,
 			useClass: CheckRecruiterBlockedUseCase,
 		},
+		{
+			provide: RECRUITER_TOKEN.UPLOAD_PROFILE_IMAGE_USE_CASE,
+			useClass: UploadRecruiterProfileImageUseCase,
+		},
+		{
+			provide: "S3_SERVICE",
+			useClass: S3Service,
+		},
 	],
 	exports: [
 		RECRUITER_TOKEN.RECRUITER_CREATE_USE_CASE,
@@ -52,6 +62,8 @@ import { CheckRecruiterBlockedUseCase } from "@/application/use-case/recuriters"
 		RECRUITER_TOKEN.RECRUITER_BLOCK_UNBLOCK_USE_CASE,
 		RECRUITER_TOKEN.RECRUITER_CHANGE_PASSWORD_USE_CASE,
 		RECRUITER_TOKEN.CHECK_RECRUITER_BLOCKED_USE_CASE,
+		RECRUITER_TOKEN.UPLOAD_PROFILE_IMAGE_USE_CASE,
+		"S3_SERVICE",
 	],
 })
-export class RecruiterCrudModule {}
+export class RecruiterCrudModule { }

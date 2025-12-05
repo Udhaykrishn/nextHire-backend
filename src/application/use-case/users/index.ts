@@ -6,3 +6,4 @@ export { UpdateUserUseCase } from "./user-update.use-case";
 export { UserChangePasswordUseCase } from "./user-change-password.use-case";
 export { CheckUserBlockedUseCase } from "./user-check-status-blocked.use-case";
 export { FindUserByEmailUseCase } from "./find-user-by-email.use-case";
+export { UploadProfileImageUseCase } from "./upload-profile-image.use-case";
