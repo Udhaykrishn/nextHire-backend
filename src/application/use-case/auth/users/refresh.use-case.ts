@@ -19,8 +19,7 @@ import { REDIS_KEYS } from "@/domain/enums/keys";
 
 @Injectable()
 export class UserRefreshUseCase
-	implements IExecutable<string, UserRefreshTokenDto>
-{
+	implements IExecutable<string, UserRefreshTokenDto> {
 	constructor(
 		@Inject(USERS_TOKEN.USER_REPOSITORY)
 		private readonly _userRepository: IUserRepository<UserEntity>,
@@ -28,7 +27,7 @@ export class UserRefreshUseCase
 		private readonly _jwtService: IJwtService,
 		@Inject(COMMON_TOKEN.REDIS_SERVICE)
 		private readonly _redisService: IRedisService,
-	) {}
+	) { }
 
 	async execute(sessionId: string): Promise<UserRefreshTokenDto> {
 		const refreshToken = await this._redisService.get(
@@ -51,8 +50,14 @@ export class UserRefreshUseCase
 			throw new BadRequestException(USER_MESSAGES.USER_NOT_FOUND);
 		}
 
+		let accessTokenPayload = {
+			id: payload.id,
+			email: payload.email,
+			role: payload.role
+		}
+
 		const accessToken = await this._jwtService.generateToken(
-			payload,
+			accessTokenPayload,
 			COOKIE_MAX_AGE_CONSTANT.ACCESS_TOKEN_1_HOUR,
 		);
 
