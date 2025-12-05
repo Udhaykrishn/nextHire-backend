@@ -5,33 +5,36 @@ import { RedisModule } from "./redis.module";
 import { UserModule } from "./user";
 import { RecruiterModule } from "./recruiter/recruiter.module";
 import { AuthModule } from "./auth/auth.module";
-import { UploadModule } from "./upload/upload.module";
-
+import { envSchema } from "@/infrastructure/config";
+import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
+import { APP_GUARD } from "@nestjs/core";
 @Module({
 	imports: [
 		ConfigModule.forRoot({
 			isGlobal: true,
+			envFilePath: '.env',
+			validate: (env) => envSchema.parse(env),
+			cache: true
 		}),
-		// ThrottlerModule.forRoot([
-		// 	{
-		// 		name: "short",
-		// 		ttl: 60000,
-		// 		limit: 10,
-		// 	},
-		// ]),
+		ThrottlerModule.forRoot([
+			{
+				name: "short",
+				ttl: 60000,
+				limit: 10,
+			},
+		]),
 		RedisModule,
 		MongoDbModule.forRootAsync(),
 		//  EmailQueueModule,
 		AuthModule,
 		UserModule,
 		RecruiterModule,
-		UploadModule,
 	],
 	providers: [
-		// {
-		// 	provide: APP_GUARD,
-		// 	useClass: ThrottlerGuard,
-		// },
+		{
+			provide: APP_GUARD,
+			useClass: ThrottlerGuard,
+		},
 	],
 })
 export class AppModule { }
