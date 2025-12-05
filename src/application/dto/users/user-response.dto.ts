@@ -19,4 +19,8 @@ export class ResponseUserDto {
 		portfolio: string;
 		github: string;
 	};
+	public readonly profile_url: {
+		key: string;
+		url: string;
+	};
 }

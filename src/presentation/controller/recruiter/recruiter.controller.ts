@@ -9,9 +9,15 @@ import {
 	Patch,
 	Post,
 	Query,
+	Req,
 	UseGuards,
 	ParseIntPipe,
+	UploadedFile,
+	UseInterceptors,
+	BadRequestException,
 } from "@nestjs/common";
+import { FileInterceptor } from "@nestjs/platform-express";
+import { memoryStorage } from "multer";
 import type { IExecutable } from "@/application/interface/executable.interface";
 
 import type { PaginationDto } from "@/application/dto/pagiation";
@@ -30,6 +36,7 @@ import { UpdateRecruiterDto } from "@/application/dto/recruiter";
 import { ChangePasswordDto } from "@/application/dto/users";
 import { ROLES } from "@/presentation/enums";
 import { RecruiterBlockedGuard } from "@/presentation/guards/block";
+import type { Request } from "express";
 
 @UseGuards(AuthGuard, RoleGuard)
 @Roles(ROLES.RECRUITER)
@@ -68,7 +75,12 @@ export class RecruiterController {
 			{ recruiterId: string; dto: ChangePasswordDto },
 			ResponseRecruiterDto
 		>,
-	) {}
+		@Inject(RECRUITER_TOKEN.UPLOAD_PROFILE_IMAGE_USE_CASE)
+		private readonly _uploadProfileImageUseCase: IExecutable<
+			{ recruiterId: string; file: Express.Multer.File },
+			ResponseRecruiterDto
+		>,
+	) { }
 
 	@Post(RECRUITER_ROUTERS.DEFAULT)
 	@HttpCode(HttpStatus.CREATED)
@@ -124,5 +136,34 @@ export class RecruiterController {
 		@Body() dto: ChangePasswordDto,
 	): Promise<ResponseRecruiterDto> {
 		return this._changePasswordUseCase.execute({ recruiterId, dto });
+	}
+
+	@UseGuards(RecruiterBlockedGuard)
+	@Post(RECRUITER_ROUTERS.UPLOAD_PROFILE_IMAGE)
+	@HttpCode(HttpStatus.OK)
+	@UseInterceptors(
+		FileInterceptor('image', {
+			storage: memoryStorage(),
+			limits: {
+				fileSize: 5 * 1024 * 1024,
+			},
+			fileFilter: (_req, file, cb) => {
+				if (!file.mimetype.startsWith('image/')) {
+					cb(new BadRequestException('Only image files are allowed'), false);
+					return;
+				}
+				cb(null, true);
+			},
+		}),
+	)
+	async uploadProfileImage(
+		@Req() req: Request,
+		@UploadedFile() file: Express.Multer.File,
+	): Promise<ResponseRecruiterDto> {
+		if (!file) {
+			throw new BadRequestException('No file uploaded');
+		}
+		const recruiter = await this._getOneUseCase.execute(req.user.id);
+		return this._uploadProfileImageUseCase.execute({ recruiterId: recruiter.id, file });
 	}
 }

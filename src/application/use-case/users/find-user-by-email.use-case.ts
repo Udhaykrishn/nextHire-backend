@@ -6,8 +6,10 @@ import type { IUserApplicationMappers } from "@/application/interface/mappers/us
 import type { IUserRepository } from "@/application/interface/repository";
 import type { UserEntity } from "@/domain/entity/user.entity";
 import { USER_MESSAGES } from "@/domain/enums";
+import { EnvConfig } from "@/infrastructure/config";
 import { NotFoundException } from "@nestjs/common";
 import { Inject, Injectable } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 
 @Injectable()
 export class FindUserByEmailUseCase implements IExecutable<string, ResponseUserDto> {

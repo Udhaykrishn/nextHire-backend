@@ -12,7 +12,12 @@ import {
 	Query,
 	Req,
 	UseGuards,
+	UploadedFile,
+	UseInterceptors,
+	BadRequestException,
 } from "@nestjs/common";
+import { FileInterceptor } from "@nestjs/platform-express";
+import { memoryStorage } from "multer";
 import { ROLES, USER_ROUTERS } from "@/presentation/enums";
 import { USERS_TOKEN } from "@/application/enums/tokens";
 import type { IExecutable } from "@/application/interface/executable.interface";
@@ -60,6 +65,11 @@ export class UserController {
 			string,
 			ResponseUserDto
 		>,
+		@Inject(USERS_TOKEN.UPLOAD_PROFILE_IMAGE_USE_CASE)
+		private readonly _uploadProfileImageUseCase: IExecutable<
+			{ userId: string; file: Express.Multer.File },
+			ResponseUserDto
+		>,
 	) { }
 
 	@Post(USER_ROUTERS.DEFAULT)
@@ -101,7 +111,7 @@ export class UserController {
 	}
 
 	@Get(USER_ROUTERS.DEFAULT)
-	// @Roles(ROLES.ADMIN)
+	@Roles(ROLES.ADMIN)
 	@HttpCode(HttpStatus.OK)
 	async getAllUsers(
 		@Query(PaginationInputType.SEARCH) search?: string,
@@ -122,5 +132,34 @@ export class UserController {
 		@Req() req: Request
 	): Promise<ResponseUserDto> {
 		return this._findUserByEmailUseCase.execute(req.user.email);
+	}
+
+	@UseGuards(UserBlockedGuard)
+	@Post(USER_ROUTERS.UPLOAD_PROFILE_IMAGE)
+	@HttpCode(HttpStatus.OK)
+	@UseInterceptors(
+		FileInterceptor('image', {
+			storage: memoryStorage(),
+			limits: {
+				fileSize: 5 * 1024 * 1024,
+			},
+			fileFilter: (_req, file, cb) => {
+				if (!file.mimetype.startsWith('image/')) {
+					cb(new BadRequestException('Only image files are allowed'), false);
+					return;
+				}
+				cb(null, true);
+			},
+		}),
+	)
+	async uploadProfileImage(
+		@Req() req: Request,
+		@UploadedFile() file: Express.Multer.File,
+	): Promise<ResponseUserDto> {
+
+		if (!file) {
+			throw new BadRequestException('No file uploaded. Make sure to send the file with field name "image" as form-data');
+		}
+		return this._uploadProfileImageUseCase.execute({ userId: req.user.id, file });
 	}
 }
