@@ -16,14 +16,18 @@ export class RecruiterEntity {
 	private _company_role: string = RECRUITER_ROLE.HR;
 	private _is_verified_company: boolean = false;
 	private _admin_approved: boolean = false;
+	private _profile_url: { key: string; url: string } = {
+		key: "",
+		url: "",
+	};
 
 	private _subscription: {
 		current_plan: string;
 		is_subscribed: boolean;
 	} = {
-		current_plan: "free",
-		is_subscribed: false,
-	};
+			current_plan: "free",
+			is_subscribed: false,
+		};
 
 	private _createdAt: Date;
 	private _updatedAt?: Date;
@@ -41,6 +45,7 @@ export class RecruiterEntity {
 		company_role: string,
 		is_verified_company: boolean,
 		admin_approved: boolean,
+		profile_url: { key: string; url: string },
 		subscription: { current_plan: string; is_subscribed: boolean },
 		createdAt: Date,
 		updatedAt: Date | undefined,
@@ -58,6 +63,7 @@ export class RecruiterEntity {
 		this._company_role = company_role;
 		this._is_verified_company = is_verified_company;
 		this._admin_approved = admin_approved;
+		this._profile_url = profile_url;
 		this._subscription = subscription;
 		this._createdAt = createdAt;
 		this._updatedAt = updatedAt;
@@ -78,6 +84,7 @@ export class RecruiterEntity {
 		company_role?: string;
 		is_verified_company?: boolean;
 		admin_approved?: boolean;
+		profile_url?: { key: string; url: string };
 		subscription?: { current_plan: string; is_subscribed: boolean };
 
 		createdAt?: Date;
@@ -97,6 +104,7 @@ export class RecruiterEntity {
 			data.company_role ?? RECRUITER_ROLE.HR,
 			data.is_verified_company ?? false,
 			data.admin_approved ?? false,
+			data.profile_url ?? { key: "", url: "" },
 			data.subscription ?? { current_plan: "free", is_subscribed: false },
 			data.createdAt ?? new Date(),
 			data.updatedAt,
@@ -159,6 +167,10 @@ export class RecruiterEntity {
 
 	get subscription(): { current_plan: string; is_subscribed: boolean } {
 		return this._subscription;
+	}
+
+	get profile_url(): { key: string; url: string } {
+		return this._profile_url;
 	}
 
 	get createdAt(): Date {
