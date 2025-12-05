@@ -2,8 +2,7 @@ import { RecruiterEntity } from "@/domain/entity/recruiter.entity";
 import { RecruiterType } from "../db/mongodb/models/company.schema";
 import { IRecruiterPresitanceMapper } from "@/application/interface/mappers/recruiter/presistance.mapper";
 
-export class RecruiterPresitanceMapper
-	implements IRecruiterPresitanceMapper<RecruiterEntity, RecruiterType> {
+export class RecruiterPresitanceMapper implements IRecruiterPresitanceMapper<RecruiterEntity, RecruiterType> {
 	toMongo(recruiter: RecruiterEntity): RecruiterType {
 		return {
 			_id: recruiter.id as string,

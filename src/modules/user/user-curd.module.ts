@@ -60,4 +60,4 @@ import { Module } from "@nestjs/common";
 		"S3_SERVICE",
 	],
 })
-export class UserCrudModule { }
+export class UserCrudModule {}

@@ -12,10 +12,7 @@ import type { PaginationDto } from "@/application/dto/pagiation";
 import type { UserType } from "../models/user.schema";
 
 @Injectable()
-export class UserRepository
-	extends BaseRepository<UserEntity, UserType>
-	implements IUserRepository<UserEntity>
-{
+export class UserRepository extends BaseRepository<UserEntity, UserType> implements IUserRepository<UserEntity> {
 	constructor(
 		@InjectModel(User.name) private userModel: Model<UserType>,
 		@Inject(USER_MAPPER.USER_PRESISTANCE)
@@ -24,20 +21,12 @@ export class UserRepository
 		super(userModel, userPresistance);
 	}
 
-	async findAllUsers(
-		pages: PaginationDto,
-	): Promise<PaginationResponse<UserEntity> | null> {
+	async findAllUsers(pages: PaginationDto): Promise<PaginationResponse<UserEntity> | null> {
 		const skip = (pages.page - 1) * pages.limit;
-		const docs = await this.userModel
-			.find()
-			.skip(skip)
-			.limit(pages.limit)
-			.exec();
+		const docs = await this.userModel.find().skip(skip).limit(pages.limit).exec();
 		const total = await this.userModel.countDocuments();
 		const page = Math.ceil(total / pages.limit);
-		const data = await Promise.all(
-			docs.map((doc) => this.mapper.fromMongo(doc)),
-		);
+		const data = await Promise.all(docs.map((doc) => this.mapper.fromMongo(doc)));
 
 		return {
 			data,

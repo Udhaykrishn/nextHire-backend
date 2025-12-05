@@ -25,9 +25,9 @@ export class RecruiterEntity {
 		current_plan: string;
 		is_subscribed: boolean;
 	} = {
-			current_plan: "free",
-			is_subscribed: false,
-		};
+		current_plan: "free",
+		is_subscribed: false,
+	};
 
 	private _createdAt: Date;
 	private _updatedAt?: Date;
@@ -221,10 +221,7 @@ export class RecruiterEntity {
 		this._admin_approved = true;
 	}
 
-	changeSubscription(subscription: {
-		current_plan: string;
-		is_subscribed: boolean;
-	}): void {
+	changeSubscription(subscription: { current_plan: string; is_subscribed: boolean }): void {
 		this._subscription = subscription;
 	}
 

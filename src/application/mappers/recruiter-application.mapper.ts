@@ -4,9 +4,7 @@ import { ResponseRecruiterDto } from "../dto/recruiter";
 import { RecruiterType } from "@/infrastructure/db/mongodb/models";
 import { RECRUITER_ROLE, RECRUITER_STATUS } from "@/domain/enums/status";
 
-export class RecruiterApplicationMapper
-	implements IRecruiterApplicationMappers<RecruiterType>
-{
+export class RecruiterApplicationMapper implements IRecruiterApplicationMappers<RecruiterType> {
 	toResponse(recruiter: RecruiterEntity): ResponseRecruiterDto {
 		return {
 			id: recruiter.id as string,

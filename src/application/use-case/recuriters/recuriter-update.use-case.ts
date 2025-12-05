@@ -1,9 +1,6 @@
 import { ResponseRecruiterDto } from "@/application/dto/recruiter";
 import { UpdateRecruiterDto } from "@/application/dto/recruiter/recruiter-update.dto";
-import {
-	RECRUITER_MAPPER,
-	RECRUITER_TOKEN,
-} from "@/application/enums/recruiter";
+import { RECRUITER_MAPPER, RECRUITER_TOKEN } from "@/application/enums/recruiter";
 import { IExecutable } from "@/application/interface/executable.interface";
 import type { IRecruiterApplicationMappers } from "@/application/interface/mappers/recruiter";
 import type { IRecruiterRepository } from "@/application/interface/repository";
@@ -15,11 +12,7 @@ import { Inject, Injectable } from "@nestjs/common";
 
 @Injectable()
 export class UpdateRecruiterUseCase
-	implements
-		IExecutable<
-			{ recruiterId: string; data: UpdateRecruiterDto },
-			ResponseRecruiterDto
-		>
+	implements IExecutable<{ recruiterId: string; data: UpdateRecruiterDto }, ResponseRecruiterDto>
 {
 	constructor(
 		@Inject(RECRUITER_MAPPER.RECRUITER_APPLICATION)
@@ -67,10 +60,7 @@ export class UpdateRecruiterUseCase
 			recruiter.changeCompanyRole(data.company_role as RECRUITER_ROLE);
 		}
 
-		const updatedRecruiter = await this._recruiterRepository.findByIdAndUpdate(
-			recruiterId,
-			recruiter,
-		);
+		const updatedRecruiter = await this._recruiterRepository.findByIdAndUpdate(recruiterId, recruiter);
 
 		if (!updatedRecruiter) {
 			throw new NotFoundException(RECRUITER_MESSAGES.RECRUITER_UPDATE_FAILED);

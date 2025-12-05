@@ -5,19 +5,14 @@ import { USER_MAPPER } from "@/application/enums/tokens/user-mapper.enum";
 import type { IExecutable } from "@/application/interface/executable.interface";
 import type { IUserApplicationMappers } from "@/application/interface/mappers/user-application-mapper.interface";
 import type { IUserRepository } from "@/application/interface/repository";
-import type {
-	IPasswordHash,
-	IEmailService,
-} from "@/infrastructure/services/interface";
+import type { IPasswordHash, IEmailService } from "@/infrastructure/services/interface";
 import { UserEntity } from "@/domain/entity/user.entity";
 import { USER_MESSAGES } from "@/domain/enums";
 import { AlreadyExistsException } from "@/domain/exceptions/already-exists.exception";
 import { Inject, Injectable, NotFoundException } from "@nestjs/common";
 
 @Injectable()
-export class CreateUserUseCase
-	implements IExecutable<CreateUserDto, ResponseUserDto>
-{
+export class CreateUserUseCase implements IExecutable<CreateUserDto, ResponseUserDto> {
 	constructor(
 		@Inject(USER_MAPPER.USER_APPLICATION)
 		private readonly _userMapper: IUserApplicationMappers<UserEntity>,

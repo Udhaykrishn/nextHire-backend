@@ -1,12 +1,4 @@
-import {
-	IsEmail,
-	IsStrongPassword,
-	IsString,
-	IsNotEmpty,
-	IsAlpha,
-	IsNumber,
-	IsPhoneNumber,
-} from "class-validator";
+import { IsEmail, IsStrongPassword, IsString, IsNotEmpty, IsAlpha, IsNumber, IsPhoneNumber } from "class-validator";
 
 export class CreateRecruiterDto {
 	@IsEmail()

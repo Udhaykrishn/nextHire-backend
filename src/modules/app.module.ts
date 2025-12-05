@@ -12,9 +12,9 @@ import { APP_GUARD } from "@nestjs/core";
 	imports: [
 		ConfigModule.forRoot({
 			isGlobal: true,
-			envFilePath: '.env',
+			envFilePath: ".env",
 			validate: (env) => envSchema.parse(env),
-			cache: true
+			cache: true,
 		}),
 		ThrottlerModule.forRoot([
 			{
@@ -37,4 +37,4 @@ import { APP_GUARD } from "@nestjs/core";
 		},
 	],
 })
-export class AppModule { }
+export class AppModule {}
