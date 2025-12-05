@@ -16,11 +16,13 @@ export class PaginationDto {
 	search?: string;
 
 	@Type(() => Number)
+	@IsOptional()
 	@IsNumber({}, { message: "Page must be a number" })
 	@IsPositive({ message: "Page must be a positive number" })
 	page: number;
 
 	@Type(() => Number)
+	@IsOptional()
 	@IsNumber({}, { message: "Limit must be a number" })
 	@IsPositive({ message: "Limit must be a positive number" })
 	limit: number;
