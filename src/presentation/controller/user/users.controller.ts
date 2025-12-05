@@ -10,6 +10,7 @@ import {
 	Patch,
 	Post,
 	Query,
+	Req,
 	UseGuards,
 } from "@nestjs/common";
 import { ROLES, USER_ROUTERS } from "@/presentation/enums";
@@ -26,8 +27,9 @@ import type { ChangePasswordDto, UpdateUserDto } from "@/application/dto/users";
 import { AuthGuard, RoleGuard } from "@/presentation/guards";
 import { Roles } from "@/presentation/decorators";
 import { UserBlockedGuard } from "@/presentation/guards/block";
+import type { Request } from "express";
 
-// @UseGuards(AuthGuard, RoleGuard)
+@UseGuards(AuthGuard, RoleGuard)
 @Controller(USER_ROUTERS.ROUTER)
 export class UserController {
 	constructor(
@@ -53,7 +55,12 @@ export class UserController {
 			{ userId: string; dto: ChangePasswordDto },
 			ResponseUserDto
 		>,
-	) {}
+		@Inject(USERS_TOKEN.USER_FIND_BY_EMAIL_USE_CASE)
+		private readonly _findUserByEmailUseCase: IExecutable<
+			string,
+			ResponseUserDto
+		>,
+	) { }
 
 	@Post(USER_ROUTERS.DEFAULT)
 	@HttpCode(HttpStatus.CREATED)
@@ -107,5 +114,13 @@ export class UserController {
 			limit,
 		};
 		return this._getAllUsersUseCase.execute(paginationDto);
+	}
+
+	@Get(USER_ROUTERS.PROFILE)
+	@HttpCode(HttpStatus.OK)
+	async findUser(
+		@Req() req: Request
+	): Promise<ResponseUserDto> {
+		return this._findUserByEmailUseCase.execute(req.user.email);
 	}
 }
