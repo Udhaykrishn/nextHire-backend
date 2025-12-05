@@ -58,7 +58,7 @@ export class User {
 	@Prop({
 		type: {
 			key: { type: String },
-			url: { type: String }
+			url: { type: String },
 		},
 		_id: false,
 	})

@@ -1,9 +1,4 @@
-import {
-	IsString,
-	IsStrongPassword,
-	MinLength,
-	Matches,
-} from "class-validator";
+import { IsString, IsStrongPassword, MinLength, Matches } from "class-validator";
 
 export class ChangePasswordDto {
 	@IsString()

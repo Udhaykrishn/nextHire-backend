@@ -1,9 +1,4 @@
-import {
-	Global,
-	Module,
-	OnModuleInit,
-	OnModuleDestroy,
-} from "@nestjs/common";
+import { Global, Module, OnModuleInit, OnModuleDestroy } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 import { ConfigService } from "@nestjs/config";
 import { EnvConfig } from "@/infrastructure/config";

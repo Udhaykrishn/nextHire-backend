@@ -6,27 +6,25 @@ import type { IUserApplicationMappers } from "@/application/interface/mappers/us
 import type { IUserRepository } from "@/application/interface/repository";
 import type { UserEntity } from "@/domain/entity/user.entity";
 import { USER_MESSAGES } from "@/domain/enums";
-import { EnvConfig } from "@/infrastructure/config";
 import { NotFoundException } from "@nestjs/common";
 import { Inject, Injectable } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
 
 @Injectable()
 export class FindUserByEmailUseCase implements IExecutable<string, ResponseUserDto> {
-    constructor(
-        @Inject(USER_MAPPER.USER_APPLICATION)
-        private readonly _userMapper: IUserApplicationMappers<UserEntity>,
-        @Inject(USERS_TOKEN.USER_REPOSITORY)
-        private readonly _userRepository: IUserRepository<UserEntity>,
-    ) { }
+	constructor(
+		@Inject(USER_MAPPER.USER_APPLICATION)
+		private readonly _userMapper: IUserApplicationMappers<UserEntity>,
+		@Inject(USERS_TOKEN.USER_REPOSITORY)
+		private readonly _userRepository: IUserRepository<UserEntity>,
+	) {}
 
-    async execute(email: string): Promise<ResponseUserDto> {
-        const user = await this._userRepository.findOne({ email });
+	async execute(email: string): Promise<ResponseUserDto> {
+		const user = await this._userRepository.findOne({ email });
 
-        if (!user) {
-            throw new NotFoundException(USER_MESSAGES.USER_NOT_FOUND);
-        }
+		if (!user) {
+			throw new NotFoundException(USER_MESSAGES.USER_NOT_FOUND);
+		}
 
-        return this._userMapper.toResponse(user);
-    }
+		return this._userMapper.toResponse(user);
+	}
 }

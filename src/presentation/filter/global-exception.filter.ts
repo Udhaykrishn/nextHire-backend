@@ -1,11 +1,5 @@
 import { BaseDomainException } from "@/domain/exceptions/base-execption";
-import {
-	type ExceptionFilter,
-	Catch,
-	type ArgumentsHost,
-	HttpException,
-	HttpStatus,
-} from "@nestjs/common";
+import { type ExceptionFilter, Catch, type ArgumentsHost, HttpException, HttpStatus } from "@nestjs/common";
 import type { Request, Response } from "express";
 
 @Catch()
@@ -62,10 +56,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 				statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
 				timestamp,
 				path,
-				message:
-					exception instanceof Error
-						? exception.message
-						: "Internal Server Error",
+				message: exception instanceof Error ? exception.message : "Internal Server Error",
 				error: "INTERNAL_SERVER_ERROR",
 			},
 		});

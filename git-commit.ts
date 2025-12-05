@@ -13,11 +13,7 @@ function sleep(ms: number) {
 	return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-export async function getCommitMessage(
-	diff: string,
-	retries = 3,
-	delayMs = 2000,
-): Promise<string> {
+export async function getCommitMessage(diff: string, retries = 3, delayMs = 2000): Promise<string> {
 	for (let attempt = 0; attempt < retries; attempt++) {
 		try {
 			const response = await ai.models.generateContent({
@@ -47,16 +43,12 @@ export async function getCommitMessage(
 
 			return response.text?.trim() as string;
 		} catch (err) {
-			console.warn(
-				`Attempt ${attempt + 1} failed: ${err?.message || err}. Retrying in ${delayMs}ms...`,
-			);
+			console.warn(`Attempt ${attempt + 1} failed: ${err?.message || err}. Retrying in ${delayMs}ms...`);
 			await sleep(delayMs);
 		}
 	}
 
-	console.error(
-		"Failed to generate commit message after retries, using fallback.",
-	);
+	console.error("Failed to generate commit message after retries, using fallback.");
 	return "chore: update files";
 }
 

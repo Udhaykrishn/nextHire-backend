@@ -26,10 +26,10 @@ export class UserEntity {
 		portfolio: string;
 		github: string;
 	} = {
-			linkedin: "",
-			portfolio: "",
-			github: "",
-		};
+		linkedin: "",
+		portfolio: "",
+		github: "",
+	};
 	_createdAt: Date;
 
 	private constructor(
@@ -82,7 +82,7 @@ export class UserEntity {
 		google_id?: string;
 		subscription?: { current_plan: string; is_subscribed: boolean };
 		social_link?: { linkedin: string; portfolio: string; github: string };
-		profile_url: { key: string, url: string }
+		profile_url?: { key: string; url: string };
 		createdAt?: Date;
 		id?: string;
 	}): UserEntity {
@@ -206,18 +206,11 @@ export class UserEntity {
 		this._google_id = google_id;
 	}
 
-	changeSubscription(subscription: {
-		current_plan: string;
-		is_subscribed: boolean;
-	}): void {
+	changeSubscription(subscription: { current_plan: string; is_subscribed: boolean }): void {
 		this._subscription = subscription;
 	}
 
-	changeSocialLink(social_link: {
-		linkedin: string;
-		portfolio: string;
-		github: string;
-	}): void {
+	changeSocialLink(social_link: { linkedin: string; portfolio: string; github: string }): void {
 		this._social_link = social_link;
 	}
 

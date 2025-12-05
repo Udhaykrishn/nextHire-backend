@@ -1,19 +1,13 @@
 import { Injectable, Inject, BadRequestException } from "@nestjs/common";
 import { IExecutable } from "@/application/interface/executable.interface";
 import { COMMON_TOKEN } from "@/application/enums/tokens";
-import type {
-	IMailSender,
-	IOtpService,
-	IRedisService,
-} from "@/infrastructure/services/interface";
+import type { IMailSender, IOtpService, IRedisService } from "@/infrastructure/services/interface";
 import { USER_MESSAGES } from "@/domain/enums";
 import { REDIS_KEYS } from "@/domain/enums/keys";
 import { VerifyOTPDto } from "@/application/dto/auth/otp";
 
 @Injectable()
-export class UserResendOtpUseCase
-	implements IExecutable<VerifyOTPDto, { message: string }>
-{
+export class UserResendOtpUseCase implements IExecutable<VerifyOTPDto, { message: string }> {
 	constructor(
 		@Inject(COMMON_TOKEN.REDIS_SERVICE)
 		private readonly _redisService: IRedisService,
@@ -36,9 +30,7 @@ export class UserResendOtpUseCase
 
 		let count = Number(await this._redisService.get(countKey)) || 0;
 		if (count >= 3) {
-			throw new BadRequestException(
-				"Resend limit reached. Try again after 10 minutes",
-			);
+			throw new BadRequestException("Resend limit reached. Try again after 10 minutes");
 		}
 
 		const ttl = await this._redisService.ttl(otpKey);
@@ -58,9 +50,7 @@ export class UserResendOtpUseCase
 		if (ttl >= 0) {
 			const age = 300 - ttl;
 			if (age < 60) {
-				throw new BadRequestException(
-					`Please wait ${60 - age} seconds to resend OTP`,
-				);
+				throw new BadRequestException(`Please wait ${60 - age} seconds to resend OTP`);
 			}
 			return generateAndSend("OTP resent successfully");
 		}

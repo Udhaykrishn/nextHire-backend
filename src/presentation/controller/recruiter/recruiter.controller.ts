@@ -28,10 +28,7 @@ import { AuthGuard, RoleGuard } from "@/presentation/guards";
 import { Roles } from "@/presentation/decorators";
 import { RECRUITER_ROUTERS } from "@/presentation/enums/recuriter";
 import { RECRUITER_TOKEN } from "@/application/enums/recruiter";
-import {
-	CreateRecruiterDto,
-	ResponseRecruiterDto,
-} from "@/application/dto/recruiter";
+import { CreateRecruiterDto, ResponseRecruiterDto } from "@/application/dto/recruiter";
 import { UpdateRecruiterDto } from "@/application/dto/recruiter";
 import { ChangePasswordDto } from "@/application/dto/users";
 import { ROLES } from "@/presentation/enums";
@@ -44,16 +41,10 @@ import type { Request } from "express";
 export class RecruiterController {
 	constructor(
 		@Inject(RECRUITER_TOKEN.RECRUITER_CREATE_USE_CASE)
-		private readonly _createUseCase: IExecutable<
-			CreateRecruiterDto,
-			ResponseRecruiterDto
-		>,
+		private readonly _createUseCase: IExecutable<CreateRecruiterDto, ResponseRecruiterDto>,
 
 		@Inject(RECRUITER_TOKEN.RECRUITER_GET_ALL_USE_CASE)
-		private readonly _getAllUseCase: IExecutable<
-			PaginationDto,
-			PaginationResponse<ResponseRecruiterDto>
-		>,
+		private readonly _getAllUseCase: IExecutable<PaginationDto, PaginationResponse<ResponseRecruiterDto>>,
 
 		@Inject(RECRUITER_TOKEN.RECRUITER_GET_ONE_USE_CASE)
 		private readonly _getOneUseCase: IExecutable<string, ResponseRecruiterDto>,
@@ -65,10 +56,7 @@ export class RecruiterController {
 		>,
 
 		@Inject(RECRUITER_TOKEN.RECRUITER_BLOCK_UNBLOCK_USE_CASE)
-		private readonly _blockUnblockUseCase: IExecutable<
-			string,
-			ResponseRecruiterDto
-		>,
+		private readonly _blockUnblockUseCase: IExecutable<string, ResponseRecruiterDto>,
 
 		@Inject(RECRUITER_TOKEN.RECRUITER_CHANGE_PASSWORD_USE_CASE)
 		private readonly _changePasswordUseCase: IExecutable<
@@ -80,7 +68,7 @@ export class RecruiterController {
 			{ recruiterId: string; file: Express.Multer.File },
 			ResponseRecruiterDto
 		>,
-	) { }
+	) {}
 
 	@Post(RECRUITER_ROUTERS.DEFAULT)
 	@HttpCode(HttpStatus.CREATED)
@@ -103,9 +91,7 @@ export class RecruiterController {
 	@UseGuards(RecruiterBlockedGuard)
 	@Get(`:${RECRUITER_ROUTERS.ID_PARAM}`)
 	@HttpCode(HttpStatus.OK)
-	async getOne(
-		@Param(RECRUITER_ROUTERS.ID_PARAM) recruiterId: string,
-	): Promise<ResponseRecruiterDto> {
+	async getOne(@Param(RECRUITER_ROUTERS.ID_PARAM) recruiterId: string): Promise<ResponseRecruiterDto> {
 		return this._getOneUseCase.execute(recruiterId);
 	}
 
@@ -122,9 +108,7 @@ export class RecruiterController {
 	@Patch(RECRUITER_ROUTERS.BLOCK)
 	@Roles(ROLES.ADMIN)
 	@HttpCode(HttpStatus.OK)
-	async blockUnblock(
-		@Param(RECRUITER_ROUTERS.ID_PARAM) recruiterId: string,
-	): Promise<ResponseRecruiterDto> {
+	async blockUnblock(@Param(RECRUITER_ROUTERS.ID_PARAM) recruiterId: string): Promise<ResponseRecruiterDto> {
 		return this._blockUnblockUseCase.execute(recruiterId);
 	}
 
@@ -142,14 +126,14 @@ export class RecruiterController {
 	@Post(RECRUITER_ROUTERS.UPLOAD_PROFILE_IMAGE)
 	@HttpCode(HttpStatus.OK)
 	@UseInterceptors(
-		FileInterceptor('image', {
+		FileInterceptor("image", {
 			storage: memoryStorage(),
 			limits: {
 				fileSize: 5 * 1024 * 1024,
 			},
 			fileFilter: (_req, file, cb) => {
-				if (!file.mimetype.startsWith('image/')) {
-					cb(new BadRequestException('Only image files are allowed'), false);
+				if (!file.mimetype.startsWith("image/")) {
+					cb(new BadRequestException("Only image files are allowed"), false);
 					return;
 				}
 				cb(null, true);
@@ -161,7 +145,7 @@ export class RecruiterController {
 		@UploadedFile() file: Express.Multer.File,
 	): Promise<ResponseRecruiterDto> {
 		if (!file) {
-			throw new BadRequestException('No file uploaded');
+			throw new BadRequestException("No file uploaded");
 		}
 		const recruiter = await this._getOneUseCase.execute(req.user.id);
 		return this._uploadProfileImageUseCase.execute({ recruiterId: recruiter.id, file });
