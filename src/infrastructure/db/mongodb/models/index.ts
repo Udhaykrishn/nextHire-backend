@@ -24,9 +24,10 @@ export {
 	AddressSchema,
 } from "./address.schema";
 export {
-	Company,
-	type CompanyDocument,
-	CompanySchema,
+	Recruiter,
+	type RecruiterDocument,
+	type RecruiterType,
+	Recruiterschema,
 } from "./company.schema";
 export {
 	Jobs,

@@ -1,8 +1,8 @@
-import { UserLoginDto, UserLoginResponseDto } from "@/application/dto/auth";
+import { UserLoginDto, UserLoginResponseDto } from "@/application/dto/auth/users";
 import {
 	VerifyOTPDto,
 	VerifyResponseOTPDto,
-} from "@/application/dto/auth/users/otp";
+} from "@/application/dto/auth/otp";
 import { UserRefreshTokenDto } from "@/application/dto/auth/users/refresh-token-res.dto";
 import { UserSignResponseDto } from "@/application/dto/auth/users/signup/user-signup-res.dto";
 import { UserSignupDto } from "@/application/dto/auth/users/signup/user-signup.dto";
@@ -12,6 +12,7 @@ import { COOKIE_MAX_AGE_CONSTANT } from "@/domain/constants/cookie.constant";
 import { AUTH_TOKEN } from "@/presentation/enums";
 import { USER_AUTH_ROUTER } from "@/presentation/enums/user-auth-router.enum";
 import { RefreshGuard } from "@/presentation/guards";
+
 import {
 	clearCookie,
 	setCookie,
@@ -27,6 +28,7 @@ import {
 	UseGuards,
 } from "@nestjs/common";
 import type { Response, Request } from "express";
+import { GoogleAuthDto } from "@/application/dto/auth/users/login/auth-login.dto";
 
 @Controller(USER_AUTH_ROUTER.ROUTER)
 export class AuthUserController {
@@ -55,7 +57,11 @@ export class AuthUserController {
 		>,
 		@Inject(AUTH_USER_TOKEN.USER_LOGOUT_USE_CASE)
 		private readonly _logoutUseCase: IExecutable<string, boolean>,
-	) {}
+
+		@Inject(AUTH_USER_TOKEN.USER_GOOGLE_AUTH_CASE)
+		private readonly _googleAuthUseCase: IExecutable<GoogleAuthDto, UserLoginResponseDto>,
+
+	) { }
 
 	@Post(USER_AUTH_ROUTER.LOGIN)
 	async login(
@@ -99,6 +105,8 @@ export class AuthUserController {
 			token.accessToken,
 			COOKIE_MAX_AGE_CONSTANT.ACCESS_TOKEN_1_HOUR,
 		);
+
+		return { success: true }
 	}
 
 	@UseGuards(RefreshGuard)
@@ -142,16 +150,29 @@ export class AuthUserController {
 		return otp;
 	}
 
-	// @Post(USER_AUTH_ROUTER.GOOGLE)
-	// async googleAuth(
-	// 	@Req() req: Request,
-	// 	@Res({ passthrough: true }) res: Response,
-	// ) {
-	// 	console.log("google auth working");
-	// 	console.log("the body have", req.body);
+	@Post(USER_AUTH_ROUTER.GOOGLE)
+	async googleAuth(
+		@Res({ passthrough: true }) res: Response,
+		@Body() googleData: GoogleAuthDto,
+	) {
 
-	// 	// const user =
 
-	// 	return { message: "success", email: req.body?.email ?? "nothing" };
-	// }
+		const user = await this._googleAuthUseCase.execute(googleData);
+
+		setCookie(
+			res,
+			AUTH_TOKEN.ACCESS_TOKEN,
+			user.accessToken,
+			COOKIE_MAX_AGE_CONSTANT.ACCESS_TOKEN_1_HOUR,
+		);
+
+		setCookie(
+			res,
+			AUTH_TOKEN.SESSION_ID,
+			user.sessionId,
+			COOKIE_MAX_AGE_CONSTANT.REFRESH_TOKEN_7_DAY,
+		);
+
+		return user;
+	}
 }
