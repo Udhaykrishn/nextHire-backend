@@ -17,13 +17,17 @@ export class GetAllRecruitersUseCase implements IExecutable<PaginationDto, Pagin
 
 		@Inject(RECRUITER_TOKEN.RECRUITER_REPOSITORY)
 		private readonly _recruiterRepository: IRecruiterRepository<RecruiterEntity>,
-	) {}
+	) { }
 
-	async execute(paginationDto: PaginationDto): Promise<PaginationResponse<ResponseRecruiterDto>> {
+	async execute(paginationDto: PaginationDto & { status?: string }): Promise<PaginationResponse<ResponseRecruiterDto>> {
 		const recruiters = await this._recruiterRepository.findAllRecruiters(paginationDto);
 
 		if (!recruiters || recruiters.data.length === 0) {
-			throw new NotFoundException(RECRUITER_MESSAGES.RECRUITER_NOT_FOUND);
+			return {
+				data: [],
+				page: 0,
+				total: 0,
+			};
 		}
 
 		const mappedRecruiters = recruiters.data.map((recruiter) => this._mapper.toResponse(recruiter));
