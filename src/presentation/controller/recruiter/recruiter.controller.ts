@@ -68,7 +68,9 @@ export class RecruiterController {
 			{ recruiterId: string; file: Express.Multer.File },
 			ResponseRecruiterDto
 		>,
-	) {}
+		@Inject(RECRUITER_TOKEN.RECRUITER_FIND_BY_EMAIL_USE_CASE)
+		private readonly _findByEmailUseCase: IExecutable<string, ResponseRecruiterDto>,
+	) { }
 
 	@Post(RECRUITER_ROUTERS.DEFAULT)
 	@HttpCode(HttpStatus.CREATED)
@@ -83,9 +85,17 @@ export class RecruiterController {
 		@Query(PaginationInputType.SEARCH) search?: string,
 		@Query(PaginationInputType.PAGE, ParseIntPipe) page: number = 1,
 		@Query(PaginationInputType.LIMIT, ParseIntPipe) limit: number = 10,
+		@Query('status') status?: string,
 	): Promise<PaginationResponse<ResponseRecruiterDto>> {
-		const paginationDto: PaginationDto = { search, page, limit };
+		const paginationDto: PaginationDto & { status?: string } = { search, page, limit, status };
 		return this._getAllUseCase.execute(paginationDto);
+	}
+
+	@UseGuards(RecruiterBlockedGuard)
+	@Get(RECRUITER_ROUTERS.PROFILE)
+	@HttpCode(HttpStatus.OK)
+	async getProfile(@Req() req: Request): Promise<ResponseRecruiterDto> {
+		return this._findByEmailUseCase.execute(req.user.email);
 	}
 
 	@UseGuards(RecruiterBlockedGuard)

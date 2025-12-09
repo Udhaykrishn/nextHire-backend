@@ -40,13 +40,13 @@ export class RecruiterRegisterUseCase implements IExecutable<RecruiterSignupDto,
 
 		@Inject(RECRUITER_MAPPER.RECRUITER_APPLICATION)
 		private readonly _recruiterMapper: IRecruiterApplicationMappers<RecruiterEntity>,
-	) {}
+	) { }
 
 	async execute(dto: RecruiterSignupDto): Promise<RecruiterSignResponseDto> {
-		const isValidEmail = await this._emailValidation.validate(dto.email);
-		if (!isValidEmail) {
-			throw new UnauthorizedException("Invalid email address founded");
-		}
+		// const isValidEmail = await this._emailValidation.validate(dto.email);
+		// if (!isValidEmail) {
+		// 	throw new UnauthorizedException("Invalid email address founded");
+		// }
 
 		const hashedPassword = await this._passwordHash.hash(dto.password);
 
