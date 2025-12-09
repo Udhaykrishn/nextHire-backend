@@ -17,13 +17,17 @@ export class GetAllUsersUseCase implements IExecutable<PaginationDto, Pagination
 		private readonly _mapper: IUserApplicationMappers<UserEntity>,
 		@Inject(USERS_TOKEN.USER_REPOSITORY)
 		private readonly _userRepository: IUserRepository<UserEntity>,
-	) {}
+	) { }
 
 	async execute(paginationDto: PaginationDto): Promise<PaginationResponse<ResponseUserDto>> {
 		const users = await this._userRepository.findAllUsers(paginationDto);
 
-		if (!users) {
-			throw new NotFoundException(USER_MESSAGES.USER_NOT_FOUND);
+		if (!users || users.data.length === 0) {
+			return {
+				data: [],
+				page: 0,
+				total: 0,
+			};
 		}
 
 		const mappedUser = users.data.map((user) => this._mapper.toResponse(user));
