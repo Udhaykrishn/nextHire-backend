@@ -4,6 +4,7 @@ import { JwtModule } from "@nestjs/jwt";
 import { COMMON_TOKEN } from "@/application/enums/tokens";
 import { JwtService } from "@/infrastructure/services/implements";
 import { RecruiterAuthModule } from "./recruiter-auth.module";
+import { AdminAuthModule } from "./admin-auth.module";
 
 @Module({
 	imports: [
@@ -13,6 +14,7 @@ import { RecruiterAuthModule } from "./recruiter-auth.module";
 		}),
 		UserAuthModule,
 		RecruiterAuthModule,
+		AdminAuthModule,
 	],
 	providers: [
 		{
@@ -22,4 +24,4 @@ import { RecruiterAuthModule } from "./recruiter-auth.module";
 	],
 	exports: [COMMON_TOKEN.JWT_SERVICE],
 })
-export class AuthModule {}
+export class AuthModule { }
