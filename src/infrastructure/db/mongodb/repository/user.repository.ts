@@ -23,8 +23,19 @@ export class UserRepository extends BaseRepository<UserEntity, UserType> impleme
 
 	async findAllUsers(pages: PaginationDto): Promise<PaginationResponse<UserEntity> | null> {
 		const skip = (pages.page - 1) * pages.limit;
-		const docs = await this.userModel.find().skip(skip).limit(pages.limit).exec();
-		const total = await this.userModel.countDocuments();
+
+		let filter: any = {};
+
+		if (pages.search) {
+			filter.$or = [
+				{ name: { $regex: pages.search, $options: 'i' } },
+				{ email: { $regex: pages.search, $options: 'i' } },
+				{ phone: { $regex: pages.search, $options: 'i' } },
+			];
+		}
+
+		const docs = await this.userModel.find(filter).skip(skip).limit(pages.limit).exec();
+		const total = await this.userModel.countDocuments(filter);
 		const page = Math.ceil(total / pages.limit);
 		const data = await Promise.all(docs.map((doc) => this.mapper.fromMongo(doc)));
 
