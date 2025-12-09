@@ -80,3 +80,10 @@ export {
 	type SubscriptionDocument,
 	SubscriptionSchema,
 } from "./subscription.schema";
+
+export {
+	Admin,
+	type AdminDocument,
+	AdminSchema,
+	type AdminType,
+} from "./admin.schema";

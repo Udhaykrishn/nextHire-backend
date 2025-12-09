@@ -1,4 +1,4 @@
-import { Injectable, Inject, BadRequestException } from "@nestjs/common";
+import { Injectable, Inject, BadRequestException, ForbiddenException } from "@nestjs/common";
 import { IExecutable } from "@/application/interface/executable.interface";
 import { v4 as uuid } from "uuid";
 import { COOKIE_MAX_AGE_CONSTANT } from "@/domain/constants";
@@ -8,8 +8,9 @@ import type { IRecruiterRepository } from "@/application/interface/repository";
 import { RecruiterEntity } from "@/domain/entity";
 import { COMMON_TOKEN } from "@/application/enums/tokens";
 import type { IJwtService, IPasswordHash, IRedisService } from "@/infrastructure/services/interface";
-import { USER_ROLE } from "@/domain/enums/status";
+import { RECRUITER_STATUS, USER_ROLE } from "@/domain/enums/status";
 import { RecruiterLoginDto, RecruiterLoginResponseDto } from "@/application/dto/auth/recruiter/login";
+import { RECRUITER_MESSAGES } from "@/domain/enums/messages";
 
 @Injectable()
 export class RecruiterLoginUseCase implements IExecutable<RecruiterLoginDto, RecruiterLoginResponseDto> {
@@ -25,7 +26,7 @@ export class RecruiterLoginUseCase implements IExecutable<RecruiterLoginDto, Rec
 
 		@Inject(COMMON_TOKEN.PASSWORD_HASH)
 		private readonly _passwordHash: IPasswordHash,
-	) {}
+	) { }
 
 	async execute(dto: RecruiterLoginDto): Promise<RecruiterLoginResponseDto> {
 		const recruiter = await this._recruiterRepository.findOne({
@@ -33,13 +34,17 @@ export class RecruiterLoginUseCase implements IExecutable<RecruiterLoginDto, Rec
 		});
 
 		if (!recruiter) {
-			throw new BadRequestException("Invalid credentials");
+			throw new BadRequestException(RECRUITER_MESSAGES.RECRUITER_NOT_FOUND);
+		}
+
+		if (recruiter.status === RECRUITER_STATUS.BLOCKED) {
+			throw new ForbiddenException(RECRUITER_MESSAGES.RECRUITER_BLOCKED_BY_ADMIN)
 		}
 
 		const isMatch = await this._passwordHash.compare(recruiter.password, dto.password);
 
 		if (!isMatch) {
-			throw new BadRequestException("Invalid credentials");
+			throw new BadRequestException(RECRUITER_MESSAGES.INVALID_CREDENTIALS);
 		}
 
 		const payload = {
