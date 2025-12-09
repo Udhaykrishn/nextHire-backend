@@ -16,25 +16,24 @@ import { APP_GUARD } from "@nestjs/core";
 			validate: (env) => envSchema.parse(env),
 			cache: true,
 		}),
-		ThrottlerModule.forRoot([
-			{
-				name: "short",
-				ttl: 60000,
-				limit: 10,
-			},
-		]),
+		// ThrottlerModule.forRoot([
+		// 	{
+		// 		name: "short",
+		// 		ttl: 60000,
+		// 		limit: 10,
+		// 	},
+		// ]),
 		RedisModule,
 		MongoDbModule.forRootAsync(),
-		//  EmailQueueModule,
 		AuthModule,
 		UserModule,
 		RecruiterModule,
 	],
-	providers: [
-		{
-			provide: APP_GUARD,
-			useClass: ThrottlerGuard,
-		},
-	],
+	// providers: [
+	// 	{
+	// 		provide: APP_GUARD,
+	// 		useClass: ThrottlerGuard,
+	// 	},
+	// ],
 })
-export class AppModule {}
+export class AppModule { }
