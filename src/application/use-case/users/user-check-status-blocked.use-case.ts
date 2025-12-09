@@ -14,7 +14,7 @@ export class CheckUserBlockedUseCase implements IExecutable<string, ResponseUser
 		private readonly userRepo: IUserRepository<UserEntity>,
 		@Inject(USER_MAPPER.USER_APPLICATION)
 		private readonly userMapper: IUserApplicationMappers<UserEntity>,
-	) { }
+	) {}
 
 	async execute(userId: string): Promise<ResponseUserDto> {
 		const user = await this.userRepo.findById(userId);
@@ -27,6 +27,6 @@ export class CheckUserBlockedUseCase implements IExecutable<string, ResponseUser
 			throw new ForbiddenException(USER_MESSAGES.USER_BLOCKED_BY_ADMIN);
 		}
 
-		return this.userMapper.toResponse(user)
+		return this.userMapper.toResponse(user);
 	}
 }

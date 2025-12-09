@@ -6,9 +6,8 @@ import type { IExecutable } from "@/application/interface/executable.interface";
 import type { IUserApplicationMappers } from "@/application/interface/mappers/user-application-mapper.interface";
 import type { IUserRepository } from "@/application/interface/repository";
 import type { UserEntity } from "@/domain/entity/user.entity";
-import { USER_MESSAGES } from "@/domain/enums";
 import type { PaginationResponse } from "@/domain/types/paginations";
-import { Inject, Injectable, NotFoundException } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 
 @Injectable()
 export class GetAllUsersUseCase implements IExecutable<PaginationDto, PaginationResponse<ResponseUserDto>> {
@@ -17,7 +16,7 @@ export class GetAllUsersUseCase implements IExecutable<PaginationDto, Pagination
 		private readonly _mapper: IUserApplicationMappers<UserEntity>,
 		@Inject(USERS_TOKEN.USER_REPOSITORY)
 		private readonly _userRepository: IUserRepository<UserEntity>,
-	) { }
+	) {}
 
 	async execute(paginationDto: PaginationDto): Promise<PaginationResponse<ResponseUserDto>> {
 		const users = await this._userRepository.findAllUsers(paginationDto);

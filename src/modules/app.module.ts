@@ -6,8 +6,6 @@ import { UserModule } from "./user";
 import { RecruiterModule } from "./recruiter/recruiter.module";
 import { AuthModule } from "./auth/auth.module";
 import { envSchema } from "@/infrastructure/config";
-import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
-import { APP_GUARD } from "@nestjs/core";
 @Module({
 	imports: [
 		ConfigModule.forRoot({
@@ -36,4 +34,4 @@ import { APP_GUARD } from "@nestjs/core";
 	// 	},
 	// ],
 })
-export class AppModule { }
+export class AppModule {}

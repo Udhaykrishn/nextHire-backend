@@ -26,7 +26,7 @@ export class RecruiterLoginUseCase implements IExecutable<RecruiterLoginDto, Rec
 
 		@Inject(COMMON_TOKEN.PASSWORD_HASH)
 		private readonly _passwordHash: IPasswordHash,
-	) { }
+	) {}
 
 	async execute(dto: RecruiterLoginDto): Promise<RecruiterLoginResponseDto> {
 		const recruiter = await this._recruiterRepository.findOne({
@@ -38,7 +38,7 @@ export class RecruiterLoginUseCase implements IExecutable<RecruiterLoginDto, Rec
 		}
 
 		if (recruiter.status === RECRUITER_STATUS.BLOCKED) {
-			throw new ForbiddenException(RECRUITER_MESSAGES.RECRUITER_BLOCKED_BY_ADMIN)
+			throw new ForbiddenException(RECRUITER_MESSAGES.RECRUITER_BLOCKED_BY_ADMIN);
 		}
 
 		const isMatch = await this._passwordHash.compare(recruiter.password, dto.password);

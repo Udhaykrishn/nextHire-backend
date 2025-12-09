@@ -21,7 +21,7 @@ export class AdminLoginUseCase implements IExecutable<AdminLoginDto, AdminLoginR
 		private readonly _redisService: IRedisService,
 		@Inject(COMMON_TOKEN.PASSWORD_HASH)
 		private readonly _passwordHash: IPasswordHash,
-	) { }
+	) {}
 
 	async execute(dto: AdminLoginDto): Promise<AdminLoginResponseDto> {
 		const admin = await this._adminRepository.findOne({ email: dto.email });

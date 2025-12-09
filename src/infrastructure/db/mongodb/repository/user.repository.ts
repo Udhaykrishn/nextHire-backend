@@ -24,13 +24,13 @@ export class UserRepository extends BaseRepository<UserEntity, UserType> impleme
 	async findAllUsers(pages: PaginationDto): Promise<PaginationResponse<UserEntity> | null> {
 		const skip = (pages.page - 1) * pages.limit;
 
-		let filter: any = {};
+		const filter: Record<string, unknown> = {};
 
 		if (pages.search) {
 			filter.$or = [
-				{ name: { $regex: pages.search, $options: 'i' } },
-				{ email: { $regex: pages.search, $options: 'i' } },
-				{ phone: { $regex: pages.search, $options: 'i' } },
+				{ name: { $regex: pages.search, $options: "i" } },
+				{ email: { $regex: pages.search, $options: "i" } },
+				{ phone: { $regex: pages.search, $options: "i" } },
 			];
 		}
 

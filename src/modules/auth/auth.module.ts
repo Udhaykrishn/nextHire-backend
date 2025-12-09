@@ -24,4 +24,4 @@ import { AdminAuthModule } from "./admin-auth.module";
 	],
 	exports: [COMMON_TOKEN.JWT_SERVICE],
 })
-export class AuthModule { }
+export class AuthModule {}

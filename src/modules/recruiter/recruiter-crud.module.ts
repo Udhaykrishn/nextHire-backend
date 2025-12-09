@@ -72,4 +72,4 @@ import { S3Service } from "@/infrastructure/services/implements";
 		"S3_SERVICE",
 	],
 })
-export class RecruiterCrudModule { }
+export class RecruiterCrudModule {}

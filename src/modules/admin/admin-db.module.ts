@@ -6,21 +6,26 @@ import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 
 @Module({
-    imports: [MongooseModule.forFeature([{ name: "Admin", schema: AdminSchema }])],
-    providers: [
-        {
-            provide: ADMIN_MAPPER.ADMIN_PRESISTANCE,
-            useClass: AdminPresitanceMapper,
-        },
-        {
-            provide: ADMIN_MAPPER.ADMIN_APPLICATION,
-            useClass: AdminApplicationMapper,
-        },
-        {
-            provide: ADMIN_AUTH_TOKEN.ADMIN_REPOSITORY,
-            useClass: AdminRepository,
-        },
-    ],
-    exports: [MongooseModule, ADMIN_MAPPER.ADMIN_PRESISTANCE, ADMIN_MAPPER.ADMIN_APPLICATION, ADMIN_AUTH_TOKEN.ADMIN_REPOSITORY],
+	imports: [MongooseModule.forFeature([{ name: "Admin", schema: AdminSchema }])],
+	providers: [
+		{
+			provide: ADMIN_MAPPER.ADMIN_PRESISTANCE,
+			useClass: AdminPresitanceMapper,
+		},
+		{
+			provide: ADMIN_MAPPER.ADMIN_APPLICATION,
+			useClass: AdminApplicationMapper,
+		},
+		{
+			provide: ADMIN_AUTH_TOKEN.ADMIN_REPOSITORY,
+			useClass: AdminRepository,
+		},
+	],
+	exports: [
+		MongooseModule,
+		ADMIN_MAPPER.ADMIN_PRESISTANCE,
+		ADMIN_MAPPER.ADMIN_APPLICATION,
+		ADMIN_AUTH_TOKEN.ADMIN_REPOSITORY,
+	],
 })
-export class AdminLiteModule { }
+export class AdminLiteModule {}

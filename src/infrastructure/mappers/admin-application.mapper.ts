@@ -5,18 +5,18 @@ import { Injectable } from "@nestjs/common";
 
 @Injectable()
 export class AdminApplicationMapper implements IAdminApplicationMapper {
-    toResponse(admin: AdminEntity): ResponseAdminDto {
-        return {
-            id: admin.id as string,
-            email: admin.email,
-        };
-    }
+	toResponse(admin: AdminEntity): ResponseAdminDto {
+		return {
+			id: admin.id as string,
+			email: admin.email,
+		};
+	}
 
-    toDomain(data: any): AdminEntity {
-        return AdminEntity.create({
-            id: data.id,
-            email: data.email,
-            password: data.password,
-        });
-    }
+	toDomain(data): AdminEntity {
+		return AdminEntity.create({
+			id: data.id,
+			email: data.email,
+			password: data.password,
+		});
+	}
 }

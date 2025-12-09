@@ -29,8 +29,7 @@ export class RecruiterRegisterUseCase implements IExecutable<RecruiterSignupDto,
 		@Inject(COMMON_TOKEN.REDIS_SERVICE)
 		private readonly _redisService: IRedisService,
 
-		@Inject(COMMON_TOKEN.EMAIL_VALIDATOR)
-		private readonly _emailValidation: IEmailService,
+		@Inject(COMMON_TOKEN.EMAIL_VALIDATOR) readonly _emailValidation: IEmailService,
 
 		@Inject(COMMON_TOKEN.OTP_SERVICE)
 		private readonly _otpService: IOtpService,
@@ -40,7 +39,7 @@ export class RecruiterRegisterUseCase implements IExecutable<RecruiterSignupDto,
 
 		@Inject(RECRUITER_MAPPER.RECRUITER_APPLICATION)
 		private readonly _recruiterMapper: IRecruiterApplicationMappers<RecruiterEntity>,
-	) { }
+	) {}
 
 	async execute(dto: RecruiterSignupDto): Promise<RecruiterSignResponseDto> {
 		// const isValidEmail = await this._emailValidation.validate(dto.email);

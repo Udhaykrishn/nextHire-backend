@@ -13,7 +13,8 @@ import type { IRecruiterPresitanceMapper } from "@/application/interface/mappers
 @Injectable()
 export class RecruiterRepository
 	extends BaseRepository<RecruiterEntity, RecruiterType>
-	implements IRecruiterRepository<RecruiterEntity> {
+	implements IRecruiterRepository<RecruiterEntity>
+{
 	constructor(
 		@InjectModel(Recruiter.name) private recruiterModel: Model<RecruiterType>,
 		@Inject(RECRUITER_MAPPER.RECRUITER_PRESISTANCE)
@@ -22,22 +23,24 @@ export class RecruiterRepository
 		super(recruiterModel, recruiterPresistanceMapper);
 	}
 
-	async findAllRecruiters(pages: PaginationDto & { status?: string }): Promise<PaginationResponse<RecruiterEntity> | null> {
+	async findAllRecruiters(
+		pages: PaginationDto & { status?: string },
+	): Promise<PaginationResponse<RecruiterEntity> | null> {
 		const skip = (pages.page - 1) * pages.limit;
 
-		let filter: any = {};
+		const filter: Record<string, unknown> = {};
 
-		if (pages.status === 'pending') {
-			filter.status = 'pending';
-		} else if (pages.status === 'active') {
-			filter.status = { $in: ['active', 'blocked'] };
+		if (pages.status === "pending") {
+			filter.status = "pending";
+		} else if (pages.status === "active") {
+			filter.status = { $in: ["active", "blocked"] };
 		}
 
 		if (pages.search) {
 			filter.$or = [
-				{ name: { $regex: pages.search, $options: 'i' } },
-				{ email: { $regex: pages.search, $options: 'i' } },
-				{ company_name: { $regex: pages.search, $options: 'i' } },
+				{ name: { $regex: pages.search, $options: "i" } },
+				{ email: { $regex: pages.search, $options: "i" } },
+				{ company_name: { $regex: pages.search, $options: "i" } },
 			];
 		}
 

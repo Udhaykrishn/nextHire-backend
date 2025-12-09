@@ -11,11 +11,11 @@ import type { AdminType } from "../models/admin.schema";
 
 @Injectable()
 export class AdminRepository extends BaseRepository<AdminEntity, AdminType> implements IAdminRepository<AdminEntity> {
-    constructor(
-        @InjectModel(Admin.name) private adminModel: Model<AdminType>,
-        @Inject(ADMIN_MAPPER.ADMIN_PRESISTANCE)
-        adminPresistance: IAdminPresitanceMapper<AdminEntity, AdminType>,
-    ) {
-        super(adminModel, adminPresistance);
-    }
+	constructor(
+		@InjectModel(Admin.name) adminModel: Model<AdminType>,
+		@Inject(ADMIN_MAPPER.ADMIN_PRESISTANCE)
+		adminPresistance: IAdminPresitanceMapper<AdminEntity, AdminType>,
+	) {
+		super(adminModel, adminPresistance);
+	}
 }

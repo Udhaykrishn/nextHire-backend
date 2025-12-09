@@ -18,7 +18,7 @@ export class UserRefreshUseCase implements IExecutable<string, UserRefreshTokenD
 		private readonly _jwtService: IJwtService,
 		@Inject(COMMON_TOKEN.REDIS_SERVICE)
 		private readonly _redisService: IRedisService,
-	) { }
+	) {}
 
 	async execute(sessionId: string): Promise<UserRefreshTokenDto> {
 		const refreshToken = await this._redisService.get(`${REDIS_KEYS.REFRESH.concat(sessionId)}`);
