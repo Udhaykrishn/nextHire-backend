@@ -32,6 +32,7 @@ import { UserBlockedGuard } from "@/presentation/guards/block";
 import type { Request } from "express";
 
 @UseGuards(AuthGuard, RoleGuard)
+@Roles(ROLES.USER)
 @Controller(USER_ROUTERS.ROUTER)
 export class UserController {
 	constructor(
@@ -55,7 +56,7 @@ export class UserController {
 			{ userId: string; file: Express.Multer.File },
 			ResponseUserDto
 		>,
-	) {}
+	) { }
 
 	@Post(USER_ROUTERS.DEFAULT)
 	@HttpCode(HttpStatus.CREATED)
@@ -109,6 +110,7 @@ export class UserController {
 		return this._getAllUsersUseCase.execute(paginationDto);
 	}
 
+	@UseGuards(UserBlockedGuard)
 	@Get(USER_ROUTERS.PROFILE)
 	@HttpCode(HttpStatus.OK)
 	async findUser(@Req() req: Request): Promise<ResponseUserDto> {
