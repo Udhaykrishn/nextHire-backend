@@ -32,5 +32,4 @@ export class AdminEntity {
 	changePassword(newPassword: string): void {
 		this._password = newPassword;
 	}
-
 }

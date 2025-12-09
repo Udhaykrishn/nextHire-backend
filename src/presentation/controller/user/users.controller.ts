@@ -56,7 +56,7 @@ export class UserController {
 			{ userId: string; file: Express.Multer.File },
 			ResponseUserDto
 		>,
-	) { }
+	) {}
 
 	@Post(USER_ROUTERS.DEFAULT)
 	@HttpCode(HttpStatus.CREATED)

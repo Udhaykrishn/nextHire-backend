@@ -23,7 +23,7 @@ export class AdminAuthController {
 		private readonly refreshUseCase: AdminRefreshUseCase,
 		@Inject(ADMIN_AUTH_TOKEN.ADMIN_LOGOUT_USE_CASE)
 		private readonly logoutUseCase: AdminLogoutUseCase,
-	) { }
+	) {}
 
 	@Post(ADMIN_AUTH_ROUTER.LOGIN)
 	async login(@Body() dto: AdminLoginDto, @Res({ passthrough: true }) res: Response) {

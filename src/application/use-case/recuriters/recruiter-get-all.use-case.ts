@@ -5,9 +5,8 @@ import { IExecutable } from "@/application/interface/executable.interface";
 import type { IRecruiterApplicationMappers } from "@/application/interface/mappers/recruiter";
 import type { IRecruiterRepository } from "@/application/interface/repository";
 import { RecruiterEntity } from "@/domain/entity";
-import { RECRUITER_MESSAGES } from "@/domain/enums/messages";
 import type { PaginationResponse } from "@/domain/types/paginations";
-import { Inject, Injectable, NotFoundException } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 
 @Injectable()
 export class GetAllRecruitersUseCase implements IExecutable<PaginationDto, PaginationResponse<ResponseRecruiterDto>> {
@@ -17,9 +16,11 @@ export class GetAllRecruitersUseCase implements IExecutable<PaginationDto, Pagin
 
 		@Inject(RECRUITER_TOKEN.RECRUITER_REPOSITORY)
 		private readonly _recruiterRepository: IRecruiterRepository<RecruiterEntity>,
-	) { }
+	) {}
 
-	async execute(paginationDto: PaginationDto & { status?: string }): Promise<PaginationResponse<ResponseRecruiterDto>> {
+	async execute(
+		paginationDto: PaginationDto & { status?: string },
+	): Promise<PaginationResponse<ResponseRecruiterDto>> {
 		const recruiters = await this._recruiterRepository.findAllRecruiters(paginationDto);
 
 		if (!recruiters || recruiters.data.length === 0) {

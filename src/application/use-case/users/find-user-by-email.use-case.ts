@@ -5,8 +5,8 @@ import type { IExecutable } from "@/application/interface/executable.interface";
 import type { IUserApplicationMappers } from "@/application/interface/mappers/user-application-mapper.interface";
 import type { IUserRepository } from "@/application/interface/repository";
 import type { UserEntity } from "@/domain/entity/user.entity";
-import { USER_MESSAGES, USER_STATUS } from "@/domain/enums";
-import { BadRequestException, NotFoundException } from "@nestjs/common";
+import { USER_MESSAGES } from "@/domain/enums";
+import { NotFoundException } from "@nestjs/common";
 import { Inject, Injectable } from "@nestjs/common";
 
 @Injectable()
@@ -16,7 +16,7 @@ export class FindUserByEmailUseCase implements IExecutable<string, ResponseUserD
 		private readonly _userMapper: IUserApplicationMappers<UserEntity>,
 		@Inject(USERS_TOKEN.USER_REPOSITORY)
 		private readonly _userRepository: IUserRepository<UserEntity>,
-	) { }
+	) {}
 
 	async execute(email: string): Promise<ResponseUserDto> {
 		const user = await this._userRepository.findOne({ email });
