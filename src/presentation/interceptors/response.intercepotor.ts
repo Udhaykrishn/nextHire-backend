@@ -16,7 +16,7 @@ export class ResponseInterceptor implements NestInterceptor {
 				message: data?.message ?? "Request successful",
 				timestamp: new Date().toISOString(),
 				path: request.url,
-				data: data?.data ?? data,
+				data: data,
 				meta: {
 					took: Date.now() - now,
 					...(data?.meta || {}),
