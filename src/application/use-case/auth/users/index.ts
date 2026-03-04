@@ -5,3 +5,6 @@ export { UserLogoutUseCase } from "./logout.use-case";
 export { VerifyUserOtpUsecase } from "./verify-otp.use-case";
 export { UserResendOtpUseCase } from "./resend-otp.use-case";
 export { GoogleAuthUseCase } from "./google-auth.case-use";
+export { UserForgotPasswordUseCase } from "./user-forgot-password.use-case";
+export { UserResetPasswordUseCase } from "./user-reset-password.use-case";
+export { UserVerifyResetTokenUseCase } from "./user-verify-reset-token.use-case";

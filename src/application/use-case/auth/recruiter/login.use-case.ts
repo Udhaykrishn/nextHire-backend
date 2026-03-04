@@ -1,8 +1,8 @@
 import { Injectable, Inject, BadRequestException, ForbiddenException } from "@nestjs/common";
 import { IExecutable } from "@/application/interface/executable.interface";
 import { v4 as uuid } from "uuid";
-import { COOKIE_MAX_AGE_CONSTANT } from "@/domain/constants";
 import { REDIS_KEYS } from "@/domain/enums/keys";
+import { ENV_KEYS } from "@/application/enums";
 import { RECRUITER_TOKEN } from "@/application/enums/recruiter";
 import type { IRecruiterRepository } from "@/application/interface/repository";
 import { RecruiterEntity } from "@/domain/entity";
@@ -11,6 +11,8 @@ import type { IJwtService, IPasswordHash, IRedisService } from "@/infrastructure
 import { RECRUITER_STATUS, USER_ROLE } from "@/domain/enums/status";
 import { RecruiterLoginDto, RecruiterLoginResponseDto } from "@/application/dto/auth/recruiter/login";
 import { RECRUITER_MESSAGES } from "@/domain/enums/messages";
+import { ConfigService } from "@nestjs/config";
+import { EnvConfig } from "@/infrastructure/config/env.schema";
 
 @Injectable()
 export class RecruiterLoginUseCase implements IExecutable<RecruiterLoginDto, RecruiterLoginResponseDto> {
@@ -26,6 +28,7 @@ export class RecruiterLoginUseCase implements IExecutable<RecruiterLoginDto, Rec
 
 		@Inject(COMMON_TOKEN.PASSWORD_HASH)
 		private readonly _passwordHash: IPasswordHash,
+		private readonly configService: ConfigService<EnvConfig>,
 	) {}
 
 	async execute(dto: RecruiterLoginDto): Promise<RecruiterLoginResponseDto> {
@@ -53,9 +56,12 @@ export class RecruiterLoginUseCase implements IExecutable<RecruiterLoginDto, Rec
 			email: recruiter.email,
 		};
 
-		const accessToken = await this._jwtService.generateToken(payload, COOKIE_MAX_AGE_CONSTANT.ACCESS_TOKEN_1_HOUR);
+		const accessTokenExpiration = this.configService.get(ENV_KEYS.ACCESS_TOKEN_EXPIRATION);
+		const refreshTokenExpiration = this.configService.get(ENV_KEYS.REFRESH_TOKEN_EXPIRATION);
 
-		const refreshToken = await this._jwtService.generateToken(payload, COOKIE_MAX_AGE_CONSTANT.REFRESH_TOKEN_7_DAY);
+		const accessToken = await this._jwtService.generateToken(payload, accessTokenExpiration);
+
+		const refreshToken = await this._jwtService.generateToken(payload, refreshTokenExpiration);
 
 		const sessionId = uuid();
 

@@ -10,6 +10,12 @@ export class ResponseUserDto {
 	public readonly bio: string;
 	public readonly badge: boolean;
 	public readonly google_id: string;
+	public readonly createdAt: Date;
+	public readonly skills: string[];
+	public readonly languages: {
+		name: string;
+		proficiency: string;
+	}[];
 	public readonly subscription: {
 		current_plan: string;
 		is_subscribed: boolean;
@@ -24,3 +30,4 @@ export class ResponseUserDto {
 		url: string;
 	};
 }
+
