@@ -31,6 +31,8 @@ export class UserEntity {
 		github: "",
 	};
 	_createdAt: Date;
+	private _skills: string[] = [];
+	private _languages: { name: string; proficiency: string }[] = [];
 
 	private constructor(
 		email: string,
@@ -48,6 +50,8 @@ export class UserEntity {
 		social_link: { linkedin: string; portfolio: string; github: string },
 		profile_url: { key: string; url: string },
 		createdAt: Date,
+		skills: string[],
+		languages: { name: string; proficiency: string }[],
 		id?: string,
 	) {
 		this._email = email;
@@ -65,6 +69,8 @@ export class UserEntity {
 		this._social_link = social_link;
 		this._profile_url = profile_url;
 		this._createdAt = createdAt;
+		this._skills = skills;
+		this._languages = languages;
 		this._id = id;
 	}
 
@@ -84,6 +90,8 @@ export class UserEntity {
 		social_link?: { linkedin: string; portfolio: string; github: string };
 		profile_url?: { key: string; url: string };
 		createdAt?: Date;
+		skills?: string[];
+		languages?: { name: string; proficiency: string }[];
 		id?: string;
 	}): UserEntity {
 		return new UserEntity(
@@ -102,6 +110,8 @@ export class UserEntity {
 			data.social_link ?? { linkedin: "", portfolio: "", github: "" },
 			data.profile_url ?? { key: "", url: "" },
 			data.createdAt ?? new Date(),
+			data.skills ?? [],
+			data.languages ?? [],
 			data.id,
 		);
 	}
@@ -170,6 +180,14 @@ export class UserEntity {
 		return this._createdAt;
 	}
 
+	get skills(): string[] {
+		return this._skills;
+	}
+
+	get languages(): { name: string; proficiency: string }[] {
+		return this._languages;
+	}
+
 	changeName(name: string): void {
 		this._name = name;
 	}
@@ -228,5 +246,13 @@ export class UserEntity {
 
 	changeDate(date: Date): void {
 		this._createdAt = date;
+	}
+
+	changeSkills(skills: string[]): void {
+		this._skills = skills;
+	}
+
+	changeLanguages(languages: { name: string; proficiency: string }[]): void {
+		this._languages = languages;
 	}
 }
