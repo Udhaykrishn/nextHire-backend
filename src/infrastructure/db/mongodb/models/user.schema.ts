@@ -80,6 +80,23 @@ export class User {
 		portfolio: string;
 		github: string;
 	};
+	@Prop({ type: [String], default: [] })
+	skills: string[];
+
+	@Prop({
+		type: [
+			{
+				name: { type: String, required: true },
+				proficiency: { type: String, required: true, enum: ["Low", "Medium", "High"] },
+			},
+		],
+		default: [],
+		_id: false,
+	})
+	languages: {
+		name: string;
+		proficiency: string;
+	}[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

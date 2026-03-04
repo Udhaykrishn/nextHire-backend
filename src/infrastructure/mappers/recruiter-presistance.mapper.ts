@@ -20,6 +20,7 @@ export class RecruiterPresitanceMapper implements IRecruiterPresitanceMapper<Rec
 			admin_approved: recruiter.admin_approved,
 			profile_url: recruiter.profile_url,
 			subscription: recruiter.subscription,
+			job_count: recruiter.job_count,
 		};
 	}
 
@@ -42,6 +43,7 @@ export class RecruiterPresitanceMapper implements IRecruiterPresitanceMapper<Rec
 				current_plan: "free",
 				is_subscribed: false,
 			},
+			job_count: doc.job_count ?? 0,
 		});
 	}
 }

@@ -1,3 +1,9 @@
-export { UserEntity } from "./user.entity";
-export { RecruiterEntity } from "./recruiter.entity";
-export { AdminEntity } from "./admin.entity";
+export * from "./user.entity";
+export * from "./admin.entity";
+export * from "./certificate.entity";
+export * from "./project.entity";
+export * from "./education.entity";
+export * from "./recruiter.entity";
+export * from "./address.entity";
+export * from "./job.entity";
+export * from "./subscription.entity";

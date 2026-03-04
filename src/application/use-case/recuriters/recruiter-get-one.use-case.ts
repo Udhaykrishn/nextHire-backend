@@ -1,5 +1,6 @@
 import { ResponseRecruiterDto } from "@/application/dto/recruiter";
-import { RECRUITER_MAPPER, RECRUITER_TOKEN } from "@/application/enums/recruiter";
+import { RECRUITER_MAPPER } from "@/application/enums";
+import { RECRUITER_TOKEN } from "@/application/enums/recruiter";
 import { IExecutable } from "@/application/interface/executable.interface";
 import type { IRecruiterApplicationMappers } from "@/application/interface/mappers/recruiter";
 import type { IRecruiterRepository } from "@/application/interface/repository";

@@ -5,4 +5,7 @@ export enum USER_MESSAGES {
 	USER_ALREADY_EXSITS = "User already exists",
 	USER_UPDATE_FAILED = "User update failed! Try again",
 	USER_BLOCKED_BY_ADMIN = "User is blocked by admin",
+	INVALID_TOKEN = "Invalid or expired token",
+	INVALID_TOKEN_PAYLOAD = "Invalid token payload",
+	INVALID_CREDENTIALS = "Invalid credentials",
 }

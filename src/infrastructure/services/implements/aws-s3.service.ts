@@ -6,6 +6,7 @@ import { S3Client, PutObjectCommand, DeleteObjectCommand, GetObjectCommand } fro
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 import { EnvConfig } from "@/infrastructure/config";
+import { ENV_KEYS } from "@/application/enums";
 
 import { v4 as uuid } from "uuid";
 import * as path from "node:path";
@@ -26,14 +27,14 @@ export class S3Service implements IS3Service<FileInfo, Express.Multer.File> {
 
 	constructor(private readonly configService: ConfigService<EnvConfig>) {
 		this.s3Client = new S3Client({
-			region: this.configService.get("AWS_REGION"),
+			region: this.configService.get(ENV_KEYS.AWS_REGION),
 			credentials: {
-				accessKeyId: this.configService.get("AWS_ACCESS_KEY") as string,
-				secretAccessKey: this.configService.get("AWS_SECRET_KEY") as string,
+				accessKeyId: this.configService.get(ENV_KEYS.AWS_ACCESS_KEY) as string,
+				secretAccessKey: this.configService.get(ENV_KEYS.AWS_SECRET_KEY) as string,
 			},
 		});
 
-		this.bucket = this.configService.get<string>("S3_BUCKET_NAME") as string;
+		this.bucket = this.configService.get<string>(ENV_KEYS.S3_BUCKET_NAME) as string;
 	}
 
 	async uploadFile(file: Express.Multer.File): Promise<FileInfo> {

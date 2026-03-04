@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import type { HydratedDocument } from "mongoose";
+import type { HydratedDocument, InferSchemaType } from "mongoose";
 
 export type CertificateDocument = HydratedDocument<Certificate>;
 
@@ -25,3 +25,9 @@ export class Certificate {
 }
 
 export const CertificateSchema = SchemaFactory.createForClass(Certificate);
+
+export type CertificateType = InferSchemaType<typeof CertificateSchema> & {
+	_id: string;
+	createdAt: Date;
+	updatedAt: Date;
+};

@@ -1,5 +1,6 @@
 import { CreateRecruiterDto, ResponseRecruiterDto } from "@/application/dto/recruiter";
-import { RECRUITER_MAPPER, RECRUITER_TOKEN } from "@/application/enums/recruiter";
+import { RECRUITER_MAPPER } from "@/application/enums";
+import { RECRUITER_TOKEN } from "@/application/enums/recruiter";
 import { COMMON_TOKEN } from "@/application/enums/tokens";
 import { IExecutable } from "@/application/interface/executable.interface";
 import type { IRecruiterApplicationMappers } from "@/application/interface/mappers/recruiter";
@@ -7,8 +8,8 @@ import type { IRecruiterRepository } from "@/application/interface/repository";
 import { RecruiterEntity } from "@/domain/entity";
 import { RECRUITER_MESSAGES } from "@/domain/enums/messages";
 import { AlreadyExistsException } from "@/domain/exceptions/already-exists.exception";
-import type { IEmailService, IPasswordHash } from "@/infrastructure/services/interface";
-import { Inject, Injectable, NotFoundException } from "@nestjs/common";
+import type { IPasswordHash } from "@/infrastructure/services/interface";
+import { Inject, Injectable } from "@nestjs/common";
 
 @Injectable()
 export class CreateRecruiterUseCase implements IExecutable<CreateRecruiterDto, ResponseRecruiterDto> {
@@ -21,17 +22,9 @@ export class CreateRecruiterUseCase implements IExecutable<CreateRecruiterDto, R
 
 		@Inject(COMMON_TOKEN.PASSWORD_HASH)
 		private readonly _passwordHasher: IPasswordHash,
-
-		@Inject(COMMON_TOKEN.EMAIL_SERVICE)
-		private readonly _emailService: IEmailService,
-	) {}
+	) { }
 
 	async execute(recruiterDto: CreateRecruiterDto): Promise<ResponseRecruiterDto> {
-		const isValidEmail = await this._emailService.validate(recruiterDto.email);
-		if (!isValidEmail) {
-			throw new NotFoundException("Invalid email address");
-		}
-
 		const existingRecruiter = await this._recruiterRepository.findByUniqueFields({
 			email: recruiterDto.email,
 			phone: recruiterDto.phone,

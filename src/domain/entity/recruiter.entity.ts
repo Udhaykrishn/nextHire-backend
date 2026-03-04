@@ -14,6 +14,7 @@ export class RecruiterEntity {
 	private _description: string = "";
 	private _category: string = "";
 	private _company_role: string = RECRUITER_ROLE.HR;
+	private _job_count: number = 0;
 	private _is_verified_company: boolean = false;
 	private _admin_approved: boolean = false;
 	private _profile_url: { key: string; url: string } = {
@@ -43,6 +44,7 @@ export class RecruiterEntity {
 		description: string,
 		category: string,
 		company_role: string,
+		job_count: number,
 		is_verified_company: boolean,
 		admin_approved: boolean,
 		profile_url: { key: string; url: string },
@@ -61,6 +63,7 @@ export class RecruiterEntity {
 		this._description = description;
 		this._category = category;
 		this._company_role = company_role;
+		this._job_count = job_count;
 		this._is_verified_company = is_verified_company;
 		this._admin_approved = admin_approved;
 		this._profile_url = profile_url;
@@ -82,6 +85,7 @@ export class RecruiterEntity {
 		description?: string;
 		category?: string;
 		company_role?: string;
+		job_count?: number;
 		is_verified_company?: boolean;
 		admin_approved?: boolean;
 		profile_url?: { key: string; url: string };
@@ -102,6 +106,7 @@ export class RecruiterEntity {
 			data.description ?? "",
 			data.category ?? "",
 			data.company_role ?? RECRUITER_ROLE.HR,
+			data.job_count ?? 0,
 			data.is_verified_company ?? false,
 			data.admin_approved ?? false,
 			data.profile_url ?? { key: "", url: "" },
@@ -155,6 +160,14 @@ export class RecruiterEntity {
 
 	get company_role(): string {
 		return this._company_role;
+	}
+
+	get job_count(): number {
+		return this._job_count;
+	}
+
+	incrementJobCount(): void {
+		this._job_count++;
 	}
 
 	get is_verified_company(): boolean {
@@ -231,6 +244,9 @@ export class RecruiterEntity {
 
 	changePassword(newPassword: string): void {
 		this._password = newPassword;
+	}
+	changeProfileUrl(key: string, url: string): void {
+		this._profile_url = { key, url };
 	}
 
 	updateTimestamps(createdAt?: Date, updatedAt?: Date): void {

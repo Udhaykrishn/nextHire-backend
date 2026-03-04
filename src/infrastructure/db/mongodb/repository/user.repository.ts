@@ -5,9 +5,9 @@ import type { UserEntity } from "@/domain/entity/user.entity";
 import type { IUserRepository } from "@/application/interface/repository";
 import { User } from "../models";
 import type { Model } from "mongoose";
-import { USER_MAPPER } from "@/application/enums/tokens/user-mapper.enum";
+import { USER_MAPPER } from "@/application/enums";
 import type { PaginationResponse } from "@/domain/types/paginations";
-import type { IUserPresitanceMapper } from "@/application/interface/mappers/user-presistance.mapper";
+import type { IUserPresitanceMapper } from "@/application/interface/mappers/user/user-presistance.mapper";
 import type { PaginationDto } from "@/application/dto/pagiation";
 import type { UserType } from "../models/user.schema";
 

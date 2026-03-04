@@ -10,4 +10,6 @@ export enum USER_AUTH_ROUTER {
 	OTP_VERIFY = "/otp-verify",
 	GOOGLE = "/google",
 	LOGOUT = "logout",
+	RESET_PASSWORD = "/reset-password",
+	VERIFY_RESET_TOKEN = "/verify-reset-token",
 }
