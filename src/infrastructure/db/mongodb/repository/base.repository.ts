@@ -32,6 +32,7 @@ export abstract class BaseRepository<TEntity, TDocument> implements IBaseReposit
 
 	async findByIdAndUpdate(id: string, updateDto: UpdateQuery<Partial<TEntity>>): Promise<TEntity | null> {
 		const mongoUpdate: UpdateQuery<TDocument> = this.mapper.toMongo(updateDto);
+		delete (mongoUpdate as any)._id;
 
 		const updatedDoc = await this.model.findByIdAndUpdate(id, mongoUpdate, { new: true }).exec();
 

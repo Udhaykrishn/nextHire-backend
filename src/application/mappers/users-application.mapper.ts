@@ -1,9 +1,12 @@
 import { UserEntity } from "@/domain/entity/user.entity";
 import type { ResponseUserDto } from "../dto/users/user-response.dto";
-import { IUserApplicationMappers } from "../interface/mappers/user-application-mapper.interface";
+import { IUserApplicationMappers } from "../interface/mappers/user/user-application-mapper.interface";
 import { UserType } from "@/infrastructure/db/mongodb/models/user.schema";
 import { USER_STATUS } from "@/domain/enums";
 
+import { Injectable } from "@nestjs/common";
+
+@Injectable()
 export class UserApplicationMapper implements IUserApplicationMappers<UserType> {
 	toResponse(user: UserEntity): ResponseUserDto {
 		return {
@@ -21,6 +24,9 @@ export class UserApplicationMapper implements IUserApplicationMappers<UserType> 
 			profile_url: user.profile_url,
 			subscription: user.subscription,
 			social_link: user.social_link,
+			skills: user.skills,
+			languages: user.languages,
+			createdAt: user.createdAt,
 		};
 	}
 
@@ -41,6 +47,10 @@ export class UserApplicationMapper implements IUserApplicationMappers<UserType> 
 			profile_url: data.profile_url,
 			subscription: data.subscription,
 			social_link: data.social_link,
+			skills: data.skills,
+			languages: data.languages,
+			createdAt: data.createdAt,
 		});
 	}
 }
+

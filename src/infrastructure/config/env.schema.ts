@@ -22,6 +22,10 @@ export const envSchema = z.object({
 	AWS_REGION: z.string().min(1),
 	S3_BUCKET_NAME: z.string().min(1),
 
+	RESET_TOKEN_EXPIRATION: z.coerce.number().default(300),
+	ACCESS_TOKEN_EXPIRATION: z.coerce.number().default(3600000), // 1 hour
+	REFRESH_TOKEN_EXPIRATION: z.coerce.number().default(604800000), // 7 days
+
 	NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
 });
 

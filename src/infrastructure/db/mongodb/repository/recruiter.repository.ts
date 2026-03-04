@@ -7,7 +7,7 @@ import { Model } from "mongoose";
 import type { IRecruiterRepository } from "@/application/interface/repository";
 import { PaginationResponse } from "@/domain/types/paginations";
 import { Recruiter, RecruiterType } from "../models";
-import { RECRUITER_MAPPER } from "@/application/enums/recruiter";
+import { RECRUITER_MAPPER } from "@/application/enums";
 import type { IRecruiterPresitanceMapper } from "@/application/interface/mappers/recruiter";
 
 @Injectable()

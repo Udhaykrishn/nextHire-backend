@@ -6,4 +6,5 @@ export enum USER_ROUTERS {
 	CHNAGE_PASWORD = ":id/change-password",
 	PROFILE = "profile",
 	UPLOAD_PROFILE_IMAGE = "profile/upload",
+	UPDATE = "update",
 }

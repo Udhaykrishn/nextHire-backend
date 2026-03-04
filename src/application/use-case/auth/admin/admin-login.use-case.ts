@@ -4,11 +4,13 @@ import type { IAdminRepository } from "@/application/interface/repository";
 import { AdminEntity } from "@/domain/entity";
 import { COMMON_TOKEN, ADMIN_AUTH_TOKEN } from "@/application/enums/tokens";
 import type { IJwtService, IPasswordHash, IRedisService } from "@/infrastructure/services/interface";
-import { USER_ROLE } from "@/domain/enums";
+import { USER_ROLE, ADMIN_MESSAGES } from "@/domain/enums";
 import { v4 as uuid } from "uuid";
-import { COOKIE_MAX_AGE_CONSTANT } from "@/domain/constants/cookie.constant";
 import { REDIS_KEYS } from "@/domain/enums/keys";
+import { ENV_KEYS } from "@/application/enums";
 import { AdminLoginDto, AdminLoginResponseDto } from "@/application/dto/auth/admin";
+import { ConfigService } from "@nestjs/config";
+import { EnvConfig } from "@/infrastructure/config/env.schema";
 
 @Injectable()
 export class AdminLoginUseCase implements IExecutable<AdminLoginDto, AdminLoginResponseDto> {
@@ -21,19 +23,20 @@ export class AdminLoginUseCase implements IExecutable<AdminLoginDto, AdminLoginR
 		private readonly _redisService: IRedisService,
 		@Inject(COMMON_TOKEN.PASSWORD_HASH)
 		private readonly _passwordHash: IPasswordHash,
+		private readonly configService: ConfigService<EnvConfig>,
 	) {}
 
 	async execute(dto: AdminLoginDto): Promise<AdminLoginResponseDto> {
 		const admin = await this._adminRepository.findOne({ email: dto.email });
 
 		if (!admin) {
-			throw new UnauthorizedException("Invalid credentials");
+			throw new UnauthorizedException(ADMIN_MESSAGES.INVALID_CREDENTIALS);
 		}
 
 		const isMatch = await this._passwordHash.compare(admin.password, dto.password);
 
 		if (!isMatch) {
-			throw new UnauthorizedException("Invalid credentials");
+			throw new UnauthorizedException(ADMIN_MESSAGES.INVALID_CREDENTIALS);
 		}
 
 		const payload = {
@@ -42,8 +45,11 @@ export class AdminLoginUseCase implements IExecutable<AdminLoginDto, AdminLoginR
 			email: admin.email,
 		};
 
-		const accessToken = await this._jwtService.generateToken(payload, COOKIE_MAX_AGE_CONSTANT.ACCESS_TOKEN_1_HOUR);
-		const refreshToken = await this._jwtService.generateToken(payload, COOKIE_MAX_AGE_CONSTANT.REFRESH_TOKEN_7_DAY);
+		const accessTokenExpiration = this.configService.get(ENV_KEYS.ACCESS_TOKEN_EXPIRATION);
+		const refreshTokenExpiration = this.configService.get(ENV_KEYS.REFRESH_TOKEN_EXPIRATION);
+
+		const accessToken = await this._jwtService.generateToken(payload, accessTokenExpiration);
+		const refreshToken = await this._jwtService.generateToken(payload, refreshTokenExpiration);
 
 		const sessionId = uuid();
 

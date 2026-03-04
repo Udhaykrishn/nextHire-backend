@@ -16,6 +16,6 @@ services:
       - "3002:3000"
   api:
     build: .
-    container_name: 
+    container_name: "api"
     ports:
       - "3003:3001"

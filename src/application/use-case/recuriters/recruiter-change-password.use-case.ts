@@ -1,6 +1,7 @@
 import { ResponseRecruiterDto } from "@/application/dto/recruiter";
 import { ChangePasswordDto } from "@/application/dto/users/change-password.dto";
-import { RECRUITER_MAPPER, RECRUITER_TOKEN } from "@/application/enums/recruiter";
+import { RECRUITER_MAPPER } from "@/application/enums";
+import { RECRUITER_TOKEN } from "@/application/enums/recruiter";
 import { COMMON_TOKEN } from "@/application/enums/tokens";
 import { IExecutable } from "@/application/interface/executable.interface";
 import type { IRecruiterApplicationMappers } from "@/application/interface/mappers/recruiter";

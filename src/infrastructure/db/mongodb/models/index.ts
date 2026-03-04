@@ -51,11 +51,8 @@ export {
 	ReportSchema,
 } from "./reports.schema";
 
-export {
-	Notification,
-	type NotificationDocument,
-	NotificationSchema,
-} from "./notifications.schema";
+
+
 
 export {
 	OfferLetter,

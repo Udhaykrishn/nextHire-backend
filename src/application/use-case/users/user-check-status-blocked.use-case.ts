@@ -1,11 +1,11 @@
 import { BadRequestException, ForbiddenException, Inject, Injectable } from "@nestjs/common";
 import type { IUserRepository } from "@/application/interface/repository";
-import { USER_MAPPER, USERS_TOKEN } from "@/application/enums/tokens";
 import { UserEntity } from "@/domain/entity";
 import { USER_MESSAGES, USER_STATUS } from "@/domain/enums";
 import { IExecutable } from "@/application/interface/executable.interface";
-import type { IUserApplicationMappers } from "@/application/interface/mappers/user-application-mapper.interface";
+import type { IUserApplicationMappers } from "@/application/interface/mappers/user/user-application-mapper.interface";
 import { ResponseUserDto } from "@/application/dto/users";
+import { USER_MAPPER, USERS_TOKEN } from "@/application/enums";
 
 @Injectable()
 export class CheckUserBlockedUseCase implements IExecutable<string, ResponseUserDto> {
