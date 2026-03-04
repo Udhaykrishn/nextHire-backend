@@ -8,6 +8,9 @@ import {
 	RecruiterRegisterUseCase,
 	VerifyRecruiterOtpUseCase,
 	RecruiterRefreshUseCase,
+	RecruiterForgotPasswordUseCase,
+	RecruiterResetPasswordUseCase,
+	RecruiterVerifyResetTokenUseCase,
 } from "@/application/use-case/auth/recruiter";
 import { COMMON_TOKEN } from "@/application/enums/tokens";
 import { JwtService } from "@/infrastructure/services/implements";
@@ -36,6 +39,18 @@ import { JwtService } from "@/infrastructure/services/implements";
 			provide: COMMON_TOKEN.JWT_SERVICE,
 			useClass: JwtService,
 		},
+		{
+			provide: AUTH_RECRUITER_TOKEN.RECRUITER_FORGOT_PASSWORD_USE_CASE,
+			useClass: RecruiterForgotPasswordUseCase,
+		},
+		{
+			provide: AUTH_RECRUITER_TOKEN.RECRUITER_RESET_PASSWORD_USE_CASE,
+			useClass: RecruiterResetPasswordUseCase,
+		},
+		{
+			provide: AUTH_RECRUITER_TOKEN.RECRUITER_VERIFY_RESET_TOKEN_USE_CASE,
+			useClass: RecruiterVerifyResetTokenUseCase,
+		},
 	],
 })
-export class RecruiterAuthModule {}
+export class RecruiterAuthModule { }
