@@ -1,10 +1,12 @@
 import { Injectable, Inject, BadRequestException } from "@nestjs/common";
 import { IExecutable } from "@/application/interface/executable.interface";
 import { COMMON_TOKEN } from "@/application/enums/tokens";
-import type { IMailSender, IOtpService, IRedisService } from "@/infrastructure/services/interface";
+import type { IOtpService, IRedisService } from "@/infrastructure/services/interface";
 import { USER_MESSAGES } from "@/domain/enums";
 import { REDIS_KEYS } from "@/domain/enums/keys";
 import { VerifyOTPDto } from "@/application/dto/auth/otp";
+import { AUTH_EVENTS } from "@/domain/enums/events.enum";
+import { EventEmitter2 } from "@nestjs/event-emitter";
 
 @Injectable()
 export class UserResendOtpUseCase implements IExecutable<VerifyOTPDto, { message: string }> {
@@ -13,9 +15,8 @@ export class UserResendOtpUseCase implements IExecutable<VerifyOTPDto, { message
 		private readonly _redisService: IRedisService,
 		@Inject(COMMON_TOKEN.OTP_SERVICE)
 		private readonly _otpService: IOtpService,
-		@Inject(COMMON_TOKEN.EMAIL_SERVICE)
-		private readonly _mailSender: IMailSender,
-	) {}
+		private readonly eventEmitter: EventEmitter2,
+	) { }
 
 	async execute(dto: VerifyOTPDto): Promise<{ message: string }> {
 		const email = dto.email;
@@ -24,9 +25,12 @@ export class UserResendOtpUseCase implements IExecutable<VerifyOTPDto, { message
 		const otpKey = REDIS_KEYS.OTP.concat(email);
 		const countKey = REDIS_KEYS.RESEND_COUNT.concat(email);
 
-		if (!(await this._redisService.get(verifyKey))) {
+		const userDataString = await this._redisService.get(verifyKey);
+		if (!userDataString) {
 			throw new BadRequestException(USER_MESSAGES.USER_NOT_FOUND);
 		}
+		const userData = JSON.parse(userDataString);
+		const name = userData.name || "User";
 
 		let count = Number(await this._redisService.get(countKey)) || 0;
 		if (count >= 3) {
@@ -38,7 +42,12 @@ export class UserResendOtpUseCase implements IExecutable<VerifyOTPDto, { message
 			const otp = this._otpService.generate(6);
 			await this._redisService.set(otpKey, otp, 300);
 			await this._redisService.set(countKey, String(++count), 600);
-			await this._mailSender.sendOtp(email, otp);
+
+			this.eventEmitter.emit(AUTH_EVENTS.OTP_GENERATED, {
+				email,
+				name,
+				otp,
+			});
 
 			return { message };
 		};

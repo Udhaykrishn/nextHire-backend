@@ -1,7 +1,7 @@
 import { Inject, Injectable } from "@nestjs/common";
 import type { IExecutable } from "@/application/interface/executable.interface";
 import { RECRUITER_TOKEN } from "@/application/enums/recruiter";
-import { RECRUITER_MAPPER } from "@/application/enums/recruiter/recruiter-mapper.enum";
+import { RECRUITER_MAPPER } from "@/application/enums";
 import type { IRecruiterApplicationMappers } from "@/application/interface/mappers/recruiter/application.mapper";
 import type { IRecruiterRepository } from "@/application/interface/repository";
 import type { RecruiterEntity } from "@/domain/entity/recruiter.entity";

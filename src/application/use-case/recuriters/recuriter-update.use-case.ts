@@ -1,6 +1,7 @@
 import { ResponseRecruiterDto } from "@/application/dto/recruiter";
 import { UpdateRecruiterDto } from "@/application/dto/recruiter/recruiter-update.dto";
-import { RECRUITER_MAPPER, RECRUITER_TOKEN } from "@/application/enums/recruiter";
+import { RECRUITER_MAPPER } from "@/application/enums";
+import { RECRUITER_TOKEN } from "@/application/enums/recruiter";
 import { IExecutable } from "@/application/interface/executable.interface";
 import type { IRecruiterApplicationMappers } from "@/application/interface/mappers/recruiter";
 import type { IRecruiterRepository } from "@/application/interface/repository";
@@ -9,6 +10,9 @@ import { RECRUITER_MESSAGES } from "@/domain/enums/messages";
 import { RECRUITER_ROLE } from "@/domain/enums/status";
 import { NotFoundException } from "@nestjs/common";
 import { Inject, Injectable } from "@nestjs/common";
+
+import type { IS3Service } from "@/infrastructure/services/interface";
+import type { FileInfo } from "@/infrastructure/services/implements";
 
 @Injectable()
 export class UpdateRecruiterUseCase
@@ -20,6 +24,9 @@ export class UpdateRecruiterUseCase
 
 		@Inject(RECRUITER_TOKEN.RECRUITER_REPOSITORY)
 		private readonly _recruiterRepository: IRecruiterRepository<RecruiterEntity>,
+
+		@Inject("S3_SERVICE")
+		private readonly _s3Service: IS3Service<FileInfo, Express.Multer.File>,
 	) {}
 
 	async execute({
@@ -64,6 +71,15 @@ export class UpdateRecruiterUseCase
 
 		if (!updatedRecruiter) {
 			throw new NotFoundException(RECRUITER_MESSAGES.RECRUITER_UPDATE_FAILED);
+		}
+
+		if (updatedRecruiter.profile_url && updatedRecruiter.profile_url.key) {
+			try {
+				const signedUrl = await this._s3Service.getSignedUrlForRead(updatedRecruiter.profile_url.key);
+				updatedRecruiter.changeProfileUrl(updatedRecruiter.profile_url.key, signedUrl);
+			} catch (error) {
+				console.error("Error signing URL:", error);
+			}
 		}
 
 		return this._recruiterMapper.toResponse(updatedRecruiter);

@@ -1,8 +1,8 @@
 import { Inject, Injectable } from "@nestjs/common";
 import type { IExecutable } from "@/application/interface/executable.interface";
 import { USERS_TOKEN } from "@/application/enums/tokens";
-import { USER_MAPPER } from "@/application/enums/tokens/user-mapper.enum";
-import type { IUserApplicationMappers } from "@/application/interface/mappers/user-application-mapper.interface";
+import { USER_MAPPER } from "@/application/enums";
+import type { IUserApplicationMappers } from "@/application/interface/mappers/user/user-application-mapper.interface";
 import type { IUserRepository } from "@/application/interface/repository";
 import type { UserEntity } from "@/domain/entity/user.entity";
 import type { ResponseUserDto } from "@/application/dto/users/user-response.dto";
