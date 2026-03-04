@@ -3,3 +3,7 @@ export { AUTH_TOKEN } from "./auth-token.enum";
 export { USER_AUTH_ROUTER } from "./user-auth-router.enum";
 export { ADMIN_AUTH_ROUTER } from "./admin-auth-router.enum";
 export { ROLES } from "./user-roles.enum";
+export { CERTIFICATE_ROUTER } from "./certificate-router.enum";
+export { EDUCATION_ROUTER } from "./education-router.enum";
+export { PROJECT_ROUTER } from "./project-router.enum";
+export { ADDRESS_ROUTER } from "./address-router.enum";

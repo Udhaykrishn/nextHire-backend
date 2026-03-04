@@ -14,6 +14,7 @@ import {
 	UseGuards,
 	UploadedFile,
 	UseInterceptors,
+	Delete,
 	BadRequestException,
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
@@ -25,16 +26,16 @@ import type { CreateUserDto } from "@/application/dto/users/user-create.dto";
 import type { ResponseUserDto } from "@/application/dto/users/user-response.dto";
 import type { PaginationDto } from "@/application/dto/pagiation";
 import { type PaginationResponse, PaginationInputType } from "@/domain/types/paginations";
-import type { ChangePasswordDto, UpdateUserDto } from "@/application/dto/users";
+import type { ChangePasswordDto, UpdateUserDto, UserSubscriptionUpdateDto } from "@/application/dto/users";
 import { AuthGuard, RoleGuard } from "@/presentation/guards";
 import { Roles } from "@/presentation/decorators";
 import { UserBlockedGuard } from "@/presentation/guards/block";
-import type { Request } from "express";
+import { IUserController } from "../interface/user.interface";
 
 @UseGuards(AuthGuard, RoleGuard)
 @Roles(ROLES.USER)
 @Controller(USER_ROUTERS.ROUTER)
-export class UserController {
+export class UserController implements IUserController {
 	constructor(
 		@Inject(USERS_TOKEN.USER_CREATE_USE_CASE)
 		private readonly _userCreateUseCase: IExecutable<CreateUserDto, ResponseUserDto>,
@@ -52,8 +53,12 @@ export class UserController {
 		@Inject(USERS_TOKEN.USER_FIND_BY_EMAIL_USE_CASE)
 		private readonly _findUserByEmailUseCase: IExecutable<string, ResponseUserDto>,
 		@Inject(USERS_TOKEN.UPLOAD_PROFILE_IMAGE_USE_CASE)
-		private readonly _uploadProfileImageUseCase: IExecutable<
-			{ userId: string; file: Express.Multer.File },
+		private readonly _uploadProfileImageUseCase: IExecutable<{ userId: string; file: any }, ResponseUserDto>,
+		@Inject(USERS_TOKEN.DELETE_PROFILE_IMAGE_USE_CASE)
+		private readonly _deleteProfileImageUseCase: IExecutable<string, ResponseUserDto>,
+		@Inject(USERS_TOKEN.USER_UPDATE_SUBSCRIPTION_USE_CASE)
+		private readonly _updateUserSubscriptionUseCase: IExecutable<
+			{ userId: string; dto: UserSubscriptionUpdateDto },
 			ResponseUserDto
 		>,
 	) {}
@@ -72,7 +77,14 @@ export class UserController {
 	}
 
 	@UseGuards(UserBlockedGuard)
-	@Patch(`:${USER_ROUTERS.ID_PARAM}`)
+	@Patch(USER_ROUTERS.UPDATE)
+	@HttpCode(HttpStatus.OK)
+	async updateProfile(@Req() req: any, @Body() updateDto: UpdateUserDto): Promise<ResponseUserDto> {
+		return this._updateUserUseCase.execute({ data: updateDto, userId: req.user.id });
+	}
+
+	@UseGuards(UserBlockedGuard)
+	@Patch(`:${USER_ROUTERS.ID_PARAM} `)
 	@HttpCode(HttpStatus.OK)
 	async update(
 		@Param(USER_ROUTERS.ID_PARAM) userId: string,
@@ -113,11 +125,10 @@ export class UserController {
 	@UseGuards(UserBlockedGuard)
 	@Get(USER_ROUTERS.PROFILE)
 	@HttpCode(HttpStatus.OK)
-	async findUser(@Req() req: Request): Promise<ResponseUserDto> {
+	async findUser(@Req() req: any): Promise<ResponseUserDto> {
 		return this._findUserByEmailUseCase.execute(req.user.email);
 	}
 
-	@UseGuards(UserBlockedGuard)
 	@Post(USER_ROUTERS.UPLOAD_PROFILE_IMAGE)
 	@HttpCode(HttpStatus.OK)
 	@UseInterceptors(
@@ -126,21 +137,32 @@ export class UserController {
 			limits: {
 				fileSize: 5 * 1024 * 1024,
 			},
-			fileFilter: (_req, file, cb) => {
-				if (!file.mimetype.startsWith("image/")) {
-					cb(new BadRequestException("Only image files are allowed"), false);
-					return;
+			fileFilter: (req: any, file: any, callback: any) => {
+				if (!file.mimetype.match(/\/(jpg|jpeg|png|webp)$/)) {
+					return callback(new BadRequestException("Only image files are allowed!"), false);
 				}
-				cb(null, true);
+				callback(null, true);
 			},
 		}),
 	)
-	async uploadProfileImage(@Req() req: Request, @UploadedFile() file: Express.Multer.File): Promise<ResponseUserDto> {
+	@UseGuards(AuthGuard)
+	async uploadProfileImage(@UploadedFile() file: any, @Req() req: any): Promise<ResponseUserDto> {
 		if (!file) {
-			throw new BadRequestException(
-				'No file uploaded. Make sure to send the file with field name "image" as form-data',
-			);
+			throw new BadRequestException("No file uploaded");
 		}
 		return this._uploadProfileImageUseCase.execute({ userId: req.user.id, file });
+	}
+
+	@Delete(USER_ROUTERS.UPLOAD_PROFILE_IMAGE)
+	@UseGuards(AuthGuard)
+	@HttpCode(HttpStatus.OK)
+	async deleteProfileImage(@Req() req: any): Promise<ResponseUserDto> {
+		return this._deleteProfileImageUseCase.execute(req.user.id);
+	}
+	@Patch("subscription/upgrade")
+	@UseGuards(AuthGuard)
+	@HttpCode(HttpStatus.OK)
+	async updateSubscription(@Req() req: any, @Body() dto: UserSubscriptionUpdateDto): Promise<ResponseUserDto> {
+		return this._updateUserSubscriptionUseCase.execute({ userId: req.user.id, dto });
 	}
 }

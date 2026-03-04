@@ -4,4 +4,5 @@ export enum ADMIN_AUTH_ROUTER {
 	REFRESH = "/refresh",
 	ROUTER = "auth/admin",
 	LOGOUT = "/logout",
+	RECRUITER_STATUS = "/recruiter/status",
 }
