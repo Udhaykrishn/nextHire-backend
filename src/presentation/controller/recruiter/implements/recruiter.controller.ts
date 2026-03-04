@@ -34,11 +34,12 @@ import { ChangePasswordDto } from "@/application/dto/users";
 import { ROLES } from "@/presentation/enums";
 import { RecruiterBlockedGuard } from "@/presentation/guards/block";
 import type { Request } from "express";
+import { IRecruiterController } from "../interface/recruiter.interface";
 
 @UseGuards(AuthGuard, RoleGuard)
 @Roles(ROLES.RECRUITER)
 @Controller(RECRUITER_ROUTERS.ROUTER)
-export class RecruiterController {
+export class RecruiterController implements IRecruiterController {
 	constructor(
 		@Inject(RECRUITER_TOKEN.RECRUITER_CREATE_USE_CASE)
 		private readonly _createUseCase: IExecutable<CreateRecruiterDto, ResponseRecruiterDto>,

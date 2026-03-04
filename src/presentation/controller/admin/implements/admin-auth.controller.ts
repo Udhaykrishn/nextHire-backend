@@ -13,9 +13,10 @@ import { setCookie, clearCookie } from "@/presentation/utils/cookie-helper.util"
 import { RefreshGuard } from "@/presentation/guards";
 import { Roles } from "@/presentation/decorators";
 import { USER_ROLE } from "@/domain/enums";
+import { IAdminAuthController } from "../interface/admin-auth.interface";
 
 @Controller(ADMIN_AUTH_ROUTER.ROUTER)
-export class AdminAuthController {
+export class AdminAuthController implements IAdminAuthController {
 	constructor(
 		@Inject(ADMIN_AUTH_TOKEN.ADMIN_LOGIN_USE_CASE)
 		private readonly loginUseCase: AdminLoginUseCase,
@@ -23,7 +24,7 @@ export class AdminAuthController {
 		private readonly refreshUseCase: AdminRefreshUseCase,
 		@Inject(ADMIN_AUTH_TOKEN.ADMIN_LOGOUT_USE_CASE)
 		private readonly logoutUseCase: AdminLogoutUseCase,
-	) {}
+	) { }
 
 	@Post(ADMIN_AUTH_ROUTER.LOGIN)
 	async login(@Body() dto: AdminLoginDto, @Res({ passthrough: true }) res: Response) {
@@ -53,4 +54,14 @@ export class AdminAuthController {
 		clearCookie(res, AUTH_TOKEN.ACCESS_TOKEN);
 		return { success: true };
 	}
+
+
+	@UseGuards(AuthGuard)
+	@Roles(USER_ROLE.ADMIN)
+	@Get(ADMIN_AUTH_ROUTER.RECRUITER_STATUS)
+	async recruiterStatus(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+		// TODO: Implement recruiter status logic
+		return { success: true };
+	}
+
 }

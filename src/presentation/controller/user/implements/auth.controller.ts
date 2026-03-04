@@ -1,4 +1,11 @@
-import { UserLoginDto, UserLoginResponseDto } from "@/application/dto/auth/users";
+import {
+	UserLoginDto,
+	UserLoginResponseDto,
+	ForgotPasswordDto,
+	ForgotPasswordResponseDto,
+	ResetPasswordDto,
+	ResetPasswordResponseDto,
+} from "@/application/dto/auth/users";
 import { VerifyOTPDto, VerifyResponseOTPDto } from "@/application/dto/auth/otp";
 import { UserRefreshTokenDto } from "@/application/dto/auth/users/refresh-token-res.dto";
 import { UserSignResponseDto } from "@/application/dto/auth/users/signup/user-signup-res.dto";
@@ -15,9 +22,10 @@ import { clearCookie, setCookie } from "@/presentation/utils/cookie-helper.util"
 import { Body, Controller, Inject, Post, Req, Res, UseGuards } from "@nestjs/common";
 import type { Response, Request } from "express";
 import { GoogleAuthDto } from "@/application/dto/auth/users/login/auth-login.dto";
+import { IAuthUserController } from "../interface/auth.interface";
 
 @Controller(USER_AUTH_ROUTER.ROUTER)
-export class AuthUserController {
+export class AuthUserController implements IAuthUserController {
 	constructor(
 		@Inject(AUTH_USER_TOKEN.USER_LOGIN_USE_CASE)
 		private readonly _loginUseCase: IExecutable<UserLoginDto, UserLoginResponseDto>,
@@ -34,7 +42,30 @@ export class AuthUserController {
 
 		@Inject(AUTH_USER_TOKEN.USER_GOOGLE_AUTH_CASE)
 		private readonly _googleAuthUseCase: IExecutable<GoogleAuthDto, UserLoginResponseDto>,
+
+		@Inject(AUTH_USER_TOKEN.USER_FORGOT_PASSWORD_USE_CASE)
+		private readonly _forgotPasswordUseCase: IExecutable<ForgotPasswordDto, ForgotPasswordResponseDto>,
+
+		@Inject(AUTH_USER_TOKEN.USER_RESET_PASSWORD_USE_CASE)
+		private readonly _resetPasswordUseCase: IExecutable<ResetPasswordDto, ResetPasswordResponseDto>,
+		@Inject(AUTH_USER_TOKEN.USER_VERIFY_RESET_TOKEN_USE_CASE)
+		private readonly _verifyResetTokenUseCase: IExecutable<string, boolean>,
 	) {}
+
+	@Post(USER_AUTH_ROUTER.VERIFY_RESET_TOKEN)
+	async verifyResetToken(@Body() body: { token: string }) {
+		return await this._verifyResetTokenUseCase.execute(body.token);
+	}
+
+	@Post(USER_AUTH_ROUTER.FORGOT_PASSWORD)
+	async forgotPassword(@Body() dto: ForgotPasswordDto) {
+		return await this._forgotPasswordUseCase.execute(dto);
+	}
+
+	@Post(USER_AUTH_ROUTER.RESET_PASSWORD)
+	async resetPassword(@Body() dto: ResetPasswordDto) {
+		return await this._resetPasswordUseCase.execute(dto);
+	}
 
 	@Post(USER_AUTH_ROUTER.LOGIN)
 	async login(@Res({ passthrough: true }) res: Response, @Body() loginDto: UserLoginDto) {

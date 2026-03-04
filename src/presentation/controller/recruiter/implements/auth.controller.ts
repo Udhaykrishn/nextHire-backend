@@ -11,11 +11,18 @@ import { AUTH_RECRUITER_TOKEN } from "@/application/enums/recruiter/auth-token.e
 import { RECRUITER_AUTH_ROUTER } from "@/presentation/enums/recuriter/auth.router";
 import type { RecruiterLoginDto, RecruiterLoginResponseDto } from "@/application/dto/auth/recruiter/login";
 import { RecruiterSignResponseDto, RecruiterSignupDto } from "@/application/dto/auth/recruiter/signup";
-import { RecruiterRefreshTokenDto } from "@/application/dto/auth/recruiter";
+import {
+	RecruiterRefreshTokenDto,
+	RecruiterForgotPasswordDto,
+	RecruiterForgotPasswordResponseDto,
+	RecruiterResetPasswordDto,
+	RecruiterResetPasswordResponseDto,
+} from "@/application/dto/auth/recruiter";
 import { VerifyOTPDto, VerifyResponseOTPDto } from "@/application/dto/auth/otp";
+import { IAuthRecruiterController } from "../interface/auth.interface";
 
 @Controller(RECRUITER_AUTH_ROUTER.ROUTER)
-export class AuthRecruiterController {
+export class AuthRecruiterController implements IAuthRecruiterController {
 	constructor(
 		@Inject(AUTH_RECRUITER_TOKEN.RECRUITER_LOGIN_USE_CASE)
 		private readonly _loginUseCase: IExecutable<RecruiterLoginDto, RecruiterLoginResponseDto>,
@@ -29,9 +36,35 @@ export class AuthRecruiterController {
 		@Inject(AUTH_RECRUITER_TOKEN.RECRUITER_VERIFY_OTP_USE_CASE)
 		private readonly __verifyOtp: IExecutable<VerifyOTPDto, VerifyResponseOTPDto>,
 
-		// @Inject(AUTH_RECRUITER_TOKEN.RECRUITER_LOGOUT_USE_CASE)
-		// private readonly _logoutUseCase: IExecutable<string, boolean>,
+		@Inject(AUTH_RECRUITER_TOKEN.RECRUITER_FORGOT_PASSWORD_USE_CASE)
+		private readonly _forgotPasswordUseCase: IExecutable<
+			RecruiterForgotPasswordDto,
+			RecruiterForgotPasswordResponseDto
+		>,
+
+		@Inject(AUTH_RECRUITER_TOKEN.RECRUITER_RESET_PASSWORD_USE_CASE)
+		private readonly _resetPasswordUseCase: IExecutable<
+			RecruiterResetPasswordDto,
+			RecruiterResetPasswordResponseDto
+		>,
+		@Inject(AUTH_RECRUITER_TOKEN.RECRUITER_VERIFY_RESET_TOKEN_USE_CASE)
+		private readonly _verifyResetTokenUseCase: IExecutable<string, boolean>,
 	) {}
+
+	@Post(RECRUITER_AUTH_ROUTER.VERIFY_RESET_TOKEN)
+	async verifyResetToken(@Body() body: { token: string }) {
+		return await this._verifyResetTokenUseCase.execute(body.token);
+	}
+
+	@Post(RECRUITER_AUTH_ROUTER.FORGOT_PASSWORD)
+	async forgotPassword(@Body() dto: RecruiterForgotPasswordDto) {
+		return await this._forgotPasswordUseCase.execute(dto);
+	}
+
+	@Post(RECRUITER_AUTH_ROUTER.RESET_PASSWORD)
+	async resetPassword(@Body() dto: RecruiterResetPasswordDto) {
+		return await this._resetPasswordUseCase.execute(dto);
+	}
 
 	@Post(RECRUITER_AUTH_ROUTER.LOGIN)
 	async login(
@@ -69,20 +102,4 @@ export class AuthRecruiterController {
 
 		return otp;
 	}
-
-	// @UseGuards(RefreshGuard)
-	// @Post(RECRUITER_AUTH_ROUTER.LOGOUT)
-	// async logout(
-	// 	@Req() req: Request,
-	// 	@Res({ passthrough: true }) res: Response,
-	// ): Promise<{ message: string }> {
-	// 	const success = await this._logoutUseCase.execute(req.sessionId);
-
-	// 	if (success) {
-	// 		clearCookie(res, AUTH_TOKEN.SESSION_ID);
-	// 		clearCookie(res, AUTH_TOKEN.ACCESS_TOKEN);
-	// 	}
-
-	// 	return { message: "Logged out successfully" };
-	// }
 }
