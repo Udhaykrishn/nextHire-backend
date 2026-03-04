@@ -1,5 +1,5 @@
 import { UserEntity } from "@/domain/entity/user.entity";
-import type { IUserPresitanceMapper } from "@/application/interface/mappers/user-presistance.mapper";
+import type { IUserPresitanceMapper } from "@/application/interface/mappers/user/user-presistance.mapper";
 import type { UserType } from "../db/mongodb/models/user.schema";
 
 export class UserPresitanceMapper implements IUserPresitanceMapper<UserEntity, UserType> {
@@ -21,6 +21,8 @@ export class UserPresitanceMapper implements IUserPresitanceMapper<UserEntity, U
 			profile_url: user.profile_url,
 			social_link: user.social_link,
 			createdAt: user.createdAt,
+			skills: user.skills,
+			languages: user.languages,
 		};
 	}
 
@@ -42,6 +44,8 @@ export class UserPresitanceMapper implements IUserPresitanceMapper<UserEntity, U
 			subscription: doc.subscription,
 			social_link: doc.social_link,
 			createdAt: doc.createdAt,
+			skills: doc.skills,
+			languages: doc.languages,
 		});
 	}
 }

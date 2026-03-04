@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import type { HydratedDocument } from "mongoose";
+import type { HydratedDocument, InferSchemaType } from "mongoose";
 
 export type JobsDocument = HydratedDocument<Jobs>;
 
@@ -98,3 +98,4 @@ export class Jobs {
 }
 
 export const JobsSchema = SchemaFactory.createForClass(Jobs);
+export type JobType = InferSchemaType<typeof JobsSchema> & { _id: string };

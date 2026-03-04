@@ -35,6 +35,9 @@ export class Recruiter {
 	@Prop({ default: "HR" })
 	company_role: string;
 
+	@Prop({ default: 0 })
+	job_count: number;
+
 	@Prop({ default: false })
 	is_verified_company: boolean;
 
