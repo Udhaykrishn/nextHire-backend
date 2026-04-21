@@ -7,4 +7,5 @@ export enum USER_ROUTERS {
 	PROFILE = "profile",
 	UPLOAD_PROFILE_IMAGE = "profile/upload",
 	UPDATE = "update",
+	UPLOAD_RESUME = "profile/resume/upload",
 }
