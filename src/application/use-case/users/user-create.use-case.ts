@@ -20,7 +20,7 @@ export class CreateUserUseCase implements IExecutable<CreateUserDto, ResponseUse
 		private readonly _userRepository: IUserRepository<UserEntity>,
 		@Inject(COMMON_TOKEN.PASSWORD_HASH)
 		private readonly _passwordHasher: IPasswordHash,
-	) { }
+	) {}
 
 	async execute(userDto: CreateUserDto): Promise<ResponseUserDto> {
 		const checkUserExsitOrNot = await this._userRepository.findByUniqueFields({

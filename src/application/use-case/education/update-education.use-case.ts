@@ -32,8 +32,12 @@ export class UpdateEducationUseCase implements IExecutable<UpdateEducationDto, R
 		if (data.endDate) education.changeEndDate(data.endDate);
 		if (data.gpa) education.changeGpa(data.gpa);
 
-		const updatedEducation = await this._educationRepository.findByIdAndUpdate(education.id!, education);
+		const updatedEducation = await this._educationRepository.findByIdAndUpdate(education.id ?? "", education);
 
-		return this._mapper.toResponse(updatedEducation!);
+		if (!updatedEducation) {
+			throw new NotFoundException(USER_PROFILE_MESSAGES.EDUCATION_NOT_FOUND);
+		}
+
+		return this._mapper.toResponse(updatedEducation);
 	}
 }

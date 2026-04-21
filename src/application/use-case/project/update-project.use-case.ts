@@ -31,7 +31,7 @@ export class UpdateProjectUseCase implements IExecutable<UpdateProjectDto, Respo
 		if (data.endDate) project.changeEndDate(data.endDate);
 		if (data.url) project.changeUrl(data.url);
 
-		const updatedProject = await this._projectRepository.findByIdAndUpdate(project.id!, project);
+		const updatedProject = await this._projectRepository.findByIdAndUpdate(project.id ?? "", project);
 
 		if (!updatedProject) {
 			throw new BadRequestException("Project not found");

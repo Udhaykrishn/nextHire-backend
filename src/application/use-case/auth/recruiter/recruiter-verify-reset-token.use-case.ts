@@ -29,7 +29,7 @@ export class RecruiterVerifyResetTokenUseCase implements IExecutable<string, boo
 		let payload: AuthPayload;
 		try {
 			payload = this._jwtService.verifyToken(token) as AuthPayload;
-		} catch (e) {
+		} catch (_e) {
 			throw new BadRequestException(USER_MESSAGES.INVALID_TOKEN);
 		}
 

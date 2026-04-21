@@ -25,7 +25,7 @@ export class UserForgotPasswordUseCase implements IExecutable<ForgotPasswordDto,
 		private readonly _redisService: IRedisService,
 		private readonly configService: ConfigService<EnvConfig>,
 		private readonly eventEmitter: EventEmitter2,
-	) { }
+	) {}
 
 	async execute(dto: ForgotPasswordDto): Promise<ForgotPasswordResponseDto> {
 		const user = await this._userRepository.findOne({ email: dto.email });
