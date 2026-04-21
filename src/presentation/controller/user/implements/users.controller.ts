@@ -31,6 +31,7 @@ import { AuthGuard, RoleGuard } from "@/presentation/guards";
 import { Roles } from "@/presentation/decorators";
 import { UserBlockedGuard } from "@/presentation/guards/block";
 import { IUserController } from "../interface/user.interface";
+import type { AuthenticatedRequest } from "@/presentation/interface/request.interface";
 
 @UseGuards(AuthGuard, RoleGuard)
 @Roles(ROLES.USER)
@@ -53,7 +54,10 @@ export class UserController implements IUserController {
 		@Inject(USERS_TOKEN.USER_FIND_BY_EMAIL_USE_CASE)
 		private readonly _findUserByEmailUseCase: IExecutable<string, ResponseUserDto>,
 		@Inject(USERS_TOKEN.UPLOAD_PROFILE_IMAGE_USE_CASE)
-		private readonly _uploadProfileImageUseCase: IExecutable<{ userId: string; file: any }, ResponseUserDto>,
+		private readonly _uploadProfileImageUseCase: IExecutable<
+			{ userId: string; file: Express.Multer.File },
+			ResponseUserDto
+		>,
 		@Inject(USERS_TOKEN.DELETE_PROFILE_IMAGE_USE_CASE)
 		private readonly _deleteProfileImageUseCase: IExecutable<string, ResponseUserDto>,
 		@Inject(USERS_TOKEN.USER_UPDATE_SUBSCRIPTION_USE_CASE)
@@ -61,6 +65,13 @@ export class UserController implements IUserController {
 			{ userId: string; dto: UserSubscriptionUpdateDto },
 			ResponseUserDto
 		>,
+		@Inject(USERS_TOKEN.UPLOAD_RESUME_USE_CASE)
+		private readonly _uploadResumeUseCase: IExecutable<
+			{ userId: string; file: Express.Multer.File },
+			ResponseUserDto
+		>,
+		@Inject(USERS_TOKEN.DELETE_RESUME_USE_CASE)
+		private readonly _deleteResumeUseCase: IExecutable<string, ResponseUserDto>,
 	) {}
 
 	@Post(USER_ROUTERS.DEFAULT)
@@ -79,7 +90,7 @@ export class UserController implements IUserController {
 	@UseGuards(UserBlockedGuard)
 	@Patch(USER_ROUTERS.UPDATE)
 	@HttpCode(HttpStatus.OK)
-	async updateProfile(@Req() req: any, @Body() updateDto: UpdateUserDto): Promise<ResponseUserDto> {
+	async updateProfile(@Req() req: AuthenticatedRequest, @Body() updateDto: UpdateUserDto): Promise<ResponseUserDto> {
 		return this._updateUserUseCase.execute({ data: updateDto, userId: req.user.id });
 	}
 
@@ -125,7 +136,7 @@ export class UserController implements IUserController {
 	@UseGuards(UserBlockedGuard)
 	@Get(USER_ROUTERS.PROFILE)
 	@HttpCode(HttpStatus.OK)
-	async findUser(@Req() req: any): Promise<ResponseUserDto> {
+	async findUser(@Req() req: AuthenticatedRequest): Promise<ResponseUserDto> {
 		return this._findUserByEmailUseCase.execute(req.user.email);
 	}
 
@@ -137,7 +148,11 @@ export class UserController implements IUserController {
 			limits: {
 				fileSize: 5 * 1024 * 1024,
 			},
-			fileFilter: (req: any, file: any, callback: any) => {
+			fileFilter: (
+				_req: AuthenticatedRequest,
+				file: Express.Multer.File,
+				callback: (error: Error | null, acceptFile: boolean) => void,
+			) => {
 				if (!file.mimetype.match(/\/(jpg|jpeg|png|webp)$/)) {
 					return callback(new BadRequestException("Only image files are allowed!"), false);
 				}
@@ -146,7 +161,10 @@ export class UserController implements IUserController {
 		}),
 	)
 	@UseGuards(AuthGuard)
-	async uploadProfileImage(@UploadedFile() file: any, @Req() req: any): Promise<ResponseUserDto> {
+	async uploadProfileImage(
+		@UploadedFile() file: Express.Multer.File,
+		@Req() req: AuthenticatedRequest,
+	): Promise<ResponseUserDto> {
 		if (!file) {
 			throw new BadRequestException("No file uploaded");
 		}
@@ -156,13 +174,56 @@ export class UserController implements IUserController {
 	@Delete(USER_ROUTERS.UPLOAD_PROFILE_IMAGE)
 	@UseGuards(AuthGuard)
 	@HttpCode(HttpStatus.OK)
-	async deleteProfileImage(@Req() req: any): Promise<ResponseUserDto> {
+	async deleteProfileImage(@Req() req: AuthenticatedRequest): Promise<ResponseUserDto> {
 		return this._deleteProfileImageUseCase.execute(req.user.id);
 	}
 	@Patch("subscription/upgrade")
 	@UseGuards(AuthGuard)
 	@HttpCode(HttpStatus.OK)
-	async updateSubscription(@Req() req: any, @Body() dto: UserSubscriptionUpdateDto): Promise<ResponseUserDto> {
+	async updateSubscription(
+		@Req() req: AuthenticatedRequest,
+		@Body() dto: UserSubscriptionUpdateDto,
+	): Promise<ResponseUserDto> {
 		return this._updateUserSubscriptionUseCase.execute({ userId: req.user.id, dto });
+	}
+
+	@Post(USER_ROUTERS.UPLOAD_RESUME)
+	@HttpCode(HttpStatus.OK)
+	@UseInterceptors(
+		FileInterceptor("resume", {
+			storage: memoryStorage(),
+			limits: {
+				fileSize: 10 * 1024 * 1024, // 10MB for resumes
+			},
+			fileFilter: (
+				_req: AuthenticatedRequest,
+				file: Express.Multer.File,
+				callback: (error: Error | null, acceptFile: boolean) => void,
+			) => {
+				if (
+					!file.mimetype.match(/\/(pdf|msword|vnd.openxmlformats-officedocument.wordprocessingml.document)$/)
+				) {
+					return callback(new BadRequestException("Only PDF and Word files are allowed!"), false);
+				}
+				callback(null, true);
+			},
+		}),
+	)
+	@UseGuards(AuthGuard)
+	async uploadResume(
+		@UploadedFile() file: Express.Multer.File,
+		@Req() req: AuthenticatedRequest,
+	): Promise<ResponseUserDto> {
+		if (!file) {
+			throw new BadRequestException("No file uploaded");
+		}
+		return this._uploadResumeUseCase.execute({ userId: req.user.id, file });
+	}
+
+	@Delete(USER_ROUTERS.UPLOAD_RESUME)
+	@UseGuards(AuthGuard)
+	@HttpCode(HttpStatus.OK)
+	async deleteResume(@Req() req: AuthenticatedRequest): Promise<ResponseUserDto> {
+		return this._deleteResumeUseCase.execute(req.user.id);
 	}
 }

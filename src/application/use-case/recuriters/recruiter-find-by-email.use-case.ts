@@ -29,7 +29,7 @@ export class RecruiterFindByEmailUseCase implements IExecutable<string, Response
 			throw new NotFoundException(RECRUITER_MESSAGES.RECRUITER_NOT_FOUND);
 		}
 
-		if (recruiter?.profile_url && recruiter?.profile_url.key) {
+		if (recruiter?.profile_url?.key) {
 			try {
 				const signedUrl = await this._s3Service.getSignedUrlForRead(recruiter.profile_url.key);
 				recruiter.changeProfileUrl(recruiter.profile_url.key, signedUrl);

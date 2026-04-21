@@ -13,8 +13,7 @@ import type { IJobPersistenceMapper } from "@/application/interface/mappers/job/
 export class JobRepository extends BaseRepository<JobEntity, JobType> implements IJobRepository<JobEntity> {
 	constructor(
 		@InjectModel(Jobs.name) _jobModel: Model<JobType>,
-		@Inject(JOB_MAPPER.JOB_PERSISTENCE)
-		private readonly _mapper: IJobPersistenceMapper<JobEntity, JobType>,
+		@Inject(JOB_MAPPER.JOB_PERSISTENCE) readonly _mapper: IJobPersistenceMapper<JobEntity, JobType>,
 	) {
 		super(_jobModel, _mapper);
 	}

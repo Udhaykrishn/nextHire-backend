@@ -13,12 +13,10 @@ import type { IRecruiterRepository } from "@/application/interface/repository";
 import type { IRecruiterApplicationMappers } from "@/application/interface/mappers/recruiter";
 import { RECRUITER_MESSAGES } from "@/domain/enums/messages";
 import { USER_ROLE, USER_STATUS } from "@/domain/enums/status";
-import { EventEmitter2 } from "@nestjs/event-emitter";
 import { AUTH_EVENTS } from "@/domain/enums/events.enum";
 
 @Injectable()
-export class VerifyRecruiterOtpUseCase
-	implements IExecutable<VerifyOTPDto, VerifyResponseOTPDto> {
+export class VerifyRecruiterOtpUseCase implements IExecutable<VerifyOTPDto, VerifyResponseOTPDto> {
 	constructor(
 		@Inject(RECRUITER_TOKEN.RECRUITER_REPOSITORY)
 		private readonly _recruiterRepository: IRecruiterRepository<RecruiterEntity>,
@@ -31,7 +29,7 @@ export class VerifyRecruiterOtpUseCase
 
 		@Inject(RECRUITER_MAPPER.RECRUITER_APPLICATION)
 		private readonly _recruiterMapper: IRecruiterApplicationMappers<RecruiterEntity>,
-	) { }
+	) {}
 
 	async execute(dto: VerifyOTPDto): Promise<VerifyResponseOTPDto> {
 		const recruiter = await this._redisService.get(

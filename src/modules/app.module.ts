@@ -48,4 +48,4 @@ import { HealthController } from "@/presentation/controllers/health.controller";
 	],
 	controllers: [HealthController],
 })
-export class AppModule { }
+export class AppModule {}

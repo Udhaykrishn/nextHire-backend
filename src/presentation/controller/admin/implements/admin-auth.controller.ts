@@ -24,7 +24,7 @@ export class AdminAuthController implements IAdminAuthController {
 		private readonly refreshUseCase: AdminRefreshUseCase,
 		@Inject(ADMIN_AUTH_TOKEN.ADMIN_LOGOUT_USE_CASE)
 		private readonly logoutUseCase: AdminLogoutUseCase,
-	) { }
+	) {}
 
 	@Post(ADMIN_AUTH_ROUTER.LOGIN)
 	async login(@Body() dto: AdminLoginDto, @Res({ passthrough: true }) res: Response) {
@@ -55,13 +55,11 @@ export class AdminAuthController implements IAdminAuthController {
 		return { success: true };
 	}
 
-
 	@UseGuards(AuthGuard)
 	@Roles(USER_ROLE.ADMIN)
 	@Get(ADMIN_AUTH_ROUTER.RECRUITER_STATUS)
-	async recruiterStatus(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+	async recruiterStatus(@Req() _req: Request, @Res({ passthrough: true }) _res: Response) {
 		// TODO: Implement recruiter status logic
 		return { success: true };
 	}
-
 }
