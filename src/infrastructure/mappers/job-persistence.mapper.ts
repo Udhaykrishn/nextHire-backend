@@ -12,7 +12,7 @@ export class JobPersistenceMapper implements IJobPersistenceMapper<JobEntity, Jo
 		// Here we return object matching JobType.
 
 		return {
-			_id: data.id!, // Assumes id exists when mapping back to mongo for update, or ignored on create
+			_id: data.id ?? "", // Assumes id exists when mapping back to mongo for update, or ignored on create
 			job_title: data.job_title,
 			job_description: data.job_description,
 			job_logo: data.job_logo,
