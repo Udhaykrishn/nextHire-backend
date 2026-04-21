@@ -73,7 +73,7 @@ export class UpdateRecruiterUseCase
 			throw new NotFoundException(RECRUITER_MESSAGES.RECRUITER_UPDATE_FAILED);
 		}
 
-		if (updatedRecruiter.profile_url && updatedRecruiter.profile_url.key) {
+		if (updatedRecruiter.profile_url?.key) {
 			try {
 				const signedUrl = await this._s3Service.getSignedUrlForRead(updatedRecruiter.profile_url.key);
 				updatedRecruiter.changeProfileUrl(updatedRecruiter.profile_url.key, signedUrl);
