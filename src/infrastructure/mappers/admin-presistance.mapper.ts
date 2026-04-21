@@ -7,7 +7,7 @@ export class AdminPresitanceMapper implements IAdminPresitanceMapper<AdminEntity
 		return {
 			email: admin.email,
 			password: admin.password,
-		} as any;
+		} as AdminType;
 	}
 
 	async fromMongo(doc: AdminType): Promise<AdminEntity> {
