@@ -27,7 +27,7 @@ export class VerifyUserOtpUsecase implements IExecutable<VerifyOTPDto, VerifyRes
 		@Inject(USER_MAPPER.USER_APPLICATION)
 		private readonly _userMapper: IUserApplicationMappers<UserType>,
 		private readonly eventEmitter: EventEmitter2,
-	) { }
+	) {}
 
 	async execute(dto: VerifyOTPDto): Promise<VerifyResponseOTPDto> {
 		const user = await this._redisService.get(REDIS_KEYS.VERIFY_OTP.concat(dto.email));
