@@ -17,7 +17,8 @@ import { AUTH_EVENTS } from "@/domain/enums/events.enum";
 
 @Injectable()
 export class RecruiterForgotPasswordUseCase
-	implements IExecutable<RecruiterForgotPasswordDto, RecruiterForgotPasswordResponseDto> {
+	implements IExecutable<RecruiterForgotPasswordDto, RecruiterForgotPasswordResponseDto>
+{
 	constructor(
 		@Inject(RECRUITER_TOKEN.RECRUITER_REPOSITORY)
 		private readonly _recruiterRepository: IRecruiterRepository<RecruiterEntity>,
@@ -27,7 +28,7 @@ export class RecruiterForgotPasswordUseCase
 		private readonly _redisService: IRedisService,
 		private readonly configService: ConfigService<EnvConfig>,
 		private readonly eventEmitter: EventEmitter2,
-	) { }
+	) {}
 
 	async execute(dto: RecruiterForgotPasswordDto): Promise<RecruiterForgotPasswordResponseDto> {
 		const recruiter = await this._recruiterRepository.findOne({ email: dto.email });

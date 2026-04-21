@@ -53,10 +53,6 @@ export class UpdateUserDto {
 	role_of_title?: string;
 
 	@IsOptional()
-	@IsUrl({}, { message: "resume_url must be a valid URL" })
-	resume_url?: string;
-
-	@IsOptional()
 	@IsString()
 	@MaxLength(500)
 	bio?: string;

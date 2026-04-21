@@ -16,7 +16,6 @@ import {
 } from "@/application/use-case/recuriters";
 import { CheckRecruiterBlockedUseCase } from "@/application/use-case/recuriters";
 import { CompanyVerificationService } from "@/infrastructure/services/implements/company-verification.service";
-import { S3Service } from "@/infrastructure/services/implements";
 
 @Module({
 	imports: [RecruiterLiteModule, CommonModule],

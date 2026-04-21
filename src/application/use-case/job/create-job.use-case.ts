@@ -44,7 +44,7 @@ export class CreateJobUseCase implements IExecutable<CreateJobDto, JobEntity> {
 		// Update recruiter job count
 		recruiter.incrementJobCount();
 
-		await this._recruiterRepository.findByIdAndUpdate(recruiter.id!, recruiter);
+		await this._recruiterRepository.findByIdAndUpdate(recruiter.id ?? "", recruiter);
 
 		return savedJob;
 	}

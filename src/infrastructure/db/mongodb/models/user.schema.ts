@@ -31,8 +31,17 @@ export class User {
 	})
 	status: string;
 
-	@Prop()
-	resume_url: string;
+	@Prop({
+		type: {
+			key: { type: String },
+			url: { type: String },
+		},
+		_id: false,
+	})
+	resume_url: {
+		key: string;
+		url: string;
+	};
 
 	@Prop()
 	bio: string;

@@ -2,11 +2,7 @@ import { Injectable, Inject, UnauthorizedException } from "@nestjs/common";
 import { IExecutable } from "@/application/interface/executable.interface";
 import { RecruiterEntity } from "@/domain/entity/recruiter.entity";
 import { COMMON_TOKEN } from "@/application/enums/tokens";
-import type {
-	IOtpService,
-	IPasswordHash,
-	IRedisService,
-} from "@/infrastructure/services/interface";
+import type { IOtpService, IPasswordHash, IRedisService } from "@/infrastructure/services/interface";
 import { REDIS_KEYS } from "@/domain/enums/keys";
 import { RECRUITER_MAPPER } from "@/application/enums";
 import { RECRUITER_TOKEN } from "@/application/enums/recruiter";
@@ -36,7 +32,7 @@ export class RecruiterRegisterUseCase implements IExecutable<RecruiterSignupDto,
 		@Inject(RECRUITER_MAPPER.RECRUITER_APPLICATION)
 		private readonly _recruiterMapper: IRecruiterApplicationMappers<RecruiterEntity>,
 		private readonly eventEmitter: EventEmitter2,
-	) { }
+	) {}
 
 	async execute(dto: RecruiterSignupDto): Promise<RecruiterSignResponseDto> {
 		const hashedPassword = await this._passwordHash.hash(dto.password);

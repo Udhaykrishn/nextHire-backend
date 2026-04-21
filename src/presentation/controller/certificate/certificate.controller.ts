@@ -9,7 +9,7 @@ import { Roles } from "@/presentation/decorators/role.decorator";
 import { USER_ROLE } from "@/domain/enums";
 import { CERTIFICATE_ROUTER } from "@/presentation/enums";
 import { Body, Controller, Delete, Get, Inject, Param, Post, Put, Req, UseGuards } from "@nestjs/common";
-import { Request } from "express";
+import type { AuthenticatedRequest } from "@/presentation/interface/request.interface";
 
 @Controller(CERTIFICATE_ROUTER.ROUTER)
 @UseGuards(AuthGuard, RoleGuard)
@@ -27,13 +27,13 @@ export class CertificateController {
 	) {}
 
 	@Post(CERTIFICATE_ROUTER.DEFAULT)
-	async create(@Req() req: any, @Body() dto: CreateCertificateDto) {
+	async create(@Req() req: AuthenticatedRequest, @Body() dto: CreateCertificateDto) {
 		dto.userId = req.user.id;
 		return await this._createCertificateUseCase.execute(dto);
 	}
 
 	@Get(CERTIFICATE_ROUTER.DEFAULT)
-	async getAll(@Req() req: any) {
+	async getAll(@Req() req: AuthenticatedRequest) {
 		return await this._getCertificatesUseCase.execute(req.user.id);
 	}
 
