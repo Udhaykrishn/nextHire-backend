@@ -41,7 +41,7 @@ export class GetAllRecruitersUseCase implements IExecutable<PaginationDto, Pagin
 		// Sign URLs
 		await Promise.all(
 			recruiters.data.map(async (recruiter) => {
-				if (recruiter.profile_url && recruiter.profile_url.key) {
+				if (recruiter.profile_url?.key) {
 					try {
 						const signedUrl = await this._s3Service.getSignedUrlForRead(recruiter.profile_url.key);
 						recruiter.changeProfileUrl(recruiter.profile_url.key, signedUrl);
