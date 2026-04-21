@@ -53,4 +53,4 @@ import { JwtService } from "@/infrastructure/services/implements";
 		},
 	],
 })
-export class RecruiterAuthModule { }
+export class RecruiterAuthModule {}

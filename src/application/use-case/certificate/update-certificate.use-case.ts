@@ -31,8 +31,15 @@ export class UpdateCertificateUseCase implements IExecutable<UpdateCertificateDt
 		if (data.expirationDate) certificate.changeExpirationDate(data.expirationDate);
 		if (data.certificateUrl) certificate.changeCertificateUrl(data.certificateUrl);
 
-		const updatedCertificate = await this._certificateRepository.findByIdAndUpdate(certificate.id!, certificate);
+		const updatedCertificate = await this._certificateRepository.findByIdAndUpdate(
+			certificate.id ?? "",
+			certificate,
+		);
 
-		return this._mapper.toResponse(updatedCertificate!);
+		if (!updatedCertificate) {
+			throw new NotFoundException(USER_PROFILE_MESSAGES.CERTIFICATE_NOT_FOUND);
+		}
+
+		return this._mapper.toResponse(updatedCertificate);
 	}
 }

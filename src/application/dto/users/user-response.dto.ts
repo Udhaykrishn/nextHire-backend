@@ -6,7 +6,10 @@ export class ResponseUserDto {
 	public readonly experience: string;
 	public readonly role_of_title: string;
 	public readonly status: string;
-	public readonly resume_url: string;
+	public readonly resume_url: {
+		key: string;
+		url: string;
+	};
 	public readonly bio: string;
 	public readonly badge: boolean;
 	public readonly google_id: string;
@@ -30,4 +33,3 @@ export class ResponseUserDto {
 		url: string;
 	};
 }
-

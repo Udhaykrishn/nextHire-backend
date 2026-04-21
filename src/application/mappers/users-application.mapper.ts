@@ -53,4 +53,3 @@ export class UserApplicationMapper implements IUserApplicationMappers<UserType> 
 		});
 	}
 }
-

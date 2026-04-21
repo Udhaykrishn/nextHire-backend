@@ -7,7 +7,6 @@ import { CreateJobUseCase } from "@/application/use-case/job/create-job.use-case
 import { JOB_TOKEN } from "@/application/enums/tokens/job-token.enum";
 import { JOB_MAPPER } from "@/application/enums/mappers/job-mapper.enum";
 import { RecruiterLiteModule } from "../recruiter/recuriter-lite.module";
-import { RECRUITER_TOKEN } from "@/application/enums/recruiter/recruiter-token.enum";
 
 @Module({
 	imports: [

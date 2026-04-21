@@ -9,8 +9,7 @@ import { Roles } from "@/presentation/decorators/role.decorator";
 import { USER_ROLE } from "@/domain/enums";
 import { ADDRESS_ROUTER } from "@/presentation/enums";
 import { Body, Controller, Delete, Get, Inject, Param, Post, Put, Req, UseGuards } from "@nestjs/common";
-import type {Request} from "express"
-
+import type { Request } from "express";
 
 @Controller(ADDRESS_ROUTER.ROUTER)
 @UseGuards(AuthGuard, RoleGuard)

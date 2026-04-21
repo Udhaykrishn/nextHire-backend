@@ -10,9 +10,6 @@ import { Module } from "@nestjs/common";
 			useClass: OtpService,
 		},
 	],
-	exports: [
-		COMMON_TOKEN.PASSWORD_HASH,
-		COMMON_TOKEN.OTP_SERVICE,
-	],
+	exports: [COMMON_TOKEN.PASSWORD_HASH, COMMON_TOKEN.OTP_SERVICE],
 })
-export class CommonModule { }
+export class CommonModule {}

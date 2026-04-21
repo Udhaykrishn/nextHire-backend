@@ -22,7 +22,7 @@ export class CreateRecruiterUseCase implements IExecutable<CreateRecruiterDto, R
 
 		@Inject(COMMON_TOKEN.PASSWORD_HASH)
 		private readonly _passwordHasher: IPasswordHash,
-	) { }
+	) {}
 
 	async execute(recruiterDto: CreateRecruiterDto): Promise<ResponseRecruiterDto> {
 		const existingRecruiter = await this._recruiterRepository.findByUniqueFields({

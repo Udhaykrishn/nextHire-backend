@@ -28,7 +28,7 @@ export class UserRegisterUseCase implements IExecutable<UserSignupDto, UserSignR
 		@Inject(USER_MAPPER.USER_APPLICATION)
 		private readonly _userMapper: IUserApplicationMappers<UserType>,
 		private readonly eventEmitter: EventEmitter2,
-	) { }
+	) {}
 
 	async execute(dto: UserSignupDto): Promise<UserSignResponseDto> {
 		const password = await this._passwordHash.hash(dto.password);

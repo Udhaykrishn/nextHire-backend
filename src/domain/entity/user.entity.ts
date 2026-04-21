@@ -9,7 +9,10 @@ export class UserEntity {
 	private _experience: string = "";
 	private _role_of_title: string = "";
 	private _status: string = USER_STATUS.PENDING;
-	private _resume_url: string = "";
+	private _resume_url: { key: string; url: string } = {
+		key: "",
+		url: "",
+	};
 	private _profile_url: { key: string; url: string } = {
 		key: "",
 		url: "",
@@ -42,7 +45,7 @@ export class UserEntity {
 		experience: string,
 		role_of_title: string,
 		status: string,
-		resume_url: string,
+		resume_url: { key: string; url: string },
 		bio: string,
 		badge: boolean,
 		google_id: string,
@@ -82,7 +85,7 @@ export class UserEntity {
 		experience?: string;
 		role_of_title?: string;
 		status?: string;
-		resume_url?: string;
+		resume_url?: { key: string; url: string };
 		bio?: string;
 		badge?: boolean;
 		google_id?: string;
@@ -102,7 +105,7 @@ export class UserEntity {
 			data.experience ?? "",
 			data.role_of_title ?? "",
 			data.status ?? USER_STATUS.PENDING,
-			data.resume_url ?? "",
+			data.resume_url ?? { key: "", url: "" },
 			data.bio ?? "",
 			data.badge ?? false,
 			data.google_id ?? "",
@@ -148,7 +151,7 @@ export class UserEntity {
 		return this._status;
 	}
 
-	get resume_url(): string {
+	get resume_url(): { key: string; url: string } {
 		return this._resume_url;
 	}
 
@@ -208,8 +211,8 @@ export class UserEntity {
 		this._status = status;
 	}
 
-	changeResumeUrl(resume_url: string): void {
-		this._resume_url = resume_url;
+	changeResumeUrl(key: string, url: string): void {
+		this._resume_url = { key, url };
 	}
 
 	changeBio(bio: string): void {

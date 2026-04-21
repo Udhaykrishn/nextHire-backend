@@ -1,0 +1,20 @@
+{
+	"version": 1,
+	"skills": {
+		"clean-architecture": {
+			"source": "wondelai/skills",
+			"sourceType": "github",
+			"computedHash": "49b99ed12200c0717eb14d8ff9da9cc1a577ac2fe488a4f4e55047cf35767be5"
+		},
+		"nestjs-best-practices": {
+			"source": "kadajett/agent-nestjs-skills",
+			"sourceType": "github",
+			"computedHash": "1b6f82e889d19d305e38e35594de08eca0242321f353cafa4cf5e61dd3aa1a73"
+		},
+		"nestjs-clean-typescript": {
+			"source": "mindrally/skills",
+			"sourceType": "github",
+			"computedHash": "830a608ac0d15d5f93e2fcdc65c4c1fb3fdba3b687e837a01191b0714d9c25f2"
+		}
+	}
+}

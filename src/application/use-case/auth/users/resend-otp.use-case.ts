@@ -16,7 +16,7 @@ export class UserResendOtpUseCase implements IExecutable<VerifyOTPDto, { message
 		@Inject(COMMON_TOKEN.OTP_SERVICE)
 		private readonly _otpService: IOtpService,
 		private readonly eventEmitter: EventEmitter2,
-	) { }
+	) {}
 
 	async execute(dto: VerifyOTPDto): Promise<{ message: string }> {
 		const email = dto.email;

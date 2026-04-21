@@ -46,9 +46,6 @@ export class UpdateUserUseCase implements IExecutable<{ userId: string; data: Up
 		if (data.role_of_title) {
 			user.changeRoleOfTitle(data.role_of_title);
 		}
-		if (data.resume_url) {
-			user.changeResumeUrl(data.resume_url);
-		}
 		if (data.bio) {
 			user.changeBio(data.bio);
 		}
@@ -68,7 +65,7 @@ export class UpdateUserUseCase implements IExecutable<{ userId: string; data: Up
 			throw new NotFoundException("Failed to update");
 		}
 
-		if (updatedUser.profile_url && updatedUser.profile_url.key) {
+		if (updatedUser.profile_url?.key) {
 			try {
 				const signedUrl = await this._s3Service.getSignedUrlForRead(updatedUser.profile_url.key);
 				updatedUser.changeProfileUrl(updatedUser.profile_url.key, signedUrl);

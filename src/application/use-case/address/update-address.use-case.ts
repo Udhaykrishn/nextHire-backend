@@ -33,7 +33,7 @@ export class UpdateAddressUseCase implements IExecutable<UpdateAddressDto, Respo
 		if (data.country) address.changeCountry(data.country);
 		if (data.pincode) address.changePincode(data.pincode);
 
-		const updatedAddress = await this._addressRepository.findByIdAndUpdate(address.id!, address);
+		const updatedAddress = await this._addressRepository.findByIdAndUpdate(address.id ?? "", address);
 
 		if (!updatedAddress) {
 			throw new BadRequestException("Address not found");

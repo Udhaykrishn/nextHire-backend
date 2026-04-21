@@ -34,7 +34,7 @@ export class RecruiterResetPasswordUseCase
 		let payload: AuthPayload;
 		try {
 			payload = this._jwtService.verifyToken(dto.token) as AuthPayload;
-		} catch (e: unknown) {
+		} catch (_e: unknown) {
 			throw new BadRequestException(USER_MESSAGES.INVALID_TOKEN);
 		}
 
