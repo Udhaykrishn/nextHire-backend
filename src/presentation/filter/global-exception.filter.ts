@@ -50,13 +50,21 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 			});
 		}
 
+		const isProduction = process.env.NODE_ENV === "production";
+		const message =
+			exception instanceof Error
+				? isProduction && !(exception instanceof BaseDomainException)
+					? "Internal Server Error"
+					: exception.message
+				: "Internal Server Error";
+
 		return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
 			success: false,
 			error: {
 				statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
 				timestamp,
 				path,
-				message: exception instanceof Error ? exception.message : "Internal Server Error",
+				message,
 				error: "INTERNAL_SERVER_ERROR",
 			},
 		});
