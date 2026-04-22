@@ -25,7 +25,7 @@ export class UserLoginUseCase implements IExecutable<UserLoginDto, UserLoginResp
 
 	async execute(dto: UserLoginDto): Promise<UserLoginResponseDto> {
 		const auth = await this._userRepository.findOne({ email: dto.email });
-		if (!auth) throw new Error("User not found");
+		if (!auth) throw new BadRequestException(USER_MESSAGES.INVALID_CREDENTIALS);
 
 		if (auth.status === USER_STATUS.BLOCK) {
 			throw new BadRequestException(USER_MESSAGES.USER_BLOCKED_BY_ADMIN);
@@ -34,7 +34,7 @@ export class UserLoginUseCase implements IExecutable<UserLoginDto, UserLoginResp
 		const isMatch = await this._passwordHash.compare(auth.password, dto.password);
 
 		if (!isMatch) {
-			throw new BadRequestException("Invalid credintails");
+			throw new BadRequestException(USER_MESSAGES.INVALID_CREDENTIALS);
 		}
 
 		const payload = {

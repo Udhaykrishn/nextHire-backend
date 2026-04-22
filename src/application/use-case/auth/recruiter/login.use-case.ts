@@ -37,7 +37,7 @@ export class RecruiterLoginUseCase implements IExecutable<RecruiterLoginDto, Rec
 		});
 
 		if (!recruiter) {
-			throw new BadRequestException(RECRUITER_MESSAGES.RECRUITER_NOT_FOUND);
+			throw new BadRequestException(RECRUITER_MESSAGES.INVALID_CREDENTIALS);
 		}
 
 		if (recruiter.status === RECRUITER_STATUS.BLOCKED) {

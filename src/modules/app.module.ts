@@ -1,5 +1,5 @@
 import { MongoDbModule } from "./mongodb.module";
-import { Module } from "@nestjs/common";
+import { type NestModule, type MiddlewareConsumer, Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { EventEmitterModule } from "@nestjs/event-emitter";
 import { BullModule } from "@nestjs/bullmq";
@@ -15,6 +15,9 @@ import { ProjectModule } from "./project/project.module";
 import { AddressModule } from "./address/address.module";
 import { OTelModule } from "./otel.module";
 import { HealthController } from "@/presentation/controllers/health.controller";
+import { ThrottlerModule, ThrottlerGuard } from "@nestjs/throttler";
+import { APP_GUARD } from "@nestjs/core";
+import { SecurityMiddleware } from "@/presentation/middleware/security.middleware";
 
 @Module({
 	imports: [
@@ -24,6 +27,12 @@ import { HealthController } from "@/presentation/controllers/health.controller";
 			validate: (env) => envSchema.parse(env),
 			cache: true,
 		}),
+		ThrottlerModule.forRoot([
+			{
+				ttl: 60000,
+				limit: 100,
+			},
+		]),
 		EventEmitterModule.forRoot(),
 		OTelModule,
 		RedisModule,
@@ -47,5 +56,15 @@ import { HealthController } from "@/presentation/controllers/health.controller";
 		NotificationModule,
 	],
 	controllers: [HealthController],
+	providers: [
+		{
+			provide: APP_GUARD,
+			useClass: ThrottlerGuard,
+		},
+	],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+	configure(consumer: MiddlewareConsumer) {
+		consumer.apply(SecurityMiddleware).forRoutes("*");
+	}
+}
