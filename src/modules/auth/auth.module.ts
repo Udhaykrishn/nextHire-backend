@@ -1,6 +1,7 @@
 import { Module } from "@nestjs/common";
 import { UserAuthModule } from "./user-auth.module";
 import { JwtModule } from "@nestjs/jwt";
+import { ConfigService } from "@nestjs/config";
 import { COMMON_TOKEN } from "@/application/enums/tokens";
 import { JwtService } from "@/infrastructure/services/implements";
 import { RecruiterAuthModule } from "./recruiter-auth.module";
@@ -8,9 +9,12 @@ import { AdminAuthModule } from "./admin-auth.module";
 
 @Module({
 	imports: [
-		JwtModule.register({
+		JwtModule.registerAsync({
 			global: true,
-			secret: "nothingispossible",
+			useFactory: (config: ConfigService) => ({
+				secret: config.get<string>("JWT_SECRET"),
+			}),
+			inject: [ConfigService],
 		}),
 		UserAuthModule,
 		RecruiterAuthModule,

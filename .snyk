@@ -1,0 +1,9 @@
+exclude:
+  global:
+    - node_modules/**
+    - dist/**
+    - build/**
+    - coverage/**
+    - .git/**
+    - .agents/**
+    - test/**
