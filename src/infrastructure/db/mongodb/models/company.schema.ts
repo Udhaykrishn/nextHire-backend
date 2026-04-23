@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import type { HydratedDocument, InferSchemaType } from "mongoose";
+import mongoose, { type HydratedDocument, type InferSchemaType } from "mongoose";
+import { Role } from "./role.schema";
 
 export type RecruiterDocument = HydratedDocument<Recruiter>;
 
@@ -17,8 +18,14 @@ export class Recruiter {
 	@Prop({ required: true })
 	phone: string;
 
+	@Prop({ type: mongoose.Schema.Types.ObjectId, ref: "Role" })
+	role: Role;
+
 	@Prop()
 	GSTIN: string;
+
+	@Prop()
+	CIN: string;
 
 	@Prop()
 	status: string;
@@ -35,11 +42,26 @@ export class Recruiter {
 	@Prop({ default: "HR" })
 	company_role: string;
 
+	@Prop({ default: 0 })
+	job_count: number;
+
 	@Prop({ default: false })
 	is_verified_company: boolean;
 
 	@Prop({ default: false })
 	admin_approved: boolean;
+
+	@Prop({
+		type: {
+			key: { type: String },
+			url: { type: String },
+		},
+		_id: false,
+	})
+	profile_url: {
+		key: string;
+		url: string;
+	};
 
 	@Prop({
 		type: {
