@@ -15,6 +15,7 @@ export class RecruiterApplicationMapper
 			phone: recruiter.phone,
 
 			GSTIN: recruiter.GSTIN,
+			CIN: recruiter.CIN,
 			status: recruiter.status,
 			website_link: recruiter.website_link,
 			description: recruiter.description,
@@ -37,6 +38,7 @@ export class RecruiterApplicationMapper
 			name: data.name,
 			phone: data.phone,
 			GSTIN: data.GSTIN ?? "",
+			CIN: data.CIN ?? "",
 			status: data.status ?? RECRUITER_STATUS.PENDING,
 			website_link: data.website_link ?? "",
 			description: data.description ?? "",

@@ -31,6 +31,11 @@ export class UpdateRecruiterDto {
 	GSTIN?: string;
 
 	@IsOptional()
+	@IsString()
+	@MaxLength(21)
+	CIN?: string;
+
+	@IsOptional()
 	@IsUrl({}, { message: "Website link must be a valid URL" })
 	website_link?: string;
 

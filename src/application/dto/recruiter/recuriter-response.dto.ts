@@ -5,6 +5,7 @@ export class ResponseRecruiterDto {
 	public readonly phone: string;
 
 	public readonly GSTIN: string | null;
+	public readonly CIN: string | null;
 	public readonly status: string;
 	public readonly website_link: string | null;
 	public readonly description: string | null;
