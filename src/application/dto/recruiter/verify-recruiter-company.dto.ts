@@ -8,4 +8,8 @@ export class VerifyRecruiterCompanyDto {
 	@IsString()
 	@IsNotEmpty()
 	GSTIN: string;
+
+	@IsString()
+	@IsNotEmpty()
+	CIN: string;
 }
