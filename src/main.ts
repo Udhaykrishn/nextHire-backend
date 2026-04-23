@@ -9,11 +9,11 @@ import { ValidationPipe } from "@nestjs/common";
 import { GlobalExceptionFilter } from "./presentation/filter/global-exception.filter";
 import { otelSDK } from "./otel";
 import { ResponseInterceptor } from "./presentation/interceptors/response.intercepotor";
+import { xssMiddleware } from "./presentation/middlewares/xss.middleware";
 
 import { json, urlencoded } from "express";
 import csurf from "csurf";
 import hpp from "hpp";
-import xss from "xss-clean";
 import mongoSanitize from "express-mongo-sanitize";
 
 async function bootstrap() {
@@ -24,7 +24,6 @@ async function bootstrap() {
 		bodyParser: false,
 	});
 
-	// Essential for rate-limiting and secure cookies behind a proxy (Load Balancer/Nginx)
 	const server = app.getHttpAdapter().getInstance();
 	server.set("trust proxy", 1);
 
@@ -42,9 +41,8 @@ async function bootstrap() {
 	app.use(compression());
 	app.use(mongoSanitize());
 	app.use(hpp());
-	app.use(xss());
+	app.use(xssMiddleware);
 
-	// CSRF Protection
 	app.use(csurf({ cookie: { httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "lax" } }));
 
 	app.useGlobalPipes(

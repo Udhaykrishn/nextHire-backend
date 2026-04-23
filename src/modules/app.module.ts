@@ -65,6 +65,6 @@ import { SecurityMiddleware } from "@/presentation/middleware/security.middlewar
 })
 export class AppModule implements NestModule {
 	configure(consumer: MiddlewareConsumer) {
-		consumer.apply(SecurityMiddleware).forRoutes("*");
+		consumer.apply(SecurityMiddleware).forRoutes("*path");
 	}
 }
