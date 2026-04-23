@@ -29,6 +29,13 @@ export class VerifyRecruiterCompanyUseCase implements IExecutable<VerifyRecruite
 			throw new BadRequestException(RECRUITER_MESSAGES.INVALID_GSTIN);
 		}
 
+		const isValidCIN = await this._companyVerificationService.verifyCIN(data.CIN);
+		if (!isValidCIN) {
+			throw new BadRequestException(RECRUITER_MESSAGES.INVALID_CIN);
+		}
+
+		recruiter.changeGSTIN(data.GSTIN);
+		recruiter.changeCIN(data.CIN);
 		recruiter.changeGSTIN(data.GSTIN);
 		recruiter.verifyCompany();
 

@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import type { HydratedDocument, InferSchemaType } from "mongoose";
+import mongoose, { type HydratedDocument, type InferSchemaType } from "mongoose";
+import { Role } from "./role.schema";
 
 export type RecruiterDocument = HydratedDocument<Recruiter>;
 
@@ -17,8 +18,14 @@ export class Recruiter {
 	@Prop({ required: true })
 	phone: string;
 
+	@Prop({ type: mongoose.Schema.Types.ObjectId, ref: "Role" })
+	role: Role;
+
 	@Prop()
 	GSTIN: string;
+
+	@Prop()
+	CIN: string;
 
 	@Prop()
 	status: string;

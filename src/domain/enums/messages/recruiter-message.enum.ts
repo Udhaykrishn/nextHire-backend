@@ -7,4 +7,5 @@ export enum RECRUITER_MESSAGES {
 	RECRUITER_NOT_VERIFIED = "Recruiter company not verified. Please verify GSTIN first.",
 	SUBSCRIPTION_REQUIRED = "Free job limit reached. Please subscribe to create more jobs.",
 	INVALID_GSTIN = "Invalid GSTIN or verification failed",
+	INVALID_CIN = "Invalid CIN or verification failed",
 }

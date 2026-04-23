@@ -1,4 +1,4 @@
-import { RecruiterEntity } from "@/domain/entity/recruiter.entity";
+import { RecruiterEntity, RoleEntity } from "@/domain/entity";
 import { RecruiterType } from "../db/mongodb/models/company.schema";
 import { IRecruiterPresitanceMapper } from "@/application/interface/mappers/recruiter/presistance.mapper";
 
@@ -11,6 +11,7 @@ export class RecruiterPresitanceMapper implements IRecruiterPresitanceMapper<Rec
 			name: recruiter.name,
 			phone: recruiter.phone,
 			GSTIN: recruiter.GSTIN,
+			CIN: recruiter.CIN,
 			status: recruiter.status,
 			website_link: recruiter.website_link,
 			description: recruiter.description,
@@ -21,6 +22,7 @@ export class RecruiterPresitanceMapper implements IRecruiterPresitanceMapper<Rec
 			profile_url: recruiter.profile_url,
 			subscription: recruiter.subscription,
 			job_count: recruiter.job_count,
+			role: recruiter.role?.id as unknown as RecruiterType["role"],
 		};
 	}
 
@@ -32,6 +34,7 @@ export class RecruiterPresitanceMapper implements IRecruiterPresitanceMapper<Rec
 			name: doc.name,
 			phone: doc.phone,
 			GSTIN: doc.GSTIN ?? "",
+			CIN: doc.CIN ?? "",
 			status: doc.status ?? "pending",
 			website_link: doc.website_link ?? "",
 			description: doc.description ?? "",
@@ -44,6 +47,16 @@ export class RecruiterPresitanceMapper implements IRecruiterPresitanceMapper<Rec
 				is_subscribed: false,
 			},
 			job_count: doc.job_count ?? 0,
+			role:
+				doc.role && typeof doc.role === "object" && "name" in doc.role
+					? RoleEntity.create({
+							id: (doc.role as { _id?: string })._id?.toString(),
+							name: doc.role.name as string,
+							permissions: (doc.role.permissions as { name: string }[])?.map((p) => ({
+								name: p.name,
+							})),
+						})
+					: undefined,
 		});
 	}
 }

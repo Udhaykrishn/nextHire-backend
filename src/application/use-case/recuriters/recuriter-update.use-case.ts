@@ -54,6 +54,9 @@ export class UpdateRecruiterUseCase
 		if (data.GSTIN) {
 			recruiter.changeGSTIN(data.GSTIN);
 		}
+		if (data.CIN) {
+			recruiter.changeCIN(data.CIN);
+		}
 		if (data.website_link) {
 			recruiter.changeWebsiteLink(data.website_link);
 		}

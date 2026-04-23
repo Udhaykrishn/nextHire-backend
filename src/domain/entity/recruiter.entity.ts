@@ -1,4 +1,5 @@
 import { RECRUITER_ROLE, RECRUITER_STATUS } from "../enums/status";
+import { RoleEntity } from "./role.entity";
 
 export class RecruiterEntity {
 	private readonly _id?: string;
@@ -9,6 +10,7 @@ export class RecruiterEntity {
 	private _phone: string;
 
 	private _GSTIN: string = "";
+	private _CIN: string = "";
 	private _status: string = RECRUITER_STATUS.PENDING;
 	private _website_link: string = "";
 	private _description: string = "";
@@ -32,6 +34,7 @@ export class RecruiterEntity {
 
 	private _createdAt: Date;
 	private _updatedAt?: Date;
+	private _role?: RoleEntity;
 
 	private constructor(
 		email: string,
@@ -39,6 +42,7 @@ export class RecruiterEntity {
 		name: string,
 		phone: string,
 		GSTIN: string,
+		CIN: string,
 		status: string,
 		website_link: string,
 		description: string,
@@ -51,6 +55,7 @@ export class RecruiterEntity {
 		subscription: { current_plan: string; is_subscribed: boolean },
 		createdAt: Date,
 		updatedAt: Date | undefined,
+		role?: RoleEntity,
 		id?: string,
 	) {
 		this._email = email;
@@ -58,6 +63,7 @@ export class RecruiterEntity {
 		this._name = name;
 		this._phone = phone;
 		this._GSTIN = GSTIN;
+		this._CIN = CIN;
 		this._status = status;
 		this._website_link = website_link;
 		this._description = description;
@@ -70,6 +76,7 @@ export class RecruiterEntity {
 		this._subscription = subscription;
 		this._createdAt = createdAt;
 		this._updatedAt = updatedAt;
+		this._role = role;
 		this._id = id;
 	}
 
@@ -80,6 +87,7 @@ export class RecruiterEntity {
 		phone: string;
 
 		GSTIN?: string;
+		CIN?: string;
 		status?: string;
 		website_link?: string;
 		description?: string;
@@ -93,6 +101,7 @@ export class RecruiterEntity {
 
 		createdAt?: Date;
 		updatedAt?: Date;
+		role?: RoleEntity;
 		id?: string;
 	}): RecruiterEntity {
 		return new RecruiterEntity(
@@ -101,6 +110,7 @@ export class RecruiterEntity {
 			data.name,
 			data.phone,
 			data.GSTIN ?? "",
+			data.CIN ?? "",
 			data.status ?? RECRUITER_STATUS.PENDING,
 			data.website_link ?? "",
 			data.description ?? "",
@@ -113,6 +123,7 @@ export class RecruiterEntity {
 			data.subscription ?? { current_plan: "free", is_subscribed: false },
 			data.createdAt ?? new Date(),
 			data.updatedAt,
+			data.role,
 			data.id,
 		);
 	}
@@ -140,6 +151,9 @@ export class RecruiterEntity {
 
 	get GSTIN(): string {
 		return this._GSTIN;
+	}
+	get CIN(): string {
+		return this._CIN;
 	}
 
 	get status(): string {
@@ -194,6 +208,10 @@ export class RecruiterEntity {
 		return this._updatedAt;
 	}
 
+	get role(): RoleEntity | undefined {
+		return this._role;
+	}
+
 	changeName(name: string): void {
 		this._name = name;
 	}
@@ -204,6 +222,10 @@ export class RecruiterEntity {
 
 	changeGSTIN(GSTIN: string): void {
 		this._GSTIN = GSTIN;
+	}
+
+	changeCIN(CIN: string): void {
+		this._CIN = CIN;
 	}
 
 	changeStatus(status: RECRUITER_STATUS): void {
