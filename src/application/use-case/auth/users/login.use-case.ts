@@ -4,7 +4,7 @@ import type { IUserRepository } from "@/application/interface/repository";
 import { UserEntity } from "@/domain/entity";
 import { COMMON_TOKEN, USERS_TOKEN } from "@/application/enums/tokens";
 import type { IJwtService, IPasswordHash, IRedisService } from "@/infrastructure/services/interface";
-import { USER_MESSAGES, USER_ROLE, USER_STATUS } from "@/domain/enums";
+import { USER_MESSAGES, USER_ROLE, USER_STATUS, ROLE_PERMISSIONS } from "@/domain/enums";
 import { v4 as uuid } from "uuid";
 import { COOKIE_MAX_AGE_CONSTANT } from "@/domain/constants/cookie.constant";
 import { REDIS_KEYS } from "@/domain/enums/keys";
@@ -41,6 +41,7 @@ export class UserLoginUseCase implements IExecutable<UserLoginDto, UserLoginResp
 			id: auth.id as string,
 			role: USER_ROLE.USER,
 			email: auth.email,
+			permissions: ROLE_PERMISSIONS[USER_ROLE.USER],
 		};
 
 		const accessToken = await this._jwtService.generateToken(payload, COOKIE_MAX_AGE_CONSTANT.ACCESS_TOKEN_1_HOUR);
