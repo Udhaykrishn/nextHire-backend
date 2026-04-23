@@ -1,0 +1,27 @@
+import { USER_ROLE } from "./status/user-role.enum";
+
+export enum PERMISSION {
+	JOB_CREATE = "job:create",
+	JOB_READ = "job:read",
+	JOB_UPDATE = "job:update",
+	JOB_DELETE = "job:delete",
+
+	PROFILE_READ = "profile:read",
+	PROFILE_UPDATE = "profile:update",
+
+	USER_MANAGE = "user:manage",
+	SYSTEM_CONFIG = "system:config",
+}
+
+export const ROLE_PERMISSIONS: Record<USER_ROLE, PERMISSION[]> = {
+	[USER_ROLE.USER]: [PERMISSION.JOB_READ, PERMISSION.PROFILE_READ, PERMISSION.PROFILE_UPDATE],
+	[USER_ROLE.RECRUITER]: [
+		PERMISSION.JOB_CREATE,
+		PERMISSION.JOB_READ,
+		PERMISSION.JOB_UPDATE,
+		PERMISSION.JOB_DELETE,
+		PERMISSION.PROFILE_READ,
+		PERMISSION.PROFILE_UPDATE,
+	],
+	[USER_ROLE.ADMIN]: Object.values(PERMISSION),
+};

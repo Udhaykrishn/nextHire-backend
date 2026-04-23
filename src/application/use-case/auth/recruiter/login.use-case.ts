@@ -8,11 +8,12 @@ import type { IRecruiterRepository } from "@/application/interface/repository";
 import { RecruiterEntity } from "@/domain/entity";
 import { COMMON_TOKEN } from "@/application/enums/tokens";
 import type { IJwtService, IPasswordHash, IRedisService } from "@/infrastructure/services/interface";
-import { RECRUITER_STATUS, USER_ROLE } from "@/domain/enums/status";
+import { USER_ROLE, ROLE_PERMISSIONS } from "@/domain/enums";
 import { RecruiterLoginDto, RecruiterLoginResponseDto } from "@/application/dto/auth/recruiter/login";
 import { RECRUITER_MESSAGES } from "@/domain/enums/messages";
 import { ConfigService } from "@nestjs/config";
 import { EnvConfig } from "@/infrastructure/config/env.schema";
+import { RECRUITER_STATUS } from "@/domain/enums/status";
 
 @Injectable()
 export class RecruiterLoginUseCase implements IExecutable<RecruiterLoginDto, RecruiterLoginResponseDto> {
@@ -54,6 +55,7 @@ export class RecruiterLoginUseCase implements IExecutable<RecruiterLoginDto, Rec
 			id: recruiter.id as string,
 			role: USER_ROLE.RECRUITER,
 			email: recruiter.email,
+			permissions: ROLE_PERMISSIONS[USER_ROLE.RECRUITER],
 		};
 
 		const accessTokenExpiration = this.configService.get(ENV_KEYS.ACCESS_TOKEN_EXPIRATION);

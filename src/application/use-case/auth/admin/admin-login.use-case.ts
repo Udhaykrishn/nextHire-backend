@@ -4,7 +4,7 @@ import type { IAdminRepository } from "@/application/interface/repository";
 import { AdminEntity } from "@/domain/entity";
 import { COMMON_TOKEN, ADMIN_AUTH_TOKEN } from "@/application/enums/tokens";
 import type { IJwtService, IPasswordHash, IRedisService } from "@/infrastructure/services/interface";
-import { USER_ROLE, ADMIN_MESSAGES } from "@/domain/enums";
+import { USER_ROLE, ADMIN_MESSAGES, ROLE_PERMISSIONS } from "@/domain/enums";
 import { v4 as uuid } from "uuid";
 import { REDIS_KEYS } from "@/domain/enums/keys";
 import { ENV_KEYS } from "@/application/enums";
@@ -43,6 +43,7 @@ export class AdminLoginUseCase implements IExecutable<AdminLoginDto, AdminLoginR
 			id: admin.id as string,
 			role: USER_ROLE.ADMIN,
 			email: admin.email,
+			permissions: ROLE_PERMISSIONS[USER_ROLE.ADMIN],
 		};
 
 		const accessTokenExpiration = this.configService.get(ENV_KEYS.ACCESS_TOKEN_EXPIRATION);
