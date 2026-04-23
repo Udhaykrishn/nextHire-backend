@@ -7,6 +7,11 @@ import {
 	UpdateUserUseCase,
 	UserChangePasswordUseCase,
 	FindUserByEmailUseCase,
+	UploadProfileImageUseCase,
+	DeleteProfileImageUseCase,
+	UpdateUserSubscriptionUseCase,
+	UploadResumeUseCase,
+	DeleteResumeUseCase,
 } from "@/application/use-case/users";
 import { CommonModule } from "../common.module";
 import { UserLiteModule } from "./user-db.module";
@@ -37,6 +42,26 @@ import { Module } from "@nestjs/common";
 			provide: USERS_TOKEN.USER_FIND_BY_EMAIL_USE_CASE,
 			useClass: FindUserByEmailUseCase,
 		},
+		{
+			provide: USERS_TOKEN.UPLOAD_PROFILE_IMAGE_USE_CASE,
+			useClass: UploadProfileImageUseCase,
+		},
+		{
+			provide: USERS_TOKEN.DELETE_PROFILE_IMAGE_USE_CASE,
+			useClass: DeleteProfileImageUseCase,
+		},
+		{
+			provide: USERS_TOKEN.USER_UPDATE_SUBSCRIPTION_USE_CASE,
+			useClass: UpdateUserSubscriptionUseCase,
+		},
+		{
+			provide: USERS_TOKEN.UPLOAD_RESUME_USE_CASE,
+			useClass: UploadResumeUseCase,
+		},
+		{
+			provide: USERS_TOKEN.DELETE_RESUME_USE_CASE,
+			useClass: DeleteResumeUseCase,
+		},
 	],
 	exports: [
 		USERS_TOKEN.USER_CREATE_USE_CASE,
@@ -46,6 +71,11 @@ import { Module } from "@nestjs/common";
 		USERS_TOKEN.USER_BLOCK_UNBLOCK_USE_CASE,
 		USERS_TOKEN.CHANGE_PASSWORD_USE_CASE,
 		USERS_TOKEN.USER_FIND_BY_EMAIL_USE_CASE,
+		USERS_TOKEN.UPLOAD_PROFILE_IMAGE_USE_CASE,
+		USERS_TOKEN.DELETE_PROFILE_IMAGE_USE_CASE,
+		USERS_TOKEN.USER_UPDATE_SUBSCRIPTION_USE_CASE,
+		USERS_TOKEN.UPLOAD_RESUME_USE_CASE,
+		USERS_TOKEN.DELETE_RESUME_USE_CASE,
 	],
 })
-export class UserCrudModule { }
+export class UserCrudModule {}

@@ -1,2 +1,2 @@
-export { AuthRecruiterController } from "./auth.controller";
-export { RecruiterController } from "./recruiter.controller";
+export { AuthRecruiterController } from "./implements/auth.controller";
+export { RecruiterController } from "./implements/recruiter.controller";

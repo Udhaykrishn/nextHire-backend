@@ -7,6 +7,9 @@ import {
 	MaxLength,
 	ValidateNested,
 	IsPhoneNumber,
+	IsArray,
+	IsNotEmpty,
+	IsEnum,
 } from "class-validator";
 import { Type } from "class-transformer";
 
@@ -50,10 +53,6 @@ export class UpdateUserDto {
 	role_of_title?: string;
 
 	@IsOptional()
-	@IsUrl({}, { message: "resume_url must be a valid URL" })
-	resume_url?: string;
-
-	@IsOptional()
 	@IsString()
 	@MaxLength(500)
 	bio?: string;
@@ -62,4 +61,25 @@ export class UpdateUserDto {
 	@ValidateNested()
 	@Type(() => SocialLinkDto)
 	social_link?: SocialLinkDto;
+
+	@IsOptional()
+	@IsArray()
+	@IsString({ each: true })
+	skills?: string[];
+
+	@IsOptional()
+	@IsArray()
+	@ValidateNested({ each: true })
+	@Type(() => LanguageDto)
+	languages?: LanguageDto[];
+}
+
+export class LanguageDto {
+	@IsString()
+	@IsNotEmpty()
+	name: string;
+
+	@IsString()
+	@IsEnum(["Low", "Medium", "High"])
+	proficiency: string;
 }

@@ -6,3 +6,8 @@ export { UpdateUserUseCase } from "./user-update.use-case";
 export { UserChangePasswordUseCase } from "./user-change-password.use-case";
 export { CheckUserBlockedUseCase } from "./user-check-status-blocked.use-case";
 export { FindUserByEmailUseCase } from "./find-user-by-email.use-case";
+export { UploadProfileImageUseCase } from "./upload-profile-image.use-case";
+export { DeleteProfileImageUseCase } from "./delete-profile-image.use-case";
+export { UpdateUserSubscriptionUseCase } from "./user-update-subscription.use-case";
+export { UploadResumeUseCase } from "./upload-resume.use-case";
+export { DeleteResumeUseCase } from "./delete-resume.use-case";

@@ -1,29 +1,21 @@
-import { Injectable, Inject, UnauthorizedException } from "@nestjs/common";
+import { Injectable, Inject } from "@nestjs/common";
 import { IExecutable } from "@/application/interface/executable.interface";
 import type { IUserRepository } from "@/application/interface/repository";
 import { UserEntity } from "@/domain/entity";
-import {
-	COMMON_TOKEN,
-	USER_MAPPER,
-	USERS_TOKEN,
-} from "@/application/enums/tokens";
-import type {
-	IEmailService,
-	IMailSender,
-	IOtpService,
-	IPasswordHash,
-	IRedisService,
-} from "@/infrastructure/services/interface";
+import { COMMON_TOKEN, USERS_TOKEN } from "@/application/enums/tokens";
+import type { IOtpService, IPasswordHash, IRedisService } from "@/infrastructure/services/interface";
 import { USER_MESSAGES } from "@/domain/enums";
 import { UserSignupDto } from "@/application/dto/auth/users/signup/user-signup.dto";
 import { UserSignResponseDto } from "@/application/dto/auth/users/signup/user-signup-res.dto";
-import type { IUserApplicationMappers } from "@/application/interface/mappers/user-application-mapper.interface";
+import type { IUserApplicationMappers } from "@/application/interface/mappers/user/user-application-mapper.interface";
 import { UserType } from "@/infrastructure/db/mongodb/models/user.schema";
 import { REDIS_KEYS } from "@/domain/enums/keys";
+import { USER_MAPPER } from "@/application/enums";
+import { EventEmitter2 } from "@nestjs/event-emitter";
+import { AUTH_EVENTS } from "@/domain/enums/events.enum";
 
 @Injectable()
-export class UserRegisterUseCase
-	implements IExecutable<UserSignupDto, UserSignResponseDto> {
+export class UserRegisterUseCase implements IExecutable<UserSignupDto, UserSignResponseDto> {
 	constructor(
 		@Inject(USERS_TOKEN.USER_REPOSITORY)
 		private readonly _userRepository: IUserRepository<UserEntity>,
@@ -31,23 +23,14 @@ export class UserRegisterUseCase
 		private readonly _passwordHash: IPasswordHash,
 		@Inject(COMMON_TOKEN.REDIS_SERVICE)
 		private readonly _redisService: IRedisService,
-		@Inject(COMMON_TOKEN.EMAIL_VALIDATOR)
-		private readonly _emailValidation: IEmailService,
 		@Inject(COMMON_TOKEN.OTP_SERVICE)
 		private readonly _otpService: IOtpService,
-		@Inject(COMMON_TOKEN.EMAIL_SERVICE)
-		private readonly _emailService: IMailSender,
 		@Inject(USER_MAPPER.USER_APPLICATION)
 		private readonly _userMapper: IUserApplicationMappers<UserType>,
-	) { }
+		private readonly eventEmitter: EventEmitter2,
+	) {}
 
 	async execute(dto: UserSignupDto): Promise<UserSignResponseDto> {
-		// const email = await this._emailValidation.validate(dto.email);
-
-		// if (!email) {
-		// 	throw new UnauthorizedException("Invalid email address founded");
-		// }
-
 		const password = await this._passwordHash.hash(dto.password);
 
 		const user = UserEntity.create({
@@ -74,7 +57,11 @@ export class UserRegisterUseCase
 			}),
 		);
 
-		await this._emailService.sendOtp(user.email, otp);
+		this.eventEmitter.emit(AUTH_EVENTS.OTP_GENERATED, {
+			email: user.email,
+			name: user.name,
+			otp,
+		});
 
 		return { otp, email: user.email };
 	}

@@ -1,4 +1,10 @@
-export type { IBaseRepository } from "./base-repository.interface";
-export type { IUserRepository } from "./user-repository.interface";
-export type { IRecruiterRepository } from "./recruiter-repository.interface";
-export type { IAdminRepository } from "./admin-repository.interface";
+export * from "./user-repository.interface";
+export * from "./admin-repository.interface";
+export * from "./base-repository.interface";
+export * from "./recruiter-repository.interface";
+export * from "./certificate-repository.interface";
+export * from "./education-repository.interface";
+export * from "./project-repository.interface";
+export * from "./address-repository.interface";
+export * from "./job-repository.interface";
+export * from "./subscription-repository.interface";

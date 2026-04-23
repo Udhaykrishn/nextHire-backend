@@ -1,0 +1,3 @@
+export enum RBAC_TOKEN {
+	ROLE_REPOSITORY = "ROLE_REPOSITORY",
+}

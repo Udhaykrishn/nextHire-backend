@@ -8,8 +8,15 @@ export class UserEntity {
 	private _phone: string;
 	private _experience: string = "";
 	private _role_of_title: string = "";
-	private _status: USER_STATUS = USER_STATUS.PENDING;
-	private _resume_url: string = "";
+	private _status: string = USER_STATUS.PENDING;
+	private _resume_url: { key: string; url: string } = {
+		key: "",
+		url: "",
+	};
+	private _profile_url: { key: string; url: string } = {
+		key: "",
+		url: "",
+	};
 	private _bio: string = "";
 	private _badge: boolean = false;
 	private _google_id: string = "";
@@ -22,11 +29,13 @@ export class UserEntity {
 		portfolio: string;
 		github: string;
 	} = {
-			linkedin: "",
-			portfolio: "",
-			github: "",
-		};
+		linkedin: "",
+		portfolio: "",
+		github: "",
+	};
 	_createdAt: Date;
+	private _skills: string[] = [];
+	private _languages: { name: string; proficiency: string }[] = [];
 
 	private constructor(
 		email: string,
@@ -35,14 +44,17 @@ export class UserEntity {
 		phone: string,
 		experience: string,
 		role_of_title: string,
-		status: USER_STATUS,
-		resume_url: string,
+		status: string,
+		resume_url: { key: string; url: string },
 		bio: string,
 		badge: boolean,
 		google_id: string,
 		subscription: { current_plan: string; is_subscribed: boolean },
 		social_link: { linkedin: string; portfolio: string; github: string },
+		profile_url: { key: string; url: string },
 		createdAt: Date,
+		skills: string[],
+		languages: { name: string; proficiency: string }[],
 		id?: string,
 	) {
 		this._email = email;
@@ -58,7 +70,10 @@ export class UserEntity {
 		this._google_id = google_id;
 		this._subscription = subscription;
 		this._social_link = social_link;
+		this._profile_url = profile_url;
 		this._createdAt = createdAt;
+		this._skills = skills;
+		this._languages = languages;
 		this._id = id;
 	}
 
@@ -69,14 +84,17 @@ export class UserEntity {
 		phone?: string;
 		experience?: string;
 		role_of_title?: string;
-		status?: USER_STATUS;
-		resume_url?: string;
+		status?: string;
+		resume_url?: { key: string; url: string };
 		bio?: string;
 		badge?: boolean;
 		google_id?: string;
 		subscription?: { current_plan: string; is_subscribed: boolean };
 		social_link?: { linkedin: string; portfolio: string; github: string };
+		profile_url?: { key: string; url: string };
 		createdAt?: Date;
+		skills?: string[];
+		languages?: { name: string; proficiency: string }[];
 		id?: string;
 	}): UserEntity {
 		return new UserEntity(
@@ -87,13 +105,16 @@ export class UserEntity {
 			data.experience ?? "",
 			data.role_of_title ?? "",
 			data.status ?? USER_STATUS.PENDING,
-			data.resume_url ?? "",
+			data.resume_url ?? { key: "", url: "" },
 			data.bio ?? "",
 			data.badge ?? false,
 			data.google_id ?? "",
 			data.subscription ?? { current_plan: "free", is_subscribed: false },
 			data.social_link ?? { linkedin: "", portfolio: "", github: "" },
+			data.profile_url ?? { key: "", url: "" },
 			data.createdAt ?? new Date(),
+			data.skills ?? [],
+			data.languages ?? [],
 			data.id,
 		);
 	}
@@ -130,7 +151,7 @@ export class UserEntity {
 		return this._status;
 	}
 
-	get resume_url(): string {
+	get resume_url(): { key: string; url: string } {
 		return this._resume_url;
 	}
 
@@ -150,12 +171,24 @@ export class UserEntity {
 		return this._subscription;
 	}
 
+	get profile_url(): { key: string; url: string } {
+		return this._profile_url;
+	}
+
 	get social_link(): { linkedin: string; portfolio: string; github: string } {
 		return this._social_link;
 	}
 
 	get createdAt(): Date {
 		return this._createdAt;
+	}
+
+	get skills(): string[] {
+		return this._skills;
+	}
+
+	get languages(): { name: string; proficiency: string }[] {
+		return this._languages;
 	}
 
 	changeName(name: string): void {
@@ -178,8 +211,8 @@ export class UserEntity {
 		this._status = status;
 	}
 
-	changeResumeUrl(resume_url: string): void {
-		this._resume_url = resume_url;
+	changeResumeUrl(key: string, url: string): void {
+		this._resume_url = { key, url };
 	}
 
 	changeBio(bio: string): void {
@@ -194,23 +227,20 @@ export class UserEntity {
 		this._google_id = google_id;
 	}
 
-	changeSubscription(subscription: {
-		current_plan: string;
-		is_subscribed: boolean;
-	}): void {
+	changeSubscription(subscription: { current_plan: string; is_subscribed: boolean }): void {
 		this._subscription = subscription;
 	}
 
-	changeSocialLink(social_link: {
-		linkedin: string;
-		portfolio: string;
-		github: string;
-	}): void {
+	changeSocialLink(social_link: { linkedin: string; portfolio: string; github: string }): void {
 		this._social_link = social_link;
 	}
 
 	changeEmail(newEmail: string): void {
 		this._email = newEmail;
+	}
+
+	changeProfileUrl(key: string, url: string): void {
+		this._profile_url = { key, url };
 	}
 
 	changePassword(newPassword: string): void {
@@ -219,5 +249,13 @@ export class UserEntity {
 
 	changeDate(date: Date): void {
 		this._createdAt = date;
+	}
+
+	changeSkills(skills: string[]): void {
+		this._skills = skills;
+	}
+
+	changeLanguages(languages: { name: string; proficiency: string }[]): void {
+		this._languages = languages;
 	}
 }

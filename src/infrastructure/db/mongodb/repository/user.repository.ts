@@ -5,17 +5,14 @@ import type { UserEntity } from "@/domain/entity/user.entity";
 import type { IUserRepository } from "@/application/interface/repository";
 import { User } from "../models";
 import type { Model } from "mongoose";
-import { USER_MAPPER } from "@/application/enums/tokens/user-mapper.enum";
+import { USER_MAPPER } from "@/application/enums";
 import type { PaginationResponse } from "@/domain/types/paginations";
-import type { IUserPresitanceMapper } from "@/application/interface/mappers/user-presistance.mapper";
+import type { IUserPresitanceMapper } from "@/application/interface/mappers/user/user-presistance.mapper";
 import type { PaginationDto } from "@/application/dto/pagiation";
 import type { UserType } from "../models/user.schema";
 
 @Injectable()
-export class UserRepository
-	extends BaseRepository<UserEntity, UserType>
-	implements IUserRepository<UserEntity>
-{
+export class UserRepository extends BaseRepository<UserEntity, UserType> implements IUserRepository<UserEntity> {
 	constructor(
 		@InjectModel(User.name) private userModel: Model<UserType>,
 		@Inject(USER_MAPPER.USER_PRESISTANCE)
@@ -24,20 +21,23 @@ export class UserRepository
 		super(userModel, userPresistance);
 	}
 
-	async findAllUsers(
-		pages: PaginationDto,
-	): Promise<PaginationResponse<UserEntity> | null> {
+	async findAllUsers(pages: PaginationDto): Promise<PaginationResponse<UserEntity> | null> {
 		const skip = (pages.page - 1) * pages.limit;
-		const docs = await this.userModel
-			.find()
-			.skip(skip)
-			.limit(pages.limit)
-			.exec();
-		const total = await this.userModel.countDocuments();
+
+		const filter: Record<string, unknown> = {};
+
+		if (pages.search) {
+			filter.$or = [
+				{ name: { $regex: pages.search, $options: "i" } },
+				{ email: { $regex: pages.search, $options: "i" } },
+				{ phone: { $regex: pages.search, $options: "i" } },
+			];
+		}
+
+		const docs = await this.userModel.find(filter).skip(skip).limit(pages.limit).exec();
+		const total = await this.userModel.countDocuments(filter);
 		const page = Math.ceil(total / pages.limit);
-		const data = await Promise.all(
-			docs.map((doc) => this.mapper.fromMongo(doc)),
-		);
+		const data = await Promise.all(docs.map((doc) => this.mapper.fromMongo(doc)));
 
 		return {
 			data,

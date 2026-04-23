@@ -1,11 +1,5 @@
 import { BaseDomainException } from "@/domain/exceptions/base-execption";
-import {
-	type ExceptionFilter,
-	Catch,
-	type ArgumentsHost,
-	HttpException,
-	HttpStatus,
-} from "@nestjs/common";
+import { type ExceptionFilter, Catch, type ArgumentsHost, HttpException, HttpStatus } from "@nestjs/common";
 import type { Request, Response } from "express";
 
 @Catch()
@@ -17,6 +11,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 
 		const timestamp = new Date().toISOString();
 		const path = request.url;
+		const requestId = request.id;
 
 		if (exception instanceof BaseDomainException) {
 			return response.status(exception.statusCode).json({
@@ -24,9 +19,10 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 				error: {
 					statusCode: exception.statusCode,
 					timestamp,
+					requestId,
 					path,
 					message: exception.message,
-					error: exception.error,
+					code: exception.error,
 				},
 			});
 		}
@@ -49,24 +45,31 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 				error: {
 					statusCode: status,
 					timestamp,
+					requestId,
 					path,
 					message,
-					error: "HTTP_EXCEPTION",
+					code: "HTTP_EXCEPTION",
 				},
 			});
 		}
+
+		const isProduction = process.env.NODE_ENV === "production";
+		const message =
+			exception instanceof Error
+				? isProduction && !(exception instanceof BaseDomainException)
+					? "Internal Server Error"
+					: exception.message
+				: "Internal Server Error";
 
 		return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
 			success: false,
 			error: {
 				statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
 				timestamp,
+				requestId,
 				path,
-				message:
-					exception instanceof Error
-						? exception.message
-						: "Internal Server Error",
-				error: "INTERNAL_SERVER_ERROR",
+				message,
+				code: "INTERNAL_SERVER_ERROR",
 			},
 		});
 	}

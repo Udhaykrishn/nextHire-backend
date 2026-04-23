@@ -1,13 +1,8 @@
 import { USERS_TOKEN } from "@/application/enums/tokens";
 import type { IExecutable } from "@/application/interface/executable.interface";
 import { ROLES } from "@/presentation/enums";
-import {
-	CanActivate,
-	ExecutionContext,
-	ForbiddenException,
-	Inject,
-	Injectable,
-} from "@nestjs/common";
+
+import { CanActivate, ExecutionContext, ForbiddenException, Inject, Injectable } from "@nestjs/common";
 
 @Injectable()
 export class UserBlockedGuard implements CanActivate {
@@ -18,6 +13,7 @@ export class UserBlockedGuard implements CanActivate {
 
 	async canActivate(context: ExecutionContext): Promise<boolean> {
 		const req = context.switchToHttp().getRequest();
+
 		const payload = req.user;
 
 		if (payload?.role !== ROLES.USER || !payload?.id) return true;
