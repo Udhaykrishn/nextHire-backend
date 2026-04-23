@@ -1,4 +1,5 @@
 import { RECRUITER_ROLE, RECRUITER_STATUS } from "../enums/status";
+import { RoleEntity } from "./role.entity";
 
 export class RecruiterEntity {
 	private readonly _id?: string;
@@ -9,13 +10,19 @@ export class RecruiterEntity {
 	private _phone: string;
 
 	private _GSTIN: string = "";
+	private _CIN: string = "";
 	private _status: string = RECRUITER_STATUS.PENDING;
 	private _website_link: string = "";
 	private _description: string = "";
 	private _category: string = "";
 	private _company_role: string = RECRUITER_ROLE.HR;
+	private _job_count: number = 0;
 	private _is_verified_company: boolean = false;
 	private _admin_approved: boolean = false;
+	private _profile_url: { key: string; url: string } = {
+		key: "",
+		url: "",
+	};
 
 	private _subscription: {
 		current_plan: string;
@@ -27,6 +34,7 @@ export class RecruiterEntity {
 
 	private _createdAt: Date;
 	private _updatedAt?: Date;
+	private _role?: RoleEntity;
 
 	private constructor(
 		email: string,
@@ -34,16 +42,20 @@ export class RecruiterEntity {
 		name: string,
 		phone: string,
 		GSTIN: string,
+		CIN: string,
 		status: string,
 		website_link: string,
 		description: string,
 		category: string,
 		company_role: string,
+		job_count: number,
 		is_verified_company: boolean,
 		admin_approved: boolean,
+		profile_url: { key: string; url: string },
 		subscription: { current_plan: string; is_subscribed: boolean },
 		createdAt: Date,
 		updatedAt: Date | undefined,
+		role?: RoleEntity,
 		id?: string,
 	) {
 		this._email = email;
@@ -51,16 +63,20 @@ export class RecruiterEntity {
 		this._name = name;
 		this._phone = phone;
 		this._GSTIN = GSTIN;
+		this._CIN = CIN;
 		this._status = status;
 		this._website_link = website_link;
 		this._description = description;
 		this._category = category;
 		this._company_role = company_role;
+		this._job_count = job_count;
 		this._is_verified_company = is_verified_company;
 		this._admin_approved = admin_approved;
+		this._profile_url = profile_url;
 		this._subscription = subscription;
 		this._createdAt = createdAt;
 		this._updatedAt = updatedAt;
+		this._role = role;
 		this._id = id;
 	}
 
@@ -71,17 +87,21 @@ export class RecruiterEntity {
 		phone: string;
 
 		GSTIN?: string;
+		CIN?: string;
 		status?: string;
 		website_link?: string;
 		description?: string;
 		category?: string;
 		company_role?: string;
+		job_count?: number;
 		is_verified_company?: boolean;
 		admin_approved?: boolean;
+		profile_url?: { key: string; url: string };
 		subscription?: { current_plan: string; is_subscribed: boolean };
 
 		createdAt?: Date;
 		updatedAt?: Date;
+		role?: RoleEntity;
 		id?: string;
 	}): RecruiterEntity {
 		return new RecruiterEntity(
@@ -90,16 +110,20 @@ export class RecruiterEntity {
 			data.name,
 			data.phone,
 			data.GSTIN ?? "",
+			data.CIN ?? "",
 			data.status ?? RECRUITER_STATUS.PENDING,
 			data.website_link ?? "",
 			data.description ?? "",
 			data.category ?? "",
 			data.company_role ?? RECRUITER_ROLE.HR,
+			data.job_count ?? 0,
 			data.is_verified_company ?? false,
 			data.admin_approved ?? false,
+			data.profile_url ?? { key: "", url: "" },
 			data.subscription ?? { current_plan: "free", is_subscribed: false },
 			data.createdAt ?? new Date(),
 			data.updatedAt,
+			data.role,
 			data.id,
 		);
 	}
@@ -128,6 +152,9 @@ export class RecruiterEntity {
 	get GSTIN(): string {
 		return this._GSTIN;
 	}
+	get CIN(): string {
+		return this._CIN;
+	}
 
 	get status(): string {
 		return this._status;
@@ -149,6 +176,14 @@ export class RecruiterEntity {
 		return this._company_role;
 	}
 
+	get job_count(): number {
+		return this._job_count;
+	}
+
+	incrementJobCount(): void {
+		this._job_count++;
+	}
+
 	get is_verified_company(): boolean {
 		return this._is_verified_company;
 	}
@@ -161,12 +196,20 @@ export class RecruiterEntity {
 		return this._subscription;
 	}
 
+	get profile_url(): { key: string; url: string } {
+		return this._profile_url;
+	}
+
 	get createdAt(): Date {
 		return this._createdAt;
 	}
 
 	get updatedAt(): Date | undefined {
 		return this._updatedAt;
+	}
+
+	get role(): RoleEntity | undefined {
+		return this._role;
 	}
 
 	changeName(name: string): void {
@@ -179,6 +222,10 @@ export class RecruiterEntity {
 
 	changeGSTIN(GSTIN: string): void {
 		this._GSTIN = GSTIN;
+	}
+
+	changeCIN(CIN: string): void {
+		this._CIN = CIN;
 	}
 
 	changeStatus(status: RECRUITER_STATUS): void {
@@ -209,10 +256,7 @@ export class RecruiterEntity {
 		this._admin_approved = true;
 	}
 
-	changeSubscription(subscription: {
-		current_plan: string;
-		is_subscribed: boolean;
-	}): void {
+	changeSubscription(subscription: { current_plan: string; is_subscribed: boolean }): void {
 		this._subscription = subscription;
 	}
 
@@ -222,6 +266,9 @@ export class RecruiterEntity {
 
 	changePassword(newPassword: string): void {
 		this._password = newPassword;
+	}
+	changeProfileUrl(key: string, url: string): void {
+		this._profile_url = { key, url };
 	}
 
 	updateTimestamps(createdAt?: Date, updatedAt?: Date): void {
