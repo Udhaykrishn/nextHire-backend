@@ -41,6 +41,7 @@
         "deep-email-validator": "^0.1.21",
         "dotenv": "^17.2.3",
         "ejs": "^4.0.1",
+        "express-mongo-sanitize": "^2.2.0",
         "google-auth-library": "^10.5.0",
         "handlebars": "^4.7.8",
         "helmet": "^8.1.0",
@@ -73,6 +74,7 @@
         "@types/csurf": "^1.11.5",
         "@types/ejs": "^3.1.5",
         "@types/express": "^5.0.0",
+        "@types/express-mongo-sanitize": "^2.1.2",
         "@types/hpp": "^0.2.7",
         "@types/jest": "^30.0.0",
         "@types/multer": "^2.1.0",
@@ -905,6 +907,8 @@
 
     "@types/express": ["@types/express@5.0.5", "", { "dependencies": { "@types/body-parser": "1.19.6", "@types/express-serve-static-core": "5.1.0", "@types/serve-static": "1.15.10" } }, "sha512-LuIQOcb6UmnF7C1PCFmEU1u2hmiHL43fgFQX67sN3H4Z+0Yk0Neo++mFsBjhOAuLzvlQeqAAkeDOZrJs9rzumQ=="],
 
+    "@types/express-mongo-sanitize": ["@types/express-mongo-sanitize@2.1.2", "", { "dependencies": { "express-mongo-sanitize": "*" } }, "sha512-a0Vy5Ivkc9iipHBgcnpRsAl3H/pM4gkL6mf5BqGVg4NsVJXlI6hwzle+UHS9O7oqUau+b6S+hzZ3tXQaAhLcmg=="],
+
     "@types/express-serve-static-core": ["@types/express-serve-static-core@5.1.0", "", { "dependencies": { "@types/node": "22.19.1", "@types/qs": "6.14.0", "@types/range-parser": "1.2.7", "@types/send": "1.2.1" } }, "sha512-jnHMsrd0Mwa9Cf4IdOzbz543y4XJepXrbia2T4b6+spXC2We3t1y6K44D3mR8XMFSXMCf3/l7rCgddfx7UNVBA=="],
 
     "@types/hpp": ["@types/hpp@0.2.7", "", { "dependencies": { "@types/express": "*" } }, "sha512-YSQBkTwZepklRez0wgsljeewMytGNKgBAZR1YbmE0X49+elqkZ+fr/gvB407wL9Dl7a/Kv3W04yJueRmEHytBw=="],
@@ -1434,6 +1438,8 @@
     "expect": ["expect@30.2.0", "", { "dependencies": { "@jest/expect-utils": "30.2.0", "@jest/get-type": "30.1.0", "jest-matcher-utils": "30.2.0", "jest-message-util": "30.2.0", "jest-mock": "30.2.0", "jest-util": "30.2.0" } }, "sha512-u/feCi0GPsI+988gU2FLcsHyAHTU0MX1Wg68NhAnN7z/+C5wqG+CY8J53N9ioe8RXgaoz0nBR/TYMf3AycUuPw=="],
 
     "express": ["express@5.1.0", "", { "dependencies": { "accepts": "2.0.0", "body-parser": "2.2.0", "content-disposition": "1.0.0", "content-type": "1.0.5", "cookie": "0.7.2", "cookie-signature": "1.2.2", "debug": "4.4.3", "encodeurl": "2.0.0", "escape-html": "1.0.3", "etag": "1.8.1", "finalhandler": "2.1.0", "fresh": "2.0.0", "http-errors": "2.0.0", "merge-descriptors": "2.0.0", "mime-types": "3.0.1", "on-finished": "2.4.1", "once": "1.4.0", "parseurl": "1.3.3", "proxy-addr": "2.0.7", "qs": "6.14.0", "range-parser": "1.2.1", "router": "2.2.0", "send": "1.2.0", "serve-static": "2.2.0", "statuses": "2.0.2", "type-is": "2.0.1", "vary": "1.1.2" } }, "sha512-DT9ck5YIRU+8GYzzU5kT3eHGA5iL+1Zd0EutOmTE9Dtk+Tvuzd23VBU+ec7HPNSTxXYO55gPV/hq4pSBJDjFpA=="],
+
+    "express-mongo-sanitize": ["express-mongo-sanitize@2.2.0", "", {}, "sha512-PZBs5nwhD6ek9ZuP+W2xmpvcrHwXZxD5GdieX2dsjPbAbH4azOkrHbycBud2QRU+YQF1CT+pki/lZGedHgo/dQ=="],
 
     "ext-list": ["ext-list@2.2.2", "", { "dependencies": { "mime-db": "1.54.0" } }, "sha512-u+SQgsubraE6zItfVA0tBuCBhfU9ogSRnsvygI7wht9TS510oLkBRXBsqopeUG/GBOIQyKZO9wjTqIu/sf5zFA=="],
 

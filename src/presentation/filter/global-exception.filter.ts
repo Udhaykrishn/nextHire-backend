@@ -11,6 +11,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 
 		const timestamp = new Date().toISOString();
 		const path = request.url;
+		const requestId = request.id;
 
 		if (exception instanceof BaseDomainException) {
 			return response.status(exception.statusCode).json({
@@ -18,9 +19,10 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 				error: {
 					statusCode: exception.statusCode,
 					timestamp,
+					requestId,
 					path,
 					message: exception.message,
-					error: exception.error,
+					code: exception.error,
 				},
 			});
 		}
@@ -43,9 +45,10 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 				error: {
 					statusCode: status,
 					timestamp,
+					requestId,
 					path,
 					message,
-					error: "HTTP_EXCEPTION",
+					code: "HTTP_EXCEPTION",
 				},
 			});
 		}
@@ -63,9 +66,10 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 			error: {
 				statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
 				timestamp,
+				requestId,
 				path,
 				message,
-				error: "INTERNAL_SERVER_ERROR",
+				code: "INTERNAL_SERVER_ERROR",
 			},
 		});
 	}
