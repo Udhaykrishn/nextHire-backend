@@ -6,10 +6,7 @@ import { Injectable } from "@nestjs/common";
 export class JwtService implements IJwtService {
 	constructor(private readonly jwt: NestJwtService) {}
 
-	async generateToken(
-		payload: Record<string, unknown>,
-		expiresIn: number = 15 * 60,
-	): Promise<string> {
+	async generateToken(payload: Record<string, unknown>, expiresIn: number = 15 * 60): Promise<string> {
 		console.log("exp: ", expiresIn);
 		return await this.jwt.signAsync(payload, { expiresIn });
 	}

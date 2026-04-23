@@ -1,11 +1,8 @@
 import { UserEntity } from "@/domain/entity/user.entity";
-import type { IUserPresitanceMapper } from "@/application/interface/mappers/user-presistance.mapper";
+import type { IUserPresitanceMapper } from "@/application/interface/mappers/user/user-presistance.mapper";
 import type { UserType } from "../db/mongodb/models/user.schema";
-import type { USER_STATUS } from "@/domain/enums/status/user-status.enum";
 
-export class UserPresitanceMapper
-	implements IUserPresitanceMapper<UserEntity, UserType>
-{
+export class UserPresitanceMapper implements IUserPresitanceMapper<UserEntity, UserType> {
 	toMongo(user: UserEntity) {
 		return {
 			_id: user.id as string,
@@ -15,14 +12,17 @@ export class UserPresitanceMapper
 			phone: user.phone,
 			experience: user.experience,
 			role_of_title: user.role_of_title,
-			status: user.status as USER_STATUS,
+			status: user.status,
 			resume_url: user.resume_url,
 			bio: user.bio,
 			badge: user.badge,
 			google_id: user.google_id,
 			subscription: user.subscription,
+			profile_url: user.profile_url,
 			social_link: user.social_link,
 			createdAt: user.createdAt,
+			skills: user.skills,
+			languages: user.languages,
 		};
 	}
 
@@ -39,10 +39,13 @@ export class UserPresitanceMapper
 			resume_url: doc.resume_url,
 			bio: doc.bio,
 			badge: doc.badge,
+			profile_url: doc.profile_url,
 			google_id: doc.google_id,
 			subscription: doc.subscription,
 			social_link: doc.social_link,
 			createdAt: doc.createdAt,
+			skills: doc.skills,
+			languages: doc.languages,
 		});
 	}
 }

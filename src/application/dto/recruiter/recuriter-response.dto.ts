@@ -19,6 +19,11 @@ export class ResponseRecruiterDto {
 		is_subscribed: boolean;
 	};
 
+	public readonly profile_url: {
+		key: string;
+		url: string;
+	};
+
 	public readonly createdAt: Date;
 	public readonly updatedAt: Date | null;
 }

@@ -52,12 +52,6 @@ export {
 } from "./reports.schema";
 
 export {
-	Notification,
-	type NotificationDocument,
-	NotificationSchema,
-} from "./notifications.schema";
-
-export {
 	OfferLetter,
 	type OfferLetterDocument,
 	OfferLetterSchema,
@@ -80,3 +74,10 @@ export {
 	type SubscriptionDocument,
 	SubscriptionSchema,
 } from "./subscription.schema";
+
+export {
+	Admin,
+	type AdminDocument,
+	AdminSchema,
+	type AdminType,
+} from "./admin.schema";

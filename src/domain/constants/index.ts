@@ -1,1 +1,1 @@
-export { COOKIE_MAX_AGE_CONSTANT } from "./cookie.constant";
+export * from "./plan-limits";

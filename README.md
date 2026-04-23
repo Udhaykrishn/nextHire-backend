@@ -1,98 +1,89 @@
 <p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
+  <a href="https://nexthire.shop" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="NextHire Logo" /></a>
 </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+# NextHire Backend
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+The robust, scalable core of the NextHire recruitment platform, built with **NestJS**, **TypeScript**, and **MongoDB**. This project adheres to **Clean Architecture** principles and enforces high code quality standards.
 
-## Description
+## 🚀 Teck Stack
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- **Framework**: [NestJS](https://nestjs.com/) (Node.js)
+- **Language**: TypeScript (Strict Mode)
+- **Runtime & Package Manager**: [Bun](https://bun.sh/)
+- **Database**: MongoDB with Mongoose
+- **Linting & Formatting**: [Biome](https://biomejs.dev/)
+- **Automation**: Husky (Git Hooks)
+- **Observability**: OpenTelemetry
+- **Environment**: Linux/Unix
 
-## Project setup
+## 🏗️ Architecture
 
+This project follows **Clean Architecture / Domain-Driven Design (DDD)**:
+
+- **src/domain**: Core entities, value objects, and business rules (No dependencies).
+- **src/application**: Use cases, DTOs, and interface definitions for ports.
+- **src/infrastructure**: Database implementations (Mongoose), external services, and adapters.
+- **src/presentation**: Controllers, request handlers, and public interfaces.
+- **src/modules**: NestJS module configurations and dependency injection.
+
+## 🛠️ Project Setup
+
+### Prerequisites
+- [Bun](https://bun.sh/docs/installation) (latest)
+- [MongoDB](https://www.mongodb.com/) (local or cloud)
+
+### Installation
 ```bash
-$ pnpm install
+$ bun install
 ```
 
-## Compile and run the project
+### Environment Configuration
+Create a `.env` file in the root directory based on `.env.example`:
+```bash
+PORT=3000
+MONGODB_URI=mongodb://localhost:27017/nexthire
+...
+```
+
+## 🏃 Execution
 
 ```bash
-# development
-$ pnpm run start
-
-# watch mode
-$ pnpm run start:dev
+# development mode (with hot reload)
+$ bun run start:dev
 
 # production mode
-$ pnpm run start:prod
+$ bun run start:prod
 ```
 
-## Run tests
+## 🛡️ Code Quality & Standards
+
+We enforce a **Zero-Error** and **Zero-Warning** policy.
+
+### Guidelines
+- **No `any`**: The `any` keyword is strictly prohibited. Use specific types or `unknown`.
+- **No Linter Suppression**: `biome-ignore` comments are disallowed. Fix the root cause instead.
+- **UI Locking**: Do not modify core UI/Animate-UI components if imported.
+- Refer to [AGENTS.md](./AGENTS.md) for detailed coding standards.
+
+### Automated Checks
+This project uses **Husky** to automate quality checks:
+- **Pre-commit**: Runs `bun run lint` (Biome check and format).
+- **Pre-push**: Runs `bun run test` (Unit/Integration tests).
+
+## 🧪 Testing
 
 ```bash
 # unit tests
-$ pnpm run test
+$ bun run test
 
 # e2e tests
-$ pnpm run test:e2e
+$ bun run test:e2e
 
 # test coverage
-$ pnpm run test:cov
+$ bun run test:cov
 ```
 
-## Deployment
+## 📄 License
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ pnpm install -g @nestjs/mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+NextHire Backend is [MIT licensed](./LICENSE).

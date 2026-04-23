@@ -4,9 +4,7 @@ import { Injectable } from "@nestjs/common";
 import type { Model, UpdateQuery } from "mongoose";
 
 @Injectable()
-export abstract class BaseRepository<TEntity, TDocument>
-	implements IBaseRepository<TEntity>
-{
+export abstract class BaseRepository<TEntity, TDocument> implements IBaseRepository<TEntity> {
 	constructor(
 		protected readonly model: Model<TDocument>,
 		protected readonly mapper: IBaseMapper<TEntity, TDocument>,
@@ -32,15 +30,11 @@ export abstract class BaseRepository<TEntity, TDocument>
 		return Promise.all(docs.map((doc) => this.mapper.fromMongo(doc)));
 	}
 
-	async findByIdAndUpdate(
-		id: string,
-		updateDto: UpdateQuery<Partial<TEntity>>,
-	): Promise<TEntity | null> {
+	async findByIdAndUpdate(id: string, updateDto: UpdateQuery<Partial<TEntity>>): Promise<TEntity | null> {
 		const mongoUpdate: UpdateQuery<TDocument> = this.mapper.toMongo(updateDto);
+		delete (mongoUpdate as Record<string, unknown>)._id;
 
-		const updatedDoc = await this.model
-			.findByIdAndUpdate(id, mongoUpdate, { new: true })
-			.exec();
+		const updatedDoc = await this.model.findByIdAndUpdate(id, mongoUpdate, { new: true }).exec();
 
 		return updatedDoc ? this.mapper.fromMongo(updatedDoc) : null;
 	}

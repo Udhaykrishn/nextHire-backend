@@ -11,12 +11,14 @@ import { VerifyUserOtpUsecase } from "@/application/use-case/auth/users/verify-o
 import { UserResendOtpUseCase } from "@/application/use-case/auth/users/resend-otp.use-case";
 import { UserLogoutUseCase } from "@/application/use-case/auth/users";
 import { GoogleAuthUseCase } from "@/application/use-case/auth/users/google-auth.case-use";
+import {
+	UserForgotPasswordUseCase,
+	UserResetPasswordUseCase,
+	UserVerifyResetTokenUseCase,
+} from "@/application/use-case/auth/users";
 
 @Module({
-	imports: [
-		UserLiteModule,
-		CommonModule,
-	],
+	imports: [UserLiteModule, CommonModule],
 	controllers: [AuthUserController],
 	providers: [
 		{
@@ -51,6 +53,18 @@ import { GoogleAuthUseCase } from "@/application/use-case/auth/users/google-auth
 			provide: AUTH_USER_TOKEN.USER_GOOGLE_AUTH_CASE,
 			useClass: GoogleAuthUseCase,
 		},
+		{
+			provide: AUTH_USER_TOKEN.USER_FORGOT_PASSWORD_USE_CASE,
+			useClass: UserForgotPasswordUseCase,
+		},
+		{
+			provide: AUTH_USER_TOKEN.USER_RESET_PASSWORD_USE_CASE,
+			useClass: UserResetPasswordUseCase,
+		},
+		{
+			provide: AUTH_USER_TOKEN.USER_VERIFY_RESET_TOKEN_USE_CASE,
+			useClass: UserVerifyResetTokenUseCase,
+		},
 	],
 })
-export class UserAuthModule { }
+export class UserAuthModule {}

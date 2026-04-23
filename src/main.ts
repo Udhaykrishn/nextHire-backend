@@ -10,20 +10,42 @@ import { GlobalExceptionFilter } from "./presentation/filter/global-exception.fi
 import { otelSDK } from "./otel";
 import { ResponseInterceptor } from "./presentation/interceptors/response.intercepotor";
 
+import { json, urlencoded } from "express";
+import csurf from "csurf";
+import hpp from "hpp";
+import xss from "xss-clean";
+import mongoSanitize from "express-mongo-sanitize";
+
 async function bootstrap() {
 	otelSDK.start();
 	const app = await NestFactory.create(AppModule, {
 		logger: ["error", "warn", "debug"],
-		autoFlushLogs: true
+		autoFlushLogs: true,
+		bodyParser: false,
 	});
+
+	// Essential for rate-limiting and secure cookies behind a proxy (Load Balancer/Nginx)
+	const server = app.getHttpAdapter().getInstance();
+	server.set("trust proxy", 1);
+
+	app.use(json({ limit: "100kb" }));
+	app.use(urlencoded({ extended: true, limit: "100kb" }));
 
 	app.enableCors({
 		origin: process.env.FRONTEND_API,
 		credentials: true,
+		exposedHeaders: ["X-XSRF-TOKEN", "X-Request-Id"],
 	});
+
 	app.use(helmet(helmetConfigOptions));
 	app.use(cookieParser());
 	app.use(compression());
+	app.use(mongoSanitize());
+	app.use(hpp());
+	app.use(xss());
+
+	// CSRF Protection
+	app.use(csurf({ cookie: { httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "lax" } }));
 
 	app.useGlobalPipes(
 		new ValidationPipe({

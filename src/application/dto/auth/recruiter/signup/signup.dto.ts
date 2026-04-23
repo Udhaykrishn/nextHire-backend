@@ -1,31 +1,24 @@
-import {
-    IsEmail,
-    IsStrongPassword,
-    IsString,
-    IsNotEmpty,
-    IsAlpha,
-    IsPhoneNumber,
-} from "class-validator";
+import { IsEmail, IsStrongPassword, IsString, IsNotEmpty, IsAlpha, IsPhoneNumber } from "class-validator";
 
 export class RecruiterSignupDto {
-    @IsEmail()
-    email: string;
+	@IsEmail()
+	email: string;
 
-    @IsNotEmpty()
-    @IsString()
-    @IsStrongPassword({
-        minLength: 6,
-        minNumbers: 1,
-        minSymbols: 1,
-        minUppercase: 1,
-    })
-    password: string;
+	@IsNotEmpty()
+	@IsString()
+	@IsStrongPassword({
+		minLength: 6,
+		minNumbers: 1,
+		minSymbols: 1,
+		minUppercase: 1,
+	})
+	password: string;
 
-    @IsString()
-    @IsPhoneNumber("IN")
-    @IsNotEmpty()
-    phone: string;
+	@IsString()
+	@IsPhoneNumber("IN")
+	@IsNotEmpty()
+	phone: string;
 
-    @IsAlpha()
-    name: string;
+	@IsAlpha()
+	name: string;
 }

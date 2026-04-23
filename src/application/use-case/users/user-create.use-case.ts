@@ -1,23 +1,18 @@
 import type { CreateUserDto } from "@/application/dto/users/user-create.dto";
 import type { ResponseUserDto } from "@/application/dto/users/user-response.dto";
 import { COMMON_TOKEN, USERS_TOKEN } from "@/application/enums/tokens";
-import { USER_MAPPER } from "@/application/enums/tokens/user-mapper.enum";
+import { USER_MAPPER } from "@/application/enums";
 import type { IExecutable } from "@/application/interface/executable.interface";
-import type { IUserApplicationMappers } from "@/application/interface/mappers/user-application-mapper.interface";
+import type { IUserApplicationMappers } from "@/application/interface/mappers/user/user-application-mapper.interface";
 import type { IUserRepository } from "@/application/interface/repository";
-import type {
-	IPasswordHash,
-	IEmailService,
-} from "@/infrastructure/services/interface";
+import type { IPasswordHash } from "@/infrastructure/services/interface";
 import { UserEntity } from "@/domain/entity/user.entity";
 import { USER_MESSAGES } from "@/domain/enums";
 import { AlreadyExistsException } from "@/domain/exceptions/already-exists.exception";
-import { Inject, Injectable, NotFoundException } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 
 @Injectable()
-export class CreateUserUseCase
-	implements IExecutable<CreateUserDto, ResponseUserDto>
-{
+export class CreateUserUseCase implements IExecutable<CreateUserDto, ResponseUserDto> {
 	constructor(
 		@Inject(USER_MAPPER.USER_APPLICATION)
 		private readonly _userMapper: IUserApplicationMappers<UserEntity>,
@@ -25,16 +20,9 @@ export class CreateUserUseCase
 		private readonly _userRepository: IUserRepository<UserEntity>,
 		@Inject(COMMON_TOKEN.PASSWORD_HASH)
 		private readonly _passwordHasher: IPasswordHash,
-		@Inject(COMMON_TOKEN.EMAIL_SERVICE)
-		private readonly _emailService: IEmailService,
 	) {}
+
 	async execute(userDto: CreateUserDto): Promise<ResponseUserDto> {
-		const isValidEmail = await this._emailService.validate(userDto.email);
-
-		if (!isValidEmail) {
-			throw new NotFoundException("Invalid email address");
-		}
-
 		const checkUserExsitOrNot = await this._userRepository.findByUniqueFields({
 			email: userDto.email,
 			phone: userDto.phone,

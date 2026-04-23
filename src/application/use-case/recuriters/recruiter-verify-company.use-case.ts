@@ -24,6 +24,7 @@ export class VerifyRecruiterCompanyUseCase implements IExecutable<VerifyRecruite
 		}
 
 		const isValidGSTIN = await this._companyVerificationService.verifyGSTIN(data.GSTIN);
+
 		if (!isValidGSTIN) {
 			throw new BadRequestException(RECRUITER_MESSAGES.INVALID_GSTIN);
 		}
@@ -35,6 +36,7 @@ export class VerifyRecruiterCompanyUseCase implements IExecutable<VerifyRecruite
 
 		recruiter.changeGSTIN(data.GSTIN);
 		recruiter.changeCIN(data.CIN);
+		recruiter.changeGSTIN(data.GSTIN);
 		recruiter.verifyCompany();
 
 		await this._recruiterRepository.findByIdAndUpdate(recruiter.id as string, recruiter);

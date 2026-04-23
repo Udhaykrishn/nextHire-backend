@@ -29,10 +29,19 @@ export class User {
 		default: USER_STATUS.PENDING,
 		enum: USER_STATUS,
 	})
-	status: USER_STATUS;
+	status: string;
 
-	@Prop()
-	resume_url: string;
+	@Prop({
+		type: {
+			key: { type: String },
+			url: { type: String },
+		},
+		_id: false,
+	})
+	resume_url: {
+		key: string;
+		url: string;
+	};
 
 	@Prop()
 	bio: string;
@@ -57,6 +66,18 @@ export class User {
 
 	@Prop({
 		type: {
+			key: { type: String },
+			url: { type: String },
+		},
+		_id: false,
+	})
+	profile_url: {
+		key: string;
+		url: string;
+	};
+
+	@Prop({
+		type: {
 			linkedin: { type: String },
 			portfolio: { type: String },
 			github: { type: String },
@@ -68,6 +89,23 @@ export class User {
 		portfolio: string;
 		github: string;
 	};
+	@Prop({ type: [String], default: [] })
+	skills: string[];
+
+	@Prop({
+		type: [
+			{
+				name: { type: String, required: true },
+				proficiency: { type: String, required: true, enum: ["Low", "Medium", "High"] },
+			},
+		],
+		default: [],
+		_id: false,
+	})
+	languages: {
+		name: string;
+		proficiency: string;
+	}[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

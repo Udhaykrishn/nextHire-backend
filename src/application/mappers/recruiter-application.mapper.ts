@@ -4,9 +4,10 @@ import { ResponseRecruiterDto } from "../dto/recruiter";
 import { RecruiterType } from "@/infrastructure/db/mongodb/models";
 import { RECRUITER_ROLE, RECRUITER_STATUS } from "@/domain/enums/status";
 
-export class RecruiterApplicationMapper
-	implements IRecruiterApplicationMappers<RecruiterType>
-{
+import { Injectable } from "@nestjs/common";
+
+@Injectable()
+export class RecruiterApplicationMapper implements IRecruiterApplicationMappers<RecruiterType> {
 	toResponse(recruiter: RecruiterEntity): ResponseRecruiterDto {
 		return {
 			id: recruiter.id as string,
@@ -24,6 +25,7 @@ export class RecruiterApplicationMapper
 			is_verified_company: recruiter.is_verified_company,
 			admin_approved: recruiter.admin_approved,
 			subscription: recruiter.subscription,
+			profile_url: recruiter.profile_url,
 
 			createdAt: recruiter.createdAt,
 			updatedAt: recruiter.updatedAt || null,

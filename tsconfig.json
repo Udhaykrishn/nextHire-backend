@@ -22,9 +22,7 @@
 		"noFallthroughCasesInSwitch": false,
 		"baseUrl": "./src",
 		"paths": {
-			"@/*": [
-				"*"
-			]
+			"@/*": ["*"]
 		}
 	}
 }

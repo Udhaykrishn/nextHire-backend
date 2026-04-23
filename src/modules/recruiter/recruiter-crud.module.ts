@@ -9,8 +9,13 @@ import {
 	GetOneRecruiterUseCase,
 	RecruiterChangePasswordUseCase,
 	UpdateRecruiterUseCase,
+	UploadRecruiterProfileImageUseCase,
+	RecruiterFindByEmailUseCase,
+	VerifyRecruiterCompanyUseCase,
+	SubscribeRecruiterUseCase,
 } from "@/application/use-case/recuriters";
 import { CheckRecruiterBlockedUseCase } from "@/application/use-case/recuriters";
+import { CompanyVerificationService } from "@/infrastructure/services/implements/company-verification.service";
 
 @Module({
 	imports: [RecruiterLiteModule, CommonModule],
@@ -43,6 +48,26 @@ import { CheckRecruiterBlockedUseCase } from "@/application/use-case/recuriters"
 			provide: RECRUITER_TOKEN.CHECK_RECRUITER_BLOCKED_USE_CASE,
 			useClass: CheckRecruiterBlockedUseCase,
 		},
+		{
+			provide: RECRUITER_TOKEN.UPLOAD_PROFILE_IMAGE_USE_CASE,
+			useClass: UploadRecruiterProfileImageUseCase,
+		},
+		{
+			provide: RECRUITER_TOKEN.RECRUITER_FIND_BY_EMAIL_USE_CASE,
+			useClass: RecruiterFindByEmailUseCase,
+		},
+		{
+			provide: RECRUITER_TOKEN.VERIFY_RECRUITER_COMPANY_USE_CASE,
+			useClass: VerifyRecruiterCompanyUseCase,
+		},
+		{
+			provide: RECRUITER_TOKEN.SUBSCRIBE_RECRUITER_USE_CASE,
+			useClass: SubscribeRecruiterUseCase,
+		},
+		{
+			provide: RECRUITER_TOKEN.COMPANY_VERIFICATION_SERVICE,
+			useClass: CompanyVerificationService,
+		},
 	],
 	exports: [
 		RECRUITER_TOKEN.RECRUITER_CREATE_USE_CASE,
@@ -52,6 +77,10 @@ import { CheckRecruiterBlockedUseCase } from "@/application/use-case/recuriters"
 		RECRUITER_TOKEN.RECRUITER_BLOCK_UNBLOCK_USE_CASE,
 		RECRUITER_TOKEN.RECRUITER_CHANGE_PASSWORD_USE_CASE,
 		RECRUITER_TOKEN.CHECK_RECRUITER_BLOCKED_USE_CASE,
+		RECRUITER_TOKEN.UPLOAD_PROFILE_IMAGE_USE_CASE,
+		RECRUITER_TOKEN.RECRUITER_FIND_BY_EMAIL_USE_CASE,
+		RECRUITER_TOKEN.VERIFY_RECRUITER_COMPANY_USE_CASE,
+		RECRUITER_TOKEN.SUBSCRIBE_RECRUITER_USE_CASE,
 	],
 })
 export class RecruiterCrudModule {}
