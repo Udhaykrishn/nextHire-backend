@@ -14,6 +14,7 @@ import { json, urlencoded } from "express";
 import csurf from "csurf";
 import hpp from "hpp";
 import xss from "xss-clean";
+import mongoSanitize from "express-mongo-sanitize";
 
 async function bootstrap() {
 	otelSDK.start();
@@ -22,6 +23,10 @@ async function bootstrap() {
 		autoFlushLogs: true,
 		bodyParser: false,
 	});
+
+	// Essential for rate-limiting and secure cookies behind a proxy (Load Balancer/Nginx)
+	const server = app.getHttpAdapter().getInstance();
+	server.set("trust proxy", 1);
 
 	app.use(json({ limit: "100kb" }));
 	app.use(urlencoded({ extended: true, limit: "100kb" }));
@@ -35,6 +40,7 @@ async function bootstrap() {
 	app.use(helmet(helmetConfigOptions));
 	app.use(cookieParser());
 	app.use(compression());
+	app.use(mongoSanitize());
 	app.use(hpp());
 	app.use(xss());
 
