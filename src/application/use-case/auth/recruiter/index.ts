@@ -5,3 +5,4 @@ export { RecruiterForgotPasswordUseCase } from "./recruiter-forgot-password.use-
 export { RecruiterResetPasswordUseCase } from "./recruiter-reset-password.use-case";
 export { RecruiterRefreshUseCase } from "./refresh.use-case";
 export { RecruiterVerifyResetTokenUseCase } from "./recruiter-verify-reset-token.use-case";
+export { RecruiterLogoutUseCase } from "./logout.use-case";
