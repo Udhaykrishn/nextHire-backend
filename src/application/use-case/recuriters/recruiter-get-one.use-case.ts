@@ -3,8 +3,8 @@ import { RECRUITER_MAPPER } from "@/application/enums";
 import { RECRUITER_TOKEN } from "@/application/enums/recruiter";
 import { IExecutable } from "@/application/interface/executable.interface";
 import type { IRecruiterApplicationMappers } from "@/application/interface/mappers/recruiter";
-import type { IRecruiterRepository } from "@/application/interface/repository";
-import { RecruiterEntity } from "@/domain/entity";
+import type { IJobRepository, IRecruiterRepository } from "@/application/interface/repository";
+import { RecruiterEntity, JobEntity } from "@/domain/entity";
 import { RECRUITER_MESSAGES } from "@/domain/enums/messages";
 import { NotFoundException } from "@nestjs/common";
 import { Inject, Injectable } from "@nestjs/common";
@@ -17,7 +17,7 @@ export class GetOneRecruiterUseCase implements IExecutable<string, ResponseRecru
 
 		@Inject(RECRUITER_TOKEN.RECRUITER_REPOSITORY)
 		private readonly _recruiterRepository: IRecruiterRepository<RecruiterEntity>,
-	) {}
+	) { }
 
 	async execute(recruiterId: string): Promise<ResponseRecruiterDto> {
 		const recruiter = await this._recruiterRepository.findById(recruiterId);
@@ -26,6 +26,8 @@ export class GetOneRecruiterUseCase implements IExecutable<string, ResponseRecru
 			throw new NotFoundException(RECRUITER_MESSAGES.RECRUITER_NOT_FOUND);
 		}
 
-		return this._recruiterMapper.toResponse(recruiter);
+		const response = this._recruiterMapper.toResponse(recruiter);
+
+		return response;
 	}
 }

@@ -1,64 +1,230 @@
-import { IsArray, IsBoolean, IsNotEmpty, IsObject, IsOptional, IsString } from "class-validator";
+import { IsArray, IsBoolean, IsNotEmpty, IsOptional, IsString } from "class-validator";
 
 export class CreateJobDto {
+	// Step 1
 	@IsString()
-	@IsNotEmpty()
-	job_title: string;
+	@IsOptional()
+	belongingCompany?: string;
 
 	@IsString()
 	@IsNotEmpty()
-	job_description: string;
+	hiringCompany: string;
+
+	@IsString()
+	@IsNotEmpty()
+	experienceType: string;
+
+	@IsString()
+	@IsNotEmpty()
+	jobTitle: string;
+
+	@IsString()
+	@IsNotEmpty()
+	jobCategory: string;
+
+	@IsString()
+	@IsNotEmpty()
+	jobType: string;
+
+	@IsBoolean()
+	@IsOptional()
+	isNightShift?: boolean;
 
 	@IsString()
 	@IsOptional()
-	job_logo?: string;
+	locationType?: string;
 
 	@IsString()
 	@IsOptional()
-	work_mode?: string;
+	officeAddress?: string;
+
+	@IsString()
+	@IsOptional()
+	fieldArea?: string;
+
+	@IsString()
+	@IsOptional()
+	jobCity?: string;
+
+	@IsString()
+	@IsOptional()
+	floorDetails?: string;
+
+	@IsBoolean()
+	@IsOptional()
+	showFloorDetails?: boolean;
 
 	@IsArray()
 	@IsOptional()
-	job_requirements?: { requirement: string; title: string }[];
+	industry?: string[];
+
+	// Step 2
+	@IsString()
+	@IsOptional()
+	payType?: string;
 
 	@IsString()
 	@IsOptional()
-	job_shift?: string;
-
-	@IsObject()
-	@IsOptional()
-	walk_in_interview?: {
-		additions: string;
-		document_carry: string[];
-		interview_date: string;
-		interview_location: string;
-		interview_mode: string;
-		is_active: boolean;
-	};
+	minSalary?: string;
 
 	@IsString()
-	@IsNotEmpty()
-	company_id: string; // recruiterId
-
-	@IsObject()
 	@IsOptional()
-	salary?: { max: string; min: string };
+	maxSalary?: string;
+
+	@IsString()
+	@IsOptional()
+	incentiveAmount?: string;
 
 	@IsArray()
 	@IsOptional()
-	job_role_department?: string[];
+	perks?: string[];
+
+	@IsString()
+	@IsOptional()
+	hasJoiningFee?: string;
+
+	@IsString()
+	@IsOptional()
+	feeAmount?: string;
+
+	@IsString()
+	@IsOptional()
+	feeReason?: string;
+
+	@IsString()
+	@IsOptional()
+	feeDetails?: string;
+
+	@IsString()
+	@IsOptional()
+	feePaymentTiming?: string;
+
+	@IsString()
+	@IsOptional()
+	gender?: string;
+
+	@IsString()
+	@IsOptional()
+	minAge?: string;
+
+	@IsString()
+	@IsOptional()
+	maxAge?: string;
+
+	@IsString()
+	@IsOptional()
+	education?: string;
 
 	@IsArray()
 	@IsOptional()
-	requirement_ats?: { fields: string; title: string }[];
+	degreeSpecialization?: string[];
 
-	@IsString()
-	@IsNotEmpty()
-	posted_by: string; // recruiter email or name
+	@IsArray()
+	@IsOptional()
+	regionalLanguages?: string[];
+
+	@IsArray()
+	@IsOptional()
+	skills?: string[];
 
 	@IsString()
 	@IsOptional()
-	job_highlights?: string;
+	englishLevel?: string;
+
+	@IsString()
+	@IsOptional()
+	experience?: string;
+
+	@IsString()
+	@IsOptional()
+	minExperience?: string;
+
+	@IsString()
+	@IsOptional()
+	description?: string;
+
+	@IsString()
+	@IsOptional()
+	jobDescription?: string;
+
+	// Step 3
+	@IsBoolean()
+	@IsOptional()
+	isWalkIn?: boolean;
+
+	@IsString()
+	@IsOptional()
+	interviewAddress?: string;
+
+	@IsString()
+	@IsOptional()
+	walkInStartDate?: string;
+
+	@IsString()
+	@IsOptional()
+	walkInEndDate?: string;
+
+	@IsString()
+	@IsOptional()
+	walkInStartTime?: string;
+
+	@IsString()
+	@IsOptional()
+	walkInEndTime?: string;
+
+	@IsString()
+	@IsOptional()
+	interviewInstructions?: string;
+
+	@IsString()
+	@IsOptional()
+	contactPreference?: string;
+
+	@IsString()
+	@IsOptional()
+	hrName?: string;
+
+	@IsString()
+	@IsOptional()
+	hrPhone?: string;
+
+	@IsString()
+	@IsOptional()
+	hrEmail?: string;
+
+	@IsString()
+	@IsOptional()
+	otherRecruiterName?: string;
+
+	@IsString()
+	@IsOptional()
+	otherRecruiterWhatsapp?: string;
+
+	@IsString()
+	@IsOptional()
+	otherRecruiterEmail?: string;
+
+	@IsString()
+	@IsOptional()
+	canCandidateContact?: string;
+
+	@IsString()
+	@IsOptional()
+	whatsappAlerts?: string;
+
+	// Step 5
+	@IsString()
+	@IsOptional()
+	selectedPlan?: string;
+
+	// Metadata
+	@IsString()
+	@IsOptional()
+	company_id?: string;
+
+	@IsString()
+	@IsOptional()
+	posted_by?: string;
 
 	@IsString()
 	@IsOptional()
@@ -67,8 +233,4 @@ export class CreateJobDto {
 	@IsBoolean()
 	@IsOptional()
 	is_published?: boolean;
-
-	@IsString()
-	@IsOptional()
-	job_type?: string;
 }

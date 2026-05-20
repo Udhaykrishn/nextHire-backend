@@ -1,8 +1,10 @@
-import { IsDateString, IsOptional, IsString } from "class-validator";
+import { IsDate, IsOptional, IsString } from "class-validator";
+import { Type } from "class-transformer";
 
 export class UpdateEducationDto {
 	@IsString()
-	id: string;
+	@IsOptional()
+	id?: string;
 
 	@IsOptional()
 	@IsString()
@@ -17,11 +19,13 @@ export class UpdateEducationDto {
 	fieldOfStudy?: string;
 
 	@IsOptional()
-	@IsDateString()
+	@IsDate()
+	@Type(() => Date)
 	startDate?: Date;
 
 	@IsOptional()
-	@IsDateString()
+	@IsDate()
+	@Type(() => Date)
 	endDate?: Date;
 
 	@IsOptional()

@@ -9,12 +9,12 @@ import { ValidationPipe } from "@nestjs/common";
 import { GlobalExceptionFilter } from "./presentation/filter/global-exception.filter";
 import { otelSDK } from "./otel";
 import { ResponseInterceptor } from "./presentation/interceptors/response.intercepotor";
-import { xssMiddleware } from "./presentation/middlewares/xss.middleware";
 
 import { json, urlencoded } from "express";
-import csurf from "csurf";
+
 import hpp from "hpp";
 import mongoSanitize from "express-mongo-sanitize";
+import { xssMiddleware } from "./presentation/middleware/xss.middleware";
 
 async function bootstrap() {
 	otelSDK.start();
@@ -30,6 +30,17 @@ async function bootstrap() {
 	app.use(json({ limit: "100kb" }));
 	app.use(urlencoded({ extended: true, limit: "100kb" }));
 
+
+	app.use((req, _res, next) => {
+		Object.defineProperty(req, "query", {
+			value: { ...req.query },
+			writable: true,
+			configurable: true,
+			enumerable: true,
+		});
+		next();
+	});
+
 	app.enableCors({
 		origin: process.env.FRONTEND_API,
 		credentials: true,
@@ -42,8 +53,6 @@ async function bootstrap() {
 	app.use(mongoSanitize());
 	app.use(hpp());
 	app.use(xssMiddleware);
-
-	app.use(csurf({ cookie: { httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "lax" } }));
 
 	app.useGlobalPipes(
 		new ValidationPipe({

@@ -57,7 +57,7 @@ export class UserRegisterUseCase implements IExecutable<UserSignupDto, UserSignR
 			}),
 		);
 
-		this.eventEmitter.emit(AUTH_EVENTS.OTP_GENERATED, {
+		await this.eventEmitter.emitAsync(AUTH_EVENTS.OTP_GENERATED, {
 			email: user.email,
 			name: user.name,
 			otp,

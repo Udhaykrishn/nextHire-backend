@@ -1,8 +1,10 @@
-import { IsDateString, IsOptional, IsString, IsUrl } from "class-validator";
+import { IsDate, IsOptional, IsString, IsUrl } from "class-validator";
+import { Type } from "class-transformer";
 
 export class UpdateCertificateDto {
 	@IsString()
-	id: string;
+	@IsOptional()
+	id?: string;
 
 	@IsOptional()
 	@IsString()
@@ -13,11 +15,13 @@ export class UpdateCertificateDto {
 	issuingOrganization?: string;
 
 	@IsOptional()
-	@IsDateString()
+	@IsDate()
+	@Type(() => Date)
 	issueDate?: Date;
 
 	@IsOptional()
-	@IsDateString()
+	@IsDate()
+	@Type(() => Date)
 	expirationDate?: Date;
 
 	@IsOptional()

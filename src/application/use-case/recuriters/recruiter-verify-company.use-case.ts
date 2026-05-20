@@ -23,20 +23,12 @@ export class VerifyRecruiterCompanyUseCase implements IExecutable<VerifyRecruite
 			throw new NotFoundException(RECRUITER_MESSAGES.RECRUITER_NOT_FOUND);
 		}
 
-		const isValidGSTIN = await this._companyVerificationService.verifyGSTIN(data.GSTIN);
-
-		if (!isValidGSTIN) {
-			throw new BadRequestException(RECRUITER_MESSAGES.INVALID_GSTIN);
-		}
-
 		const isValidCIN = await this._companyVerificationService.verifyCIN(data.CIN);
 		if (!isValidCIN) {
 			throw new BadRequestException(RECRUITER_MESSAGES.INVALID_CIN);
 		}
 
-		recruiter.changeGSTIN(data.GSTIN);
 		recruiter.changeCIN(data.CIN);
-		recruiter.changeGSTIN(data.GSTIN);
 		recruiter.verifyCompany();
 
 		await this._recruiterRepository.findByIdAndUpdate(recruiter.id as string, recruiter);

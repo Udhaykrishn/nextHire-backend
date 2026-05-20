@@ -12,4 +12,5 @@ export enum USER_AUTH_ROUTER {
 	LOGOUT = "logout",
 	RESET_PASSWORD = "/reset-password",
 	VERIFY_RESET_TOKEN = "/verify-reset-token",
+	CSRF = "/csrf-token",
 }

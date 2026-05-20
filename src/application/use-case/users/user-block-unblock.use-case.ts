@@ -11,7 +11,7 @@ import { NotFoundException } from "@nestjs/common";
 import { Inject, Injectable } from "@nestjs/common";
 
 @Injectable()
-export class BlockUnblockUserUseCase implements IExecutable<string, ResponseUserDto> {
+export class BlockUnblockUserUseCase implements IExecutable<{ userId: string; description?: string }, ResponseUserDto> {
 	constructor(
 		@Inject(USER_MAPPER.USER_APPLICATION)
 		private readonly _userMapper: IUserApplicationMappers<UserEntity>,
@@ -19,7 +19,8 @@ export class BlockUnblockUserUseCase implements IExecutable<string, ResponseUser
 		private readonly _userRepository: IUserRepository<UserEntity>,
 	) {}
 
-	async execute(userId: string): Promise<ResponseUserDto> {
+	async execute(input: { userId: string; description?: string }): Promise<ResponseUserDto> {
+		const { userId, description } = input;
 		const user = await this._userRepository.findById(userId);
 
 		if (!user) {
@@ -27,9 +28,15 @@ export class BlockUnblockUserUseCase implements IExecutable<string, ResponseUser
 		}
 
 		user.changeStatus(user.status === USER_STATUS.ACTIVE ? USER_STATUS.BLOCK : USER_STATUS.ACTIVE);
+		if (description) {
+			user.changeBlockDescription(description);
+		} else {
+			user.changeBlockDescription("");
+		}
 
 		const updateUser = await this._userRepository.findByIdAndUpdate(userId, {
 			status: user.status,
+			block_description: user.block_description,
 		});
 
 		if (!updateUser) {

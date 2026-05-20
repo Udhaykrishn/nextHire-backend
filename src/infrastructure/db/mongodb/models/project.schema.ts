@@ -22,6 +22,45 @@ export class Project {
 
 	@Prop()
 	url: string;
+
+	@Prop({
+		type: [
+			{
+				name: { type: String },
+				url: { type: String },
+			},
+		],
+		default: [],
+		_id: false,
+	})
+	githubUrls: { name: string; url: string }[];
+
+	@Prop({ default: false })
+	isCollaborative: boolean;
+
+	@Prop({ type: [String], default: [] })
+	skillsLearned: string[];
+
+	@Prop({ default: "" })
+	company: string;
+
+	@Prop({ default: "" })
+	location: string;
+
+	@Prop({ default: "" })
+	industry: string;
+
+	@Prop({ default: "" })
+	role: string;
+
+	@Prop({ default: false })
+	currentlyWorking: boolean;
+
+	@Prop({ default: "" })
+	employmentType: string;
+
+	@Prop({ default: "" })
+	noticePeriod: string;
 }
 
 export const ProjectSchema = SchemaFactory.createForClass(Project);

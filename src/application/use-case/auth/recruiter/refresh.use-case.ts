@@ -4,7 +4,7 @@ import { Injectable, Inject, UnauthorizedException, BadRequestException } from "
 import { IExecutable } from "@/application/interface/executable.interface";
 import { RecruiterEntity } from "@/domain/entity/recruiter.entity";
 import { COMMON_TOKEN } from "@/application/enums/tokens";
-import type { IJwtService, IRedisService } from "@/infrastructure/services/interface";
+import type { IJwtService, IRedisService, IUuidService } from "@/infrastructure/services/interface";
 import { COOKIE_MAX_AGE_CONSTANT } from "@/domain/constants/cookie.constant";
 import { REDIS_KEYS } from "@/domain/enums/keys";
 import { RECRUITER_TOKEN } from "@/application/enums/recruiter";
@@ -23,10 +23,14 @@ export class RecruiterRefreshUseCase implements IExecutable<string, RecruiterRef
 
 		@Inject(COMMON_TOKEN.REDIS_SERVICE)
 		private readonly _redisService: IRedisService,
+
+		@Inject(COMMON_TOKEN.UUID_SERVICE)
+		private readonly _uuidService: IUuidService,
 	) {}
 
 	async execute(sessionId: string): Promise<RecruiterRefreshTokenDto> {
-		const refreshToken = await this._redisService.get(REDIS_KEYS.REFRESH.concat(sessionId));
+		const oldKey = REDIS_KEYS.REFRESH.concat(sessionId);
+		const refreshToken = await this._redisService.get(oldKey);
 
 		if (!refreshToken) {
 			throw new UnauthorizedException("Token expired or invalid token found");
@@ -44,8 +48,27 @@ export class RecruiterRefreshUseCase implements IExecutable<string, RecruiterRef
 			throw new BadRequestException(RECRUITER_MESSAGES.RECRUITER_NOT_FOUND);
 		}
 
-		const accessToken = await this._jwtService.generateToken(payload, COOKIE_MAX_AGE_CONSTANT.ACCESS_TOKEN_1_HOUR);
+		const accessTokenPayload = {
+			id: payload.id,
+			email: payload.email,
+			role: payload.role,
+		};
 
-		return { accessToken };
+		const accessToken = await this._jwtService.generateToken(
+			accessTokenPayload,
+			COOKIE_MAX_AGE_CONSTANT.ACCESS_TOKEN_1_HOUR,
+		);
+
+		// Session rotation: delete old session, issue new sessionId + refreshToken
+		const newSessionId = this._uuidService.generate();
+		const newRefreshToken = await this._jwtService.generateToken(
+			accessTokenPayload,
+			COOKIE_MAX_AGE_CONSTANT.REFRESH_TOKEN_7_DAY,
+		);
+		await this._redisService.del(oldKey);
+		this._redisService.set(REDIS_KEYS.REFRESH.concat(newSessionId), newRefreshToken);
+
+		return { accessToken, sessionId: newSessionId };
 	}
 }
+

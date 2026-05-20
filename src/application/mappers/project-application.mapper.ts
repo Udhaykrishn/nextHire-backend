@@ -15,7 +15,17 @@ export class ProjectApplicationMapper implements IProjectApplicationMapper<Proje
 			startDate: project.startDate,
 			endDate: project.endDate,
 			url: project.url,
+			githubUrls: project.githubUrls,
+			isCollaborative: project.isCollaborative,
+			skillsLearned: project.skillsLearned,
 			createdAt: project.createdAt,
+			company: project.company,
+			location: project.location,
+			industry: project.industry,
+			role: project.role,
+			currentlyWorking: project.currentlyWorking,
+			employmentType: project.employmentType,
+			noticePeriod: project.noticePeriod,
 		};
 	}
 
@@ -28,8 +38,18 @@ export class ProjectApplicationMapper implements IProjectApplicationMapper<Proje
 			startDate: data.startDate,
 			endDate: data.endDate,
 			url: data.url,
+			githubUrls: data.githubUrls,
+			isCollaborative: data.isCollaborative,
+			skillsLearned: data.skillsLearned,
 			createdAt: data.createdAt,
 			updatedAt: data.updatedAt,
+			company: data.company,
+			location: data.location,
+			industry: data.industry,
+			role: data.role,
+			currentlyWorking: data.currentlyWorking,
+			employmentType: data.employmentType,
+			noticePeriod: data.noticePeriod,
 		});
 	}
 }

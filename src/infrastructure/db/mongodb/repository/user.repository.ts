@@ -26,6 +26,10 @@ export class UserRepository extends BaseRepository<UserEntity, UserType> impleme
 
 		const filter: Record<string, unknown> = {};
 
+		if (pages.status) {
+			filter.status = pages.status;
+		}
+
 		if (pages.search) {
 			filter.$or = [
 				{ name: { $regex: pages.search, $options: "i" } },

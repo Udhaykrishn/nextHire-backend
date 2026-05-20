@@ -93,6 +93,7 @@ export class AuthRecruiterController implements IAuthRecruiterController {
 		const token = await this._refreshTokenUseCase.execute(req.sessionId);
 
 		setCookie(res, AUTH_TOKEN.ACCESS_TOKEN, token.accessToken, COOKIE_MAX_AGE_CONSTANT.ACCESS_TOKEN_1_HOUR);
+		setCookie(res, AUTH_TOKEN.SESSION_ID, token.sessionId, COOKIE_MAX_AGE_CONSTANT.REFRESH_TOKEN_7_DAY);
 	}
 
 	@UseGuards(RefreshGuard)

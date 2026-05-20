@@ -14,10 +14,12 @@ import { EducationModule } from "./education/education.module";
 import { ProjectModule } from "./project/project.module";
 import { AddressModule } from "./address/address.module";
 import { OTelModule } from "./otel.module";
+import { JobModule } from "./job/job.module";
 import { HealthController } from "@/presentation/controllers/health.controller";
 import { ThrottlerModule, ThrottlerGuard } from "@nestjs/throttler";
 import { APP_GUARD } from "@nestjs/core";
 import { SecurityMiddleware } from "@/presentation/middleware/security.middleware";
+import { CsrfMiddleware } from "@/presentation/middleware/csrf.middleware";
 
 @Module({
 	imports: [
@@ -33,7 +35,15 @@ import { SecurityMiddleware } from "@/presentation/middleware/security.middlewar
 				limit: 100,
 			},
 		]),
-		EventEmitterModule.forRoot(),
+		EventEmitterModule.forRoot({
+			wildcard: true,
+			delimiter: ".",
+			newListener: false,
+			removeListener: false,
+			maxListeners: 20,
+			verboseMemoryLeak: false,
+			ignoreErrors: false,
+		}),
 		OTelModule,
 		RedisModule,
 		MongoDbModule.forRootAsync(),
@@ -54,6 +64,7 @@ import { SecurityMiddleware } from "@/presentation/middleware/security.middlewar
 		ProjectModule,
 		AddressModule,
 		NotificationModule,
+		JobModule,
 	],
 	controllers: [HealthController],
 	providers: [
@@ -65,6 +76,6 @@ import { SecurityMiddleware } from "@/presentation/middleware/security.middlewar
 })
 export class AppModule implements NestModule {
 	configure(consumer: MiddlewareConsumer) {
-		consumer.apply(SecurityMiddleware).forRoutes("*path");
+		consumer.apply(SecurityMiddleware, CsrfMiddleware).forRoutes("*path");
 	}
 }

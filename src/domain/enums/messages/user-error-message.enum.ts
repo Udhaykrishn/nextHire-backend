@@ -8,4 +8,5 @@ export enum USER_MESSAGES {
 	INVALID_TOKEN = "Invalid or expired token",
 	INVALID_TOKEN_PAYLOAD = "Invalid token payload",
 	INVALID_CREDENTIALS = "Invalid credentials",
+	PROFILE_INCOMPLETE = "Complete your profile to apply for jobs",
 }

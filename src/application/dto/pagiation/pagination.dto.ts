@@ -8,6 +8,10 @@ export class PaginationDto {
 	@MaxLength(100, { message: "Search cannot exceed 100 characters" })
 	search?: string;
 
+	@IsOptional()
+	@IsString()
+	status?: string;
+
 	@Type(() => Number)
 	@IsOptional()
 	@IsNumber({}, { message: "Page must be a number" })

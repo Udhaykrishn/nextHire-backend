@@ -32,4 +32,7 @@ export class ResponseUserDto {
 		key: string;
 		url: string;
 	};
+	public readonly cinNumber: string;
+	public readonly isCompanyVerified: boolean;
+	public readonly block_description?: string;
 }

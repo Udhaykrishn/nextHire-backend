@@ -23,6 +23,9 @@ export class UserPresitanceMapper implements IUserPresitanceMapper<UserEntity, U
 			createdAt: user.createdAt,
 			skills: user.skills,
 			languages: user.languages,
+			cinNumber: user.cinNumber,
+			isCompanyVerified: user.isCompanyVerified,
+			block_description: user.block_description,
 		};
 	}
 
@@ -46,6 +49,9 @@ export class UserPresitanceMapper implements IUserPresitanceMapper<UserEntity, U
 			createdAt: doc.createdAt,
 			skills: doc.skills,
 			languages: doc.languages,
+			cinNumber: doc.cinNumber,
+			isCompanyVerified: doc.isCompanyVerified,
+			block_description: doc.block_description,
 		});
 	}
 }

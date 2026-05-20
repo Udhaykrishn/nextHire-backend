@@ -7,7 +7,7 @@ import { JobEntity } from "@/domain/entity/job.entity";
 import type { IJobRepository } from "@/application/interface/repository/job-repository.interface";
 import type { IRecruiterRepository } from "@/application/interface/repository/recruiter-repository.interface";
 import type { RecruiterEntity } from "@/domain/entity/recruiter.entity";
-import { Inject, Injectable, ForbiddenException, NotFoundException } from "@nestjs/common";
+import { Inject, Injectable, ForbiddenException, NotFoundException, BadRequestException } from "@nestjs/common";
 
 @Injectable()
 export class CreateJobUseCase implements IExecutable<CreateJobDto, JobEntity> {
@@ -19,6 +19,10 @@ export class CreateJobUseCase implements IExecutable<CreateJobDto, JobEntity> {
 	) {}
 
 	async execute(data: CreateJobDto): Promise<JobEntity> {
+		if (!data.company_id || !data.posted_by) {
+			throw new BadRequestException("Company ID and Posted By are required");
+		}
+
 		const recruiter = await this._recruiterRepository.findById(data.company_id);
 
 		if (!recruiter) {
@@ -37,7 +41,11 @@ export class CreateJobUseCase implements IExecutable<CreateJobDto, JobEntity> {
 			throw new ForbiddenException(RECRUITER_MESSAGES.SUBSCRIPTION_REQUIRED);
 		}
 
-		const job = JobEntity.create(data);
+		const job = JobEntity.create({
+			...data,
+			company_id: data.company_id,
+			posted_by: data.posted_by,
+		});
 
 		const savedJob = await this._jobRepository.save(job);
 

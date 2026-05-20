@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import type { HydratedDocument } from "mongoose";
+import type { HydratedDocument, InferSchemaType } from "mongoose";
 
 export type ApplicationDocument = HydratedDocument<Application>;
 
@@ -16,3 +16,4 @@ export class Application {
 }
 
 export const ApplicationSchema = SchemaFactory.createForClass(Application);
+export type ApplicationType = InferSchemaType<typeof ApplicationSchema> & { _id: string; createdAt: Date; updatedAt: Date };
