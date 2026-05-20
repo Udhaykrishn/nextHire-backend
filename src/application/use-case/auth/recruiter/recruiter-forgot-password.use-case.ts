@@ -50,8 +50,7 @@ export class RecruiterForgotPasswordUseCase
 
 		const frontendUrl = this.configService.get(ENV_KEYS.FRONTEND_API);
 		const link = `${frontendUrl}/reset-password?token=${token}&type=${USER_ROLE.RECRUITER}`;
-
-		this.eventEmitter.emit(AUTH_EVENTS.FORGOT_PASSWORD, {
+		await this.eventEmitter.emitAsync(AUTH_EVENTS.FORGOT_PASSWORD, {
 			email: recruiter.email,
 			link,
 			name: recruiter.name,

@@ -24,6 +24,8 @@ export class ResponseRecruiterDto {
 		url: string;
 	};
 
+
+
 	public readonly createdAt: Date;
 	public readonly updatedAt: Date | null;
 }

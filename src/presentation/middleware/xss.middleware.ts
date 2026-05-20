@@ -27,7 +27,12 @@ function sanitize<T>(data: T): T {
 
 export function xssMiddleware(req: Request, _res: Response, next: NextFunction) {
 	if (req.body) req.body = sanitize(req.body);
-	if (req.query) req.query = sanitize(req.query);
+
+	// Note: req.query is made writable in main.ts via Object.defineProperty
+	if (req.query) {
+		req.query = sanitize(req.query);
+	}
+
 	if (req.params) req.params = sanitize(req.params);
 	next();
 }

@@ -6,4 +6,5 @@ export enum RECRUITER_ROUTERS {
 	CHANGE_PASSWORD = ":id/change-password",
 	PROFILE = "profile",
 	UPLOAD_PROFILE_IMAGE = "profile/upload",
+	VERIFY_COMPANY = "verify-company",
 }

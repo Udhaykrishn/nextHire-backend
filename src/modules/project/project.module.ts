@@ -4,6 +4,7 @@ import { Project, ProjectSchema } from "@/infrastructure/db/mongodb/models/proje
 import { ProjectRepository } from "@/infrastructure/db/mongodb/repository/project.repository";
 import { CreateProjectUseCase } from "@/application/use-case/project/create-project.use-case";
 import { GetProjectsUseCase } from "@/application/use-case/project/get-projects.use-case";
+import { GetProjectByIdUseCase } from "@/application/use-case/project/get-project-by-id.use-case";
 import { UpdateProjectUseCase } from "@/application/use-case/project/update-project.use-case";
 import { DeleteProjectUseCase } from "@/application/use-case/project/delete-project.use-case";
 import { ProjectController } from "@/presentation/controller/project/project.controller";
@@ -35,6 +36,10 @@ import { ProjectApplicationMapper } from "@/application/mappers/project-applicat
 		{
 			provide: PROJECT_TOKEN.GET_PROJECTS_USE_CASE,
 			useClass: GetProjectsUseCase,
+		},
+		{
+			provide: PROJECT_TOKEN.GET_PROJECT_BY_ID_USE_CASE,
+			useClass: GetProjectByIdUseCase,
 		},
 		{
 			provide: PROJECT_TOKEN.UPDATE_PROJECT_USE_CASE,

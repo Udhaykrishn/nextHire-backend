@@ -24,7 +24,7 @@ export class AdminAuthController implements IAdminAuthController {
 		private readonly refreshUseCase: AdminRefreshUseCase,
 		@Inject(ADMIN_AUTH_TOKEN.ADMIN_LOGOUT_USE_CASE)
 		private readonly logoutUseCase: AdminLogoutUseCase,
-	) {}
+	) { }
 
 	@Post(ADMIN_AUTH_ROUTER.LOGIN)
 	async login(@Body() dto: AdminLoginDto, @Res({ passthrough: true }) res: Response) {
@@ -37,18 +37,15 @@ export class AdminAuthController implements IAdminAuthController {
 	@UseGuards(RefreshGuard)
 	@Get(ADMIN_AUTH_ROUTER.REFRESH)
 	async refresh(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
-		const { accessToken } = await this.refreshUseCase.execute(req.sessionId);
-		setCookie(res, AUTH_TOKEN.ACCESS_TOKEN, accessToken, COOKIE_MAX_AGE_CONSTANT.ACCESS_TOKEN_1_HOUR);
-		return { accessToken };
+		const token = await this.refreshUseCase.execute(req.sessionId);
+		setCookie(res, AUTH_TOKEN.ACCESS_TOKEN, token.accessToken, COOKIE_MAX_AGE_CONSTANT.ACCESS_TOKEN_1_HOUR);
+		setCookie(res, AUTH_TOKEN.SESSION_ID, token.sessionId, COOKIE_MAX_AGE_CONSTANT.REFRESH_TOKEN_7_DAY);
+		return { success: true };
 	}
 
-	@UseGuards(AuthGuard)
-	@Roles(USER_ROLE.ADMIN)
+	@UseGuards(RefreshGuard)
 	@Post(ADMIN_AUTH_ROUTER.LOGOUT)
 	async logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
-		if (!req.sessionId) {
-			throw new UnauthorizedException("Missing session id");
-		}
 		await this.logoutUseCase.execute(req.sessionId);
 		clearCookie(res, AUTH_TOKEN.SESSION_ID);
 		clearCookie(res, AUTH_TOKEN.ACCESS_TOKEN);

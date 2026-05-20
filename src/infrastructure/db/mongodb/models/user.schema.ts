@@ -15,7 +15,7 @@ export class User {
 	@Prop({ required: true })
 	name: string;
 
-	@Prop({ required: true })
+	@Prop({ default: "" })
 	phone: string;
 
 	@Prop()
@@ -106,6 +106,15 @@ export class User {
 		name: string;
 		proficiency: string;
 	}[];
+
+	@Prop({ type: String, default: "" })
+	cinNumber: string;
+
+	@Prop({ type: Boolean, default: false })
+	isCompanyVerified: boolean;
+
+	@Prop({ type: String, default: "" })
+	block_description: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

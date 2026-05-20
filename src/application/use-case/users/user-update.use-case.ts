@@ -58,6 +58,9 @@ export class UpdateUserUseCase implements IExecutable<{ userId: string; data: Up
 		if (data.languages) {
 			user.changeLanguages(data.languages);
 		}
+		if (data.cinNumber) {
+			user.changeCinNumber(data.cinNumber);
+		}
 
 		const updatedUser = await this._userRepository.findByIdAndUpdate(userId, user);
 

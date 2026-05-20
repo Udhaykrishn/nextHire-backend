@@ -8,12 +8,12 @@ import { RoleGuard } from "@/presentation/guards/role.guard";
 import { Roles } from "@/presentation/decorators/role.decorator";
 import { USER_ROLE } from "@/domain/enums";
 import { EDUCATION_ROUTER } from "@/presentation/enums";
-import { Body, Controller, Delete, Get, Inject, Param, Post, Put, Req, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Inject, Param, Post, Put, Req, UseGuards, Query } from "@nestjs/common";
 import type { AuthenticatedRequest } from "@/presentation/interface/request.interface";
 
 @Controller(EDUCATION_ROUTER.ROUTER)
 @UseGuards(AuthGuard, RoleGuard)
-@Roles(USER_ROLE.USER)
+@Roles(USER_ROLE.USER, USER_ROLE.ADMIN)
 export class EducationController {
 	constructor(
 		@Inject(EDUCATION_TOKEN.CREATE_EDUCATION_USE_CASE)
@@ -33,8 +33,9 @@ export class EducationController {
 	}
 
 	@Get(EDUCATION_ROUTER.DEFAULT)
-	async getAll(@Req() req: AuthenticatedRequest) {
-		return await this._getEducationsUseCase.execute(req.user.id);
+	async getAll(@Req() req: AuthenticatedRequest, @Query("userId") userId?: string) {
+		const targetUserId = (req.user.role === USER_ROLE.ADMIN && userId) ? userId : req.user.id;
+		return await this._getEducationsUseCase.execute(targetUserId);
 	}
 
 	@Put(EDUCATION_ROUTER.ID)

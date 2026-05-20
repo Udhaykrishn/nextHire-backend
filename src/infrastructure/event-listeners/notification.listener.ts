@@ -9,11 +9,14 @@ export class NotificationListener {
 	private readonly logger = new Logger(NotificationListener.name);
 	private readonly JOB_NAME = "dispatch-notification";
 
-	constructor(@InjectQueue("notification-queue") private readonly queue: Queue) {}
+	constructor(@InjectQueue("notification-queue") private readonly queue: Queue) {
+		this.logger.log("NotificationListener initialized");
+	}
 
 	@OnEvent(AUTH_EVENTS.OTP_GENERATED)
 	async handleOtpGenerated(payload: { email: string; otp: string; name: string }) {
 		this.logger.log(`Handling OTP event for ${payload.email}`);
+		console.log("OTP Event Received", payload);
 		await this.queue.add(this.JOB_NAME, {
 			recipientId: payload.email,
 			recipientEmail: payload.email,
@@ -28,15 +31,21 @@ export class NotificationListener {
 	@OnEvent(AUTH_EVENTS.FORGOT_PASSWORD)
 	async handleForgotPassword(payload: { email: string; link: string; name: string }) {
 		this.logger.log(`Handling Forgot Password event for ${payload.email}`);
-		await this.queue.add(this.JOB_NAME, {
-			recipientId: payload.email,
-			recipientEmail: payload.email,
-			type: "forgot_password",
-			data: {
-				name: payload.name,
-				link: payload.link,
-			},
-		});
+		console.log("Forgot Password Event Received", payload);
+		try {
+			const job = await this.queue.add(this.JOB_NAME, {
+				recipientId: payload.email,
+				recipientEmail: payload.email,
+				type: "forgot_password",
+				data: {
+					name: payload.name,
+					link: payload.link,
+				},
+			});
+			console.log("Job added to queue", job.id);
+		} catch (error) {
+			this.logger.error("Failed to add job to queue", error);
+		}
 	}
 
 	@OnEvent(AUTH_EVENTS.USER_SIGNUP)

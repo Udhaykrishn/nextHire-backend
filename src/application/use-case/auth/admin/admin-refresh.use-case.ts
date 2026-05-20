@@ -3,12 +3,13 @@ import { IExecutable } from "@/application/interface/executable.interface";
 import type { IAdminRepository } from "@/application/interface/repository";
 import { AdminEntity } from "@/domain/entity";
 import { COMMON_TOKEN, ADMIN_AUTH_TOKEN } from "@/application/enums/tokens";
-import type { IJwtService, IRedisService } from "@/infrastructure/services/interface";
+import type { IJwtService, IRedisService, IUuidService } from "@/infrastructure/services/interface";
 import { COOKIE_MAX_AGE_CONSTANT } from "@/domain/constants/cookie.constant";
 import { REDIS_KEYS } from "@/domain/enums/keys";
 
 export class AdminRefreshTokenDto {
 	accessToken: string;
+	sessionId: string;
 }
 
 @Injectable()
@@ -20,10 +21,13 @@ export class AdminRefreshUseCase implements IExecutable<string, AdminRefreshToke
 		private readonly _jwtService: IJwtService,
 		@Inject(COMMON_TOKEN.REDIS_SERVICE)
 		private readonly _redisService: IRedisService,
-	) {}
+		@Inject(COMMON_TOKEN.UUID_SERVICE)
+		private readonly _uuidService: IUuidService,
+	) { }
 
 	async execute(sessionId: string): Promise<AdminRefreshTokenDto> {
-		const refreshToken = await this._redisService.get(`${REDIS_KEYS.REFRESH.concat(sessionId)}`);
+		const oldKey = REDIS_KEYS.REFRESH.concat(sessionId);
+		const refreshToken = await this._redisService.get(oldKey);
 
 		if (!refreshToken) {
 			throw new UnauthorizedException("Token expired or Invalid Token found");
@@ -41,8 +45,27 @@ export class AdminRefreshUseCase implements IExecutable<string, AdminRefreshToke
 			throw new BadRequestException("Admin not found");
 		}
 
-		const accessToken = await this._jwtService.generateToken(payload, COOKIE_MAX_AGE_CONSTANT.ACCESS_TOKEN_1_HOUR);
+		const accessTokenPayload = {
+			id: payload.id,
+			email: payload.email,
+			role: payload.role,
+		};
 
-		return { accessToken };
+		const accessToken = await this._jwtService.generateToken(
+			accessTokenPayload,
+			COOKIE_MAX_AGE_CONSTANT.ACCESS_TOKEN_1_HOUR,
+		);
+
+		// Session rotation: delete old session, issue new sessionId + refreshToken
+		const newSessionId = this._uuidService.generate();
+		const newRefreshToken = await this._jwtService.generateToken(
+			accessTokenPayload,
+			COOKIE_MAX_AGE_CONSTANT.REFRESH_TOKEN_7_DAY,
+		);
+		await this._redisService.del(oldKey);
+		this._redisService.set(REDIS_KEYS.REFRESH.concat(newSessionId), newRefreshToken);
+
+		return { accessToken, sessionId: newSessionId };
 	}
 }
+

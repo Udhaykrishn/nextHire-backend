@@ -12,6 +12,7 @@ import {
 	UpdateUserSubscriptionUseCase,
 	UploadResumeUseCase,
 	DeleteResumeUseCase,
+	GetOneUserUseCase,
 } from "@/application/use-case/users";
 import { CommonModule } from "../common.module";
 import { UserLiteModule } from "./user-db.module";
@@ -22,6 +23,10 @@ import { Module } from "@nestjs/common";
 	providers: [
 		{ provide: USERS_TOKEN.USER_CREATE_USE_CASE, useClass: CreateUserUseCase },
 		{ provide: USERS_TOKEN.USER_UPDATE_USE_CASE, useClass: UpdateUserUseCase },
+		{
+			provide: USERS_TOKEN.USER_GET_USE_CASE,
+			useClass: GetOneUserUseCase,
+		},
 		{
 			provide: USERS_TOKEN.USER_GET_ALL_USE_CASE,
 			useClass: GetAllUsersUseCase,
@@ -67,6 +72,7 @@ import { Module } from "@nestjs/common";
 		USERS_TOKEN.USER_CREATE_USE_CASE,
 		USERS_TOKEN.CHECK_USER_BLOCKED_USE_CASE,
 		USERS_TOKEN.USER_UPDATE_USE_CASE,
+		USERS_TOKEN.USER_GET_USE_CASE,
 		USERS_TOKEN.USER_GET_ALL_USE_CASE,
 		USERS_TOKEN.USER_BLOCK_UNBLOCK_USE_CASE,
 		USERS_TOKEN.CHANGE_PASSWORD_USE_CASE,
@@ -78,4 +84,4 @@ import { Module } from "@nestjs/common";
 		USERS_TOKEN.DELETE_RESUME_USE_CASE,
 	],
 })
-export class UserCrudModule {}
+export class UserCrudModule { }

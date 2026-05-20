@@ -40,12 +40,14 @@ export class UserController implements IUserController {
 	constructor(
 		@Inject(USERS_TOKEN.USER_CREATE_USE_CASE)
 		private readonly _userCreateUseCase: IExecutable<CreateUserDto, ResponseUserDto>,
+		@Inject(USERS_TOKEN.USER_GET_USE_CASE)
+		private readonly _getOneUserUseCase: IExecutable<string, ResponseUserDto>,
 		@Inject(USERS_TOKEN.USER_GET_ALL_USE_CASE)
 		private readonly _getAllUsersUseCase: IExecutable<PaginationDto, PaginationResponse<ResponseUserDto>>,
 		@Inject(USERS_TOKEN.USER_UPDATE_USE_CASE)
 		private readonly _updateUserUseCase: IExecutable<{ userId: string; data: UpdateUserDto }, ResponseUserDto>,
 		@Inject(USERS_TOKEN.USER_BLOCK_UNBLOCK_USE_CASE)
-		private readonly _blockUnblockUseCase: IExecutable<string, ResponseUserDto>,
+		private readonly _blockUnblockUseCase: IExecutable<{ userId: string; description?: string }, ResponseUserDto>,
 		@Inject(USERS_TOKEN.CHANGE_PASSWORD_USE_CASE)
 		private readonly _changePasswordUseCase: IExecutable<
 			{ userId: string; dto: ChangePasswordDto },
@@ -72,7 +74,7 @@ export class UserController implements IUserController {
 		>,
 		@Inject(USERS_TOKEN.DELETE_RESUME_USE_CASE)
 		private readonly _deleteResumeUseCase: IExecutable<string, ResponseUserDto>,
-	) {}
+	) { }
 
 	@Post(USER_ROUTERS.DEFAULT)
 	@HttpCode(HttpStatus.CREATED)
@@ -83,8 +85,11 @@ export class UserController implements IUserController {
 	@Patch(USER_ROUTERS.BLOCK)
 	@Roles(ROLES.ADMIN)
 	@HttpCode(HttpStatus.OK)
-	async blockAndUnblock(@Param(USER_ROUTERS.ID_PARAM) userId: string): Promise<ResponseUserDto> {
-		return this._blockUnblockUseCase.execute(userId);
+	async blockAndUnblock(
+		@Param(USER_ROUTERS.ID_PARAM) userId: string,
+		@Body() body: { description?: string },
+	): Promise<ResponseUserDto> {
+		return this._blockUnblockUseCase.execute({ userId, description: body?.description });
 	}
 
 	@UseGuards(UserBlockedGuard)
@@ -124,11 +129,13 @@ export class UserController implements IUserController {
 		@Query(PaginationInputType.SEARCH) search?: string,
 		@Query(PaginationInputType.PAGE, ParseIntPipe) page: number = 1,
 		@Query(PaginationInputType.LIMIT, ParseIntPipe) limit: number = 10,
+		@Query("status") status?: string,
 	): Promise<PaginationResponse<ResponseUserDto>> {
 		const paginationDto: PaginationDto = {
 			search,
 			page,
 			limit,
+			status,
 		};
 		return this._getAllUsersUseCase.execute(paginationDto);
 	}
@@ -138,6 +145,13 @@ export class UserController implements IUserController {
 	@HttpCode(HttpStatus.OK)
 	async findUser(@Req() req: AuthenticatedRequest): Promise<ResponseUserDto> {
 		return this._findUserByEmailUseCase.execute(req.user.email);
+	}
+
+	@Get(":id")
+	@Roles(ROLES.ADMIN)
+	@HttpCode(HttpStatus.OK)
+	async getUserById(@Param("id") id: string): Promise<ResponseUserDto> {
+		return this._getOneUserUseCase.execute(id);
 	}
 
 	@Post(USER_ROUTERS.UPLOAD_PROFILE_IMAGE)

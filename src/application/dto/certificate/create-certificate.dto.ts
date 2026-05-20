@@ -1,4 +1,5 @@
-import { IsDateString, IsNotEmpty, IsOptional, IsString, IsUrl } from "class-validator";
+import { IsDate, IsNotEmpty, IsOptional, IsString, IsUrl } from "class-validator";
+import { Type } from "class-transformer";
 
 export class CreateCertificateDto {
 	@IsNotEmpty()
@@ -10,11 +11,13 @@ export class CreateCertificateDto {
 	issuingOrganization?: string;
 
 	@IsOptional()
-	@IsDateString()
+	@IsDate()
+	@Type(() => Date)
 	issueDate?: Date;
 
 	@IsOptional()
-	@IsDateString()
+	@IsDate()
+	@Type(() => Date)
 	expirationDate?: Date;
 
 	@IsOptional()
@@ -22,6 +25,6 @@ export class CreateCertificateDto {
 	certificateUrl?: string;
 
 	@IsString()
-	@IsNotEmpty()
-	userId: string;
+	@IsOptional()
+	userId?: string;
 }

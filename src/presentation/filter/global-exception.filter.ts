@@ -54,6 +54,29 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 		}
 
 		const isProduction = process.env.NODE_ENV === "production";
+
+		if (
+			exception &&
+			typeof exception === "object" &&
+			(exception as Record<string, unknown>).code === "EBADCSRFTOKEN"
+		) {
+			return response.status(HttpStatus.FORBIDDEN).json({
+				success: false,
+				error: {
+					statusCode: HttpStatus.FORBIDDEN,
+					timestamp,
+					requestId,
+					path,
+					message: "Invalid CSRF token",
+					code: "EBADCSRFTOKEN",
+				},
+			});
+		}
+
+		if (!isProduction || (exception instanceof Error && !(exception instanceof BaseDomainException))) {
+			console.error("Unhandled Exception:", exception);
+		}
+
 		const message =
 			exception instanceof Error
 				? isProduction && !(exception instanceof BaseDomainException)

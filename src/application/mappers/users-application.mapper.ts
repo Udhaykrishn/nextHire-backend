@@ -26,6 +26,9 @@ export class UserApplicationMapper implements IUserApplicationMappers<UserType> 
 			social_link: user.social_link,
 			skills: user.skills,
 			languages: user.languages,
+			cinNumber: user.cinNumber,
+			isCompanyVerified: user.isCompanyVerified,
+			block_description: user.block_description,
 			createdAt: user.createdAt,
 		};
 	}
@@ -49,6 +52,9 @@ export class UserApplicationMapper implements IUserApplicationMappers<UserType> 
 			social_link: data.social_link,
 			skills: data.skills,
 			languages: data.languages,
+			cinNumber: data.cinNumber,
+			isCompanyVerified: data.isCompanyVerified,
+			block_description: data.block_description,
 			createdAt: data.createdAt,
 		});
 	}

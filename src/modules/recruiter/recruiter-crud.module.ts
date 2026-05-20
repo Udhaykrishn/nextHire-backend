@@ -17,8 +17,10 @@ import {
 import { CheckRecruiterBlockedUseCase } from "@/application/use-case/recuriters";
 import { CompanyVerificationService } from "@/infrastructure/services/implements/company-verification.service";
 
+import { JobLiteModule } from "../job/job-lite.module";
+
 @Module({
-	imports: [RecruiterLiteModule, CommonModule],
+	imports: [RecruiterLiteModule, CommonModule, JobLiteModule],
 	providers: [
 		{
 			provide: RECRUITER_TOKEN.RECRUITER_CREATE_USE_CASE,

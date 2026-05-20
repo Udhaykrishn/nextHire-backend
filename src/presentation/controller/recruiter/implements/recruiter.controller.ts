@@ -28,7 +28,7 @@ import { AuthGuard, RoleGuard } from "@/presentation/guards";
 import { Roles } from "@/presentation/decorators";
 import { RECRUITER_ROUTERS } from "@/presentation/enums/recuriter";
 import { RECRUITER_TOKEN } from "@/application/enums/recruiter";
-import { CreateRecruiterDto, ResponseRecruiterDto } from "@/application/dto/recruiter";
+import { CreateRecruiterDto, ResponseRecruiterDto, VerifyRecruiterCompanyDto } from "@/application/dto/recruiter";
 import { UpdateRecruiterDto } from "@/application/dto/recruiter";
 import { ChangePasswordDto } from "@/application/dto/users";
 import { ROLES } from "@/presentation/enums";
@@ -71,6 +71,8 @@ export class RecruiterController implements IRecruiterController {
 		>,
 		@Inject(RECRUITER_TOKEN.RECRUITER_FIND_BY_EMAIL_USE_CASE)
 		private readonly _findByEmailUseCase: IExecutable<string, ResponseRecruiterDto>,
+		@Inject(RECRUITER_TOKEN.VERIFY_RECRUITER_COMPANY_USE_CASE)
+		private readonly _verifyCompanyUseCase: IExecutable<VerifyRecruiterCompanyDto, ResponseRecruiterDto>,
 	) {}
 
 	@Post(RECRUITER_ROUTERS.DEFAULT)
@@ -100,6 +102,7 @@ export class RecruiterController implements IRecruiterController {
 	}
 
 	@UseGuards(RecruiterBlockedGuard)
+	@Roles(ROLES.RECRUITER, ROLES.ADMIN)
 	@Get(`:${RECRUITER_ROUTERS.ID_PARAM}`)
 	@HttpCode(HttpStatus.OK)
 	async getOne(@Param(RECRUITER_ROUTERS.ID_PARAM) recruiterId: string): Promise<ResponseRecruiterDto> {
@@ -160,5 +163,12 @@ export class RecruiterController implements IRecruiterController {
 		}
 		const recruiter = await this._getOneUseCase.execute(req.user.id);
 		return this._uploadProfileImageUseCase.execute({ recruiterId: recruiter.id, file });
+	}
+
+	@UseGuards(RecruiterBlockedGuard)
+	@Post(RECRUITER_ROUTERS.VERIFY_COMPANY)
+	@HttpCode(HttpStatus.OK)
+	async verifyCompany(@Body() dto: VerifyRecruiterCompanyDto): Promise<ResponseRecruiterDto> {
+		return this._verifyCompanyUseCase.execute(dto);
 	}
 }

@@ -19,7 +19,7 @@ import { RefreshGuard } from "@/presentation/guards";
 
 import { clearCookie, setCookie } from "@/presentation/utils/cookie-helper.util";
 
-import { Body, Controller, Inject, Post, Req, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Inject, Post, Req, Res, UseGuards } from "@nestjs/common";
 import type { Response, Request } from "express";
 import { GoogleAuthDto } from "@/application/dto/auth/users/login/auth-login.dto";
 import { IAuthUserController } from "../interface/auth.interface";
@@ -50,7 +50,7 @@ export class AuthUserController implements IAuthUserController {
 		private readonly _resetPasswordUseCase: IExecutable<ResetPasswordDto, ResetPasswordResponseDto>,
 		@Inject(AUTH_USER_TOKEN.USER_VERIFY_RESET_TOKEN_USE_CASE)
 		private readonly _verifyResetTokenUseCase: IExecutable<string, boolean>,
-	) {}
+	) { }
 
 	@Post(USER_AUTH_ROUTER.VERIFY_RESET_TOKEN)
 	async verifyResetToken(@Body() body: { token: string }) {
@@ -88,6 +88,7 @@ export class AuthUserController implements IAuthUserController {
 	async refresh(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
 		const token = await this._refreshToken.execute(req.sessionId);
 		setCookie(res, AUTH_TOKEN.ACCESS_TOKEN, token.accessToken, COOKIE_MAX_AGE_CONSTANT.ACCESS_TOKEN_1_HOUR);
+		setCookie(res, AUTH_TOKEN.SESSION_ID, token.sessionId, COOKIE_MAX_AGE_CONSTANT.REFRESH_TOKEN_7_DAY);
 
 		return { success: true };
 	}
@@ -129,5 +130,10 @@ export class AuthUserController implements IAuthUserController {
 		setCookie(res, AUTH_TOKEN.SESSION_ID, user.sessionId, COOKIE_MAX_AGE_CONSTANT.REFRESH_TOKEN_7_DAY);
 
 		return user;
+	}
+
+	@Get(USER_AUTH_ROUTER.CSRF)
+	getCsrfToken(@Req() req: Request) {
+		return { csrfToken: req.csrfToken() };
 	}
 }

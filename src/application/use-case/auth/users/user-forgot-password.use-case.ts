@@ -52,7 +52,7 @@ export class UserForgotPasswordUseCase implements IExecutable<ForgotPasswordDto,
 		const frontendUrl = this.configService.get(ENV_KEYS.FRONTEND_API);
 		const link = `${frontendUrl}/reset-password?token=${token}&type=${USER_ROLE.USER}`;
 
-		this.eventEmitter.emit(AUTH_EVENTS.FORGOT_PASSWORD, {
+		await this.eventEmitter.emitAsync(AUTH_EVENTS.FORGOT_PASSWORD, {
 			email: user.email,
 			link,
 			name: user.name,

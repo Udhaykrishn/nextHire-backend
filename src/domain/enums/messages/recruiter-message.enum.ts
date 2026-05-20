@@ -4,7 +4,7 @@ export enum RECRUITER_MESSAGES {
 	RECRUITER_UPDATE_FAILED = "Recruiter update failed! Try again",
 	RECRUITER_BLOCKED_BY_ADMIN = "Account blocked by admin",
 	INVALID_CREDENTIALS = "Invalid credentials",
-	RECRUITER_NOT_VERIFIED = "Recruiter company not verified. Please verify GSTIN first.",
+	RECRUITER_NOT_VERIFIED = "Recruiter company not verified. Please verify CIN first.",
 	SUBSCRIPTION_REQUIRED = "Free job limit reached. Please subscribe to create more jobs.",
 	INVALID_GSTIN = "Invalid GSTIN or verification failed",
 	INVALID_CIN = "Invalid CIN or verification failed",

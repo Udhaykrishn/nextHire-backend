@@ -3,7 +3,7 @@ import { IExecutable } from "@/application/interface/executable.interface";
 import type { IUserRepository } from "@/application/interface/repository";
 import { UserEntity } from "@/domain/entity";
 import { COMMON_TOKEN, USERS_TOKEN } from "@/application/enums/tokens";
-import type { IJwtService, IRedisService } from "@/infrastructure/services/interface";
+import type { IJwtService, IRedisService, IUuidService } from "@/infrastructure/services/interface";
 import { UserRefreshTokenDto } from "@/application/dto/auth/users/refresh-token-res.dto";
 import { USER_MESSAGES } from "@/domain/enums";
 import { COOKIE_MAX_AGE_CONSTANT } from "@/domain/constants/cookie.constant";
@@ -16,12 +16,17 @@ export class UserRefreshUseCase implements IExecutable<string, UserRefreshTokenD
 		private readonly _userRepository: IUserRepository<UserEntity>,
 		@Inject(COMMON_TOKEN.JWT_SERVICE)
 		private readonly _jwtService: IJwtService,
+
 		@Inject(COMMON_TOKEN.REDIS_SERVICE)
 		private readonly _redisService: IRedisService,
+
+		@Inject(COMMON_TOKEN.UUID_SERVICE)
+		private readonly _uuidService: IUuidService,
 	) {}
 
 	async execute(sessionId: string): Promise<UserRefreshTokenDto> {
-		const refreshToken = await this._redisService.get(`${REDIS_KEYS.REFRESH.concat(sessionId)}`);
+		const oldKey = REDIS_KEYS.REFRESH.concat(sessionId);
+		const refreshToken = await this._redisService.get(oldKey);
 
 		if (!refreshToken) {
 			throw new UnauthorizedException("Token expired or Invalid Token found");
@@ -50,6 +55,16 @@ export class UserRefreshUseCase implements IExecutable<string, UserRefreshTokenD
 			COOKIE_MAX_AGE_CONSTANT.ACCESS_TOKEN_1_HOUR,
 		);
 
-		return { accessToken };
+		// Session rotation: delete old session, issue new sessionId + refreshToken
+		const newSessionId = this._uuidService.generate();
+		const newRefreshToken = await this._jwtService.generateToken(
+			accessTokenPayload,
+			COOKIE_MAX_AGE_CONSTANT.REFRESH_TOKEN_7_DAY,
+		);
+		await this._redisService.del(oldKey);
+		this._redisService.set(REDIS_KEYS.REFRESH.concat(newSessionId), newRefreshToken);
+
+		return { accessToken, sessionId: newSessionId };
 	}
 }
+

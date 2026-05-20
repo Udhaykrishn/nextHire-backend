@@ -51,9 +51,6 @@ export class UpdateRecruiterUseCase
 		if (data.phone) {
 			recruiter.changePhone(data.phone);
 		}
-		if (data.GSTIN) {
-			recruiter.changeGSTIN(data.GSTIN);
-		}
 		if (data.CIN) {
 			recruiter.changeCIN(data.CIN);
 		}

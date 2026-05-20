@@ -1,4 +1,5 @@
-import { IsDateString, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { IsDate, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { Type } from "class-transformer";
 
 export class CreateEducationDto {
 	@IsNotEmpty()
@@ -14,11 +15,13 @@ export class CreateEducationDto {
 	fieldOfStudy?: string;
 
 	@IsOptional()
-	@IsDateString()
+	@IsDate()
+	@Type(() => Date)
 	startDate?: Date;
 
 	@IsOptional()
-	@IsDateString()
+	@IsDate()
+	@Type(() => Date)
 	endDate?: Date;
 
 	@IsOptional()
@@ -26,6 +29,6 @@ export class CreateEducationDto {
 	gpa?: string;
 
 	@IsString()
-	@IsNotEmpty()
-	userId: string;
+	@IsOptional()
+	userId?: string;
 }

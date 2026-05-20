@@ -36,6 +36,9 @@ export class UserEntity {
 	_createdAt: Date;
 	private _skills: string[] = [];
 	private _languages: { name: string; proficiency: string }[] = [];
+	private _cinNumber: string = "";
+	private _isCompanyVerified: boolean = false;
+	private _block_description: string = "";
 
 	private constructor(
 		email: string,
@@ -55,6 +58,9 @@ export class UserEntity {
 		createdAt: Date,
 		skills: string[],
 		languages: { name: string; proficiency: string }[],
+		cinNumber: string,
+		isCompanyVerified: boolean,
+		block_description: string,
 		id?: string,
 	) {
 		this._email = email;
@@ -74,6 +80,9 @@ export class UserEntity {
 		this._createdAt = createdAt;
 		this._skills = skills;
 		this._languages = languages;
+		this._cinNumber = cinNumber;
+		this._isCompanyVerified = isCompanyVerified;
+		this._block_description = block_description;
 		this._id = id;
 	}
 
@@ -95,6 +104,9 @@ export class UserEntity {
 		createdAt?: Date;
 		skills?: string[];
 		languages?: { name: string; proficiency: string }[];
+		cinNumber?: string;
+		isCompanyVerified?: boolean;
+		block_description?: string;
 		id?: string;
 	}): UserEntity {
 		return new UserEntity(
@@ -115,6 +127,9 @@ export class UserEntity {
 			data.createdAt ?? new Date(),
 			data.skills ?? [],
 			data.languages ?? [],
+			data.cinNumber ?? "",
+			data.isCompanyVerified ?? false,
+			data.block_description ?? "",
 			data.id,
 		);
 	}
@@ -191,6 +206,18 @@ export class UserEntity {
 		return this._languages;
 	}
 
+	get cinNumber(): string {
+		return this._cinNumber;
+	}
+
+	get isCompanyVerified(): boolean {
+		return this._isCompanyVerified;
+	}
+
+	get block_description(): string {
+		return this._block_description;
+	}
+
 	changeName(name: string): void {
 		this._name = name;
 	}
@@ -257,5 +284,27 @@ export class UserEntity {
 
 	changeLanguages(languages: { name: string; proficiency: string }[]): void {
 		this._languages = languages;
+	}
+
+	changeCinNumber(cinNumber: string): void {
+		this._cinNumber = cinNumber;
+	}
+
+	changeCompanyVerification(isVerified: boolean): void {
+		this._isCompanyVerified = isVerified;
+	}
+
+	changeBlockDescription(block_description: string): void {
+		this._block_description = block_description;
+	}
+
+	isProfileComplete(): boolean {
+		return (
+			this._name.length > 0 &&
+			this._phone.length > 0 &&
+			this._bio.length > 0 &&
+			this._skills.length > 0 &&
+			this._resume_url.url.length > 0
+		);
 	}
 }

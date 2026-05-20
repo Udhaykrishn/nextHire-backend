@@ -19,11 +19,6 @@ export class UpdateRecruiterDto {
 
 	@IsOptional()
 	@IsString()
-	@MaxLength(50)
-	GSTIN?: string;
-
-	@IsOptional()
-	@IsString()
 	@MaxLength(21)
 	CIN?: string;
 

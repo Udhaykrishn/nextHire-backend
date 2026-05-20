@@ -104,12 +104,12 @@ export class GoogleAuthUseCase implements IExecutable<GoogleAuthDto, UserLoginRe
 
 			await this._redisService.set(`${REDIS_KEYS.REFRESH.concat(sessionId)}`, refreshToken);
 
-			return { accessToken, sessionId };
+			return { accessToken, sessionId, isProfileComplete: auth.isProfileComplete() };
 		} catch (error) {
-			if (error instanceof UnauthorizedException) {
+			if (error instanceof UnauthorizedException || error instanceof BadRequestException) {
 				throw error;
 			}
-			throw new UnauthorizedException(`Google authentication failed: ${error.message}`);
+			throw new UnauthorizedException(`${error.message}`);
 		}
 	}
 }
