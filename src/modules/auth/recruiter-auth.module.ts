@@ -11,6 +11,7 @@ import {
 	RecruiterForgotPasswordUseCase,
 	RecruiterResetPasswordUseCase,
 	RecruiterVerifyResetTokenUseCase,
+	RecruiterLogoutUseCase,
 } from "@/application/use-case/auth/recruiter";
 import { COMMON_TOKEN } from "@/application/enums/tokens";
 import { JwtService } from "@/infrastructure/services/implements";
@@ -50,6 +51,10 @@ import { JwtService } from "@/infrastructure/services/implements";
 		{
 			provide: AUTH_RECRUITER_TOKEN.RECRUITER_VERIFY_RESET_TOKEN_USE_CASE,
 			useClass: RecruiterVerifyResetTokenUseCase,
+		},
+		{
+			provide: AUTH_RECRUITER_TOKEN.RECRUITER_LOGOUT_USE_CASE,
+			useClass: RecruiterLogoutUseCase,
 		},
 	],
 })

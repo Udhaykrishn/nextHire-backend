@@ -4,7 +4,7 @@ import type { Response, Request } from "express";
 import { AUTH_TOKEN } from "@/presentation/enums";
 import { COOKIE_MAX_AGE_CONSTANT } from "@/domain/constants/cookie.constant";
 import { RefreshGuard } from "@/presentation/guards";
-import { setCookie } from "@/presentation/utils/cookie-helper.util";
+import { setCookie, clearCookie } from "@/presentation/utils/cookie-helper.util";
 
 import type { IExecutable } from "@/application/interface/executable.interface";
 import { AUTH_RECRUITER_TOKEN } from "@/application/enums/recruiter/auth-token.enum";
@@ -32,6 +32,9 @@ export class AuthRecruiterController implements IAuthRecruiterController {
 
 		@Inject(AUTH_RECRUITER_TOKEN.RECRUITER_REFRESH_USE_CASE)
 		private readonly _refreshTokenUseCase: IExecutable<string, RecruiterRefreshTokenDto>,
+
+		@Inject(AUTH_RECRUITER_TOKEN.RECRUITER_LOGOUT_USE_CASE)
+		private readonly _logoutUseCase: IExecutable<string, boolean>,
 
 		@Inject(AUTH_RECRUITER_TOKEN.RECRUITER_VERIFY_OTP_USE_CASE)
 		private readonly __verifyOtp: IExecutable<VerifyOTPDto, VerifyResponseOTPDto>,
@@ -90,6 +93,16 @@ export class AuthRecruiterController implements IAuthRecruiterController {
 		const token = await this._refreshTokenUseCase.execute(req.sessionId);
 
 		setCookie(res, AUTH_TOKEN.ACCESS_TOKEN, token.accessToken, COOKIE_MAX_AGE_CONSTANT.ACCESS_TOKEN_1_HOUR);
+	}
+
+	@UseGuards(RefreshGuard)
+	@Post(RECRUITER_AUTH_ROUTER.LOGOUT)
+	async logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+		const isLogout = await this._logoutUseCase.execute(req.sessionId);
+		if (isLogout) {
+			clearCookie(res, AUTH_TOKEN.SESSION_ID);
+			clearCookie(res, AUTH_TOKEN.ACCESS_TOKEN);
+		}
 	}
 
 	@Post(RECRUITER_AUTH_ROUTER.OTP_VERIFY)
