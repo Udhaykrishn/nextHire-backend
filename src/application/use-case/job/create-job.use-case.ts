@@ -34,8 +34,8 @@ export class CreateJobUseCase implements IExecutable<CreateJobDto, JobEntity> {
 		}
 
 		// Check subscription limit (1 free job)
-		const isSubscribed = recruiter.subscription.is_subscribed;
-		const jobCount = recruiter.job_count;
+		const isSubscribed = recruiter.subscription?.is_subscribed || false;
+		const jobCount = recruiter.job_count || 0;
 
 		if (!isSubscribed && jobCount >= 1) {
 			throw new ForbiddenException(RECRUITER_MESSAGES.SUBSCRIPTION_REQUIRED);
