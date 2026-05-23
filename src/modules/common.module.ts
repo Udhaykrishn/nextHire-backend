@@ -4,6 +4,7 @@ import {
 	PasswordHash,
 	UuidService,
 	SessionVerificationService,
+	EventEmitterService,
 } from "@/infrastructure/services/implements";
 import { Module } from "@nestjs/common";
 
@@ -13,12 +14,14 @@ import { Module } from "@nestjs/common";
 		{ provide: COMMON_TOKEN.OTP_SERVICE, useClass: OtpService },
 		{ provide: COMMON_TOKEN.UUID_SERVICE, useClass: UuidService },
 		{ provide: COMMON_TOKEN.SESSION_VERIFICATION_SERVICE, useClass: SessionVerificationService },
+		{ provide: COMMON_TOKEN.EVENT_EMITTER, useClass: EventEmitterService },
 	],
 	exports: [
 		COMMON_TOKEN.PASSWORD_HASH,
 		COMMON_TOKEN.OTP_SERVICE,
 		COMMON_TOKEN.UUID_SERVICE,
 		COMMON_TOKEN.SESSION_VERIFICATION_SERVICE,
+		COMMON_TOKEN.EVENT_EMITTER,
 	],
 })
 export class CommonModule {}

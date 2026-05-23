@@ -12,8 +12,9 @@ import { RECRUITER_TOKEN } from "@/application/enums/recruiter";
 import type { IRecruiterRepository } from "@/application/interface/repository";
 import type { IRecruiterApplicationMappers } from "@/application/interface/mappers/recruiter";
 import { RECRUITER_MESSAGES } from "@/domain/enums/messages";
-import { USER_ROLE, USER_STATUS } from "@/domain/enums/status";
+import { RECRUITER_STATUS, USER_ROLE } from "@/domain/enums/status";
 import { AUTH_EVENTS } from "@/domain/enums/events.enum";
+import type { IEventEmitter } from "@/infrastructure/services/interface/event-emitter.interface";
 
 @Injectable()
 export class VerifyRecruiterOtpUseCase implements IExecutable<VerifyOTPDto, VerifyResponseOTPDto> {
@@ -29,7 +30,10 @@ export class VerifyRecruiterOtpUseCase implements IExecutable<VerifyOTPDto, Veri
 
 		@Inject(RECRUITER_MAPPER.RECRUITER_APPLICATION)
 		private readonly _recruiterMapper: IRecruiterApplicationMappers<RecruiterEntity>,
-	) {}
+
+		@Inject(COMMON_TOKEN.EVENT_EMITTER)
+		private readonly eventEmitter: IEventEmitter,
+	) { }
 
 	async execute(dto: VerifyOTPDto): Promise<VerifyResponseOTPDto> {
 		const recruiter = await this._redisService.get(
@@ -54,7 +58,7 @@ export class VerifyRecruiterOtpUseCase implements IExecutable<VerifyOTPDto, Veri
 			throw new BadRequestException("Invalid otp");
 		}
 
-		recruiterData.changeStatus(USER_STATUS.ACTIVE);
+		recruiterData.changeStatus(RECRUITER_STATUS.ACTIVE);
 
 		const createRecruiter = await this._recruiterRepository.save(recruiterData);
 
