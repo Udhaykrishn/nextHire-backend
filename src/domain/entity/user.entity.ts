@@ -8,6 +8,7 @@ export class UserEntity {
 	private _phone: string;
 	private _experience: string = "";
 	private _role_of_title: string = "";
+	private _location: string = "";
 	private _status: string = USER_STATUS.PENDING;
 	private _resume_url: { key: string; url: string } = {
 		key: "",
@@ -33,11 +34,9 @@ export class UserEntity {
 		portfolio: "",
 		github: "",
 	};
-	_createdAt: Date;
+	private _createdAt: Date;
 	private _skills: string[] = [];
 	private _languages: { name: string; proficiency: string }[] = [];
-	private _cinNumber: string = "";
-	private _isCompanyVerified: boolean = false;
 	private _block_description: string = "";
 
 	private constructor(
@@ -47,6 +46,7 @@ export class UserEntity {
 		phone: string,
 		experience: string,
 		role_of_title: string,
+		location: string,
 		status: string,
 		resume_url: { key: string; url: string },
 		bio: string,
@@ -58,8 +58,6 @@ export class UserEntity {
 		createdAt: Date,
 		skills: string[],
 		languages: { name: string; proficiency: string }[],
-		cinNumber: string,
-		isCompanyVerified: boolean,
 		block_description: string,
 		id?: string,
 	) {
@@ -69,6 +67,7 @@ export class UserEntity {
 		this._phone = phone;
 		this._experience = experience;
 		this._role_of_title = role_of_title;
+		this._location = location;
 		this._status = status;
 		this._resume_url = resume_url;
 		this._bio = bio;
@@ -80,8 +79,6 @@ export class UserEntity {
 		this._createdAt = createdAt;
 		this._skills = skills;
 		this._languages = languages;
-		this._cinNumber = cinNumber;
-		this._isCompanyVerified = isCompanyVerified;
 		this._block_description = block_description;
 		this._id = id;
 	}
@@ -93,6 +90,7 @@ export class UserEntity {
 		phone?: string;
 		experience?: string;
 		role_of_title?: string;
+		location?: string;
 		status?: string;
 		resume_url?: { key: string; url: string };
 		bio?: string;
@@ -104,8 +102,6 @@ export class UserEntity {
 		createdAt?: Date;
 		skills?: string[];
 		languages?: { name: string; proficiency: string }[];
-		cinNumber?: string;
-		isCompanyVerified?: boolean;
 		block_description?: string;
 		id?: string;
 	}): UserEntity {
@@ -116,6 +112,7 @@ export class UserEntity {
 			data.phone ?? "",
 			data.experience ?? "",
 			data.role_of_title ?? "",
+			data.location ?? "",
 			data.status ?? USER_STATUS.PENDING,
 			data.resume_url ?? { key: "", url: "" },
 			data.bio ?? "",
@@ -127,8 +124,6 @@ export class UserEntity {
 			data.createdAt ?? new Date(),
 			data.skills ?? [],
 			data.languages ?? [],
-			data.cinNumber ?? "",
-			data.isCompanyVerified ?? false,
 			data.block_description ?? "",
 			data.id,
 		);
@@ -160,6 +155,10 @@ export class UserEntity {
 
 	get role_of_title(): string {
 		return this._role_of_title;
+	}
+
+	get location(): string {
+		return this._location;
 	}
 
 	get status(): string {
@@ -206,14 +205,6 @@ export class UserEntity {
 		return this._languages;
 	}
 
-	get cinNumber(): string {
-		return this._cinNumber;
-	}
-
-	get isCompanyVerified(): boolean {
-		return this._isCompanyVerified;
-	}
-
 	get block_description(): string {
 		return this._block_description;
 	}
@@ -232,6 +223,10 @@ export class UserEntity {
 
 	changeRoleOfTitle(role_of_title: string): void {
 		this._role_of_title = role_of_title;
+	}
+
+	changeLocation(location: string): void {
+		this._location = location;
 	}
 
 	changeStatus(status: USER_STATUS): void {
@@ -284,14 +279,6 @@ export class UserEntity {
 
 	changeLanguages(languages: { name: string; proficiency: string }[]): void {
 		this._languages = languages;
-	}
-
-	changeCinNumber(cinNumber: string): void {
-		this._cinNumber = cinNumber;
-	}
-
-	changeCompanyVerification(isVerified: boolean): void {
-		this._isCompanyVerified = isVerified;
 	}
 
 	changeBlockDescription(block_description: string): void {

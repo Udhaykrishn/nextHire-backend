@@ -23,7 +23,7 @@ export class AdminRefreshUseCase implements IExecutable<string, AdminRefreshToke
 		private readonly _redisService: IRedisService,
 		@Inject(COMMON_TOKEN.UUID_SERVICE)
 		private readonly _uuidService: IUuidService,
-	) { }
+	) {}
 
 	async execute(sessionId: string): Promise<AdminRefreshTokenDto> {
 		const oldKey = REDIS_KEYS.REFRESH.concat(sessionId);
@@ -68,4 +68,3 @@ export class AdminRefreshUseCase implements IExecutable<string, AdminRefreshToke
 		return { accessToken, sessionId: newSessionId };
 	}
 }
-

@@ -13,14 +13,20 @@ import {
 	RecruiterFindByEmailUseCase,
 	VerifyRecruiterCompanyUseCase,
 	SubscribeRecruiterUseCase,
+	StartVerificationSessionUseCase,
+	GetVerificationSessionUseCase,
+	VerifyOtpSessionUseCase,
+	DeleteVerificationSessionUseCase,
+	RevokeCompanyVerificationUseCase,
 } from "@/application/use-case/recuriters";
 import { CheckRecruiterBlockedUseCase } from "@/application/use-case/recuriters";
 import { CompanyVerificationService } from "@/infrastructure/services/implements/company-verification.service";
 
 import { JobLiteModule } from "../job/job-lite.module";
+import { RedisModule } from "../redis.module";
 
 @Module({
-	imports: [RecruiterLiteModule, CommonModule, JobLiteModule],
+	imports: [RecruiterLiteModule, CommonModule, JobLiteModule, RedisModule],
 	providers: [
 		{
 			provide: RECRUITER_TOKEN.RECRUITER_CREATE_USE_CASE,
@@ -70,6 +76,26 @@ import { JobLiteModule } from "../job/job-lite.module";
 			provide: RECRUITER_TOKEN.COMPANY_VERIFICATION_SERVICE,
 			useClass: CompanyVerificationService,
 		},
+		{
+			provide: RECRUITER_TOKEN.START_VERIFICATION_SESSION_USE_CASE,
+			useClass: StartVerificationSessionUseCase,
+		},
+		{
+			provide: RECRUITER_TOKEN.GET_VERIFICATION_SESSION_USE_CASE,
+			useClass: GetVerificationSessionUseCase,
+		},
+		{
+			provide: RECRUITER_TOKEN.VERIFY_OTP_SESSION_USE_CASE,
+			useClass: VerifyOtpSessionUseCase,
+		},
+		{
+			provide: RECRUITER_TOKEN.DELETE_VERIFICATION_SESSION_USE_CASE,
+			useClass: DeleteVerificationSessionUseCase,
+		},
+		{
+			provide: RECRUITER_TOKEN.REVOKE_COMPANY_VERIFICATION_USE_CASE,
+			useClass: RevokeCompanyVerificationUseCase,
+		},
 	],
 	exports: [
 		RECRUITER_TOKEN.RECRUITER_CREATE_USE_CASE,
@@ -83,6 +109,11 @@ import { JobLiteModule } from "../job/job-lite.module";
 		RECRUITER_TOKEN.RECRUITER_FIND_BY_EMAIL_USE_CASE,
 		RECRUITER_TOKEN.VERIFY_RECRUITER_COMPANY_USE_CASE,
 		RECRUITER_TOKEN.SUBSCRIBE_RECRUITER_USE_CASE,
+		RECRUITER_TOKEN.START_VERIFICATION_SESSION_USE_CASE,
+		RECRUITER_TOKEN.GET_VERIFICATION_SESSION_USE_CASE,
+		RECRUITER_TOKEN.VERIFY_OTP_SESSION_USE_CASE,
+		RECRUITER_TOKEN.DELETE_VERIFICATION_SESSION_USE_CASE,
+		RECRUITER_TOKEN.REVOKE_COMPANY_VERIFICATION_USE_CASE,
 	],
 })
 export class RecruiterCrudModule {}

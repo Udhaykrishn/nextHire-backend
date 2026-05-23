@@ -18,6 +18,7 @@ export class RecruiterPresitanceMapper implements IRecruiterPresitanceMapper<Rec
 			category: recruiter.category,
 			company_role: recruiter.company_role,
 			is_verified_company: recruiter.is_verified_company,
+			verification_revoked_reason: recruiter.verification_revoked_reason,
 			admin_approved: recruiter.admin_approved,
 			profile_url: recruiter.profile_url,
 			subscription: recruiter.subscription,
@@ -41,6 +42,7 @@ export class RecruiterPresitanceMapper implements IRecruiterPresitanceMapper<Rec
 			category: doc.category ?? "",
 			company_role: doc.company_role ?? "HR",
 			is_verified_company: doc.is_verified_company ?? false,
+			verification_revoked_reason: doc.verification_revoked_reason ?? "",
 			admin_approved: doc.admin_approved ?? false,
 			subscription: doc.subscription ?? {
 				current_plan: "free",

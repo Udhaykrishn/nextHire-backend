@@ -12,6 +12,7 @@ export class UserPresitanceMapper implements IUserPresitanceMapper<UserEntity, U
 			phone: user.phone,
 			experience: user.experience,
 			role_of_title: user.role_of_title,
+			location: user.location,
 			status: user.status,
 			resume_url: user.resume_url,
 			bio: user.bio,
@@ -23,8 +24,6 @@ export class UserPresitanceMapper implements IUserPresitanceMapper<UserEntity, U
 			createdAt: user.createdAt,
 			skills: user.skills,
 			languages: user.languages,
-			cinNumber: user.cinNumber,
-			isCompanyVerified: user.isCompanyVerified,
 			block_description: user.block_description,
 		};
 	}
@@ -38,6 +37,7 @@ export class UserPresitanceMapper implements IUserPresitanceMapper<UserEntity, U
 			phone: doc.phone,
 			experience: doc.experience,
 			role_of_title: doc.role_of_title,
+			location: doc.location,
 			status: doc.status,
 			resume_url: doc.resume_url,
 			bio: doc.bio,
@@ -49,8 +49,6 @@ export class UserPresitanceMapper implements IUserPresitanceMapper<UserEntity, U
 			createdAt: doc.createdAt,
 			skills: doc.skills,
 			languages: doc.languages,
-			cinNumber: doc.cinNumber,
-			isCompanyVerified: doc.isCompanyVerified,
 			block_description: doc.block_description,
 		});
 	}

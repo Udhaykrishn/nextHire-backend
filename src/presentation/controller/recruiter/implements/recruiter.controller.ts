@@ -1,6 +1,7 @@
 import {
 	Body,
 	Controller,
+	Delete,
 	Get,
 	HttpCode,
 	HttpStatus,
@@ -30,6 +31,8 @@ import { RECRUITER_ROUTERS } from "@/presentation/enums/recuriter";
 import { RECRUITER_TOKEN } from "@/application/enums/recruiter";
 import { CreateRecruiterDto, ResponseRecruiterDto, VerifyRecruiterCompanyDto } from "@/application/dto/recruiter";
 import { UpdateRecruiterDto } from "@/application/dto/recruiter";
+import { StartVerificationSessionDto, VerifyOtpDto } from "@/application/dto/recruiter/verification-session.dto";
+import { RevokeCompanyVerificationDto } from "@/application/dto/recruiter/revoke-company-verification.dto";
 import { ChangePasswordDto } from "@/application/dto/users";
 import { ROLES } from "@/presentation/enums";
 import { RecruiterBlockedGuard } from "@/presentation/guards/block";
@@ -73,6 +76,25 @@ export class RecruiterController implements IRecruiterController {
 		private readonly _findByEmailUseCase: IExecutable<string, ResponseRecruiterDto>,
 		@Inject(RECRUITER_TOKEN.VERIFY_RECRUITER_COMPANY_USE_CASE)
 		private readonly _verifyCompanyUseCase: IExecutable<VerifyRecruiterCompanyDto, ResponseRecruiterDto>,
+		@Inject(RECRUITER_TOKEN.START_VERIFICATION_SESSION_USE_CASE)
+		private readonly _startVerificationSessionUseCase: IExecutable<
+			{ recruiterId: string; dto: StartVerificationSessionDto },
+			{ message: string; otp?: string }
+		>,
+		@Inject(RECRUITER_TOKEN.GET_VERIFICATION_SESSION_USE_CASE)
+		private readonly _getVerificationSessionUseCase: IExecutable<
+			string,
+			{ step: string; cin: string; otp: string } | null
+		>,
+		@Inject(RECRUITER_TOKEN.VERIFY_OTP_SESSION_USE_CASE)
+		private readonly _verifyOtpSessionUseCase: IExecutable<{ recruiterId: string; dto: VerifyOtpDto }, void>,
+		@Inject(RECRUITER_TOKEN.DELETE_VERIFICATION_SESSION_USE_CASE)
+		private readonly _deleteVerificationSessionUseCase: IExecutable<string, { message: string }>,
+		@Inject(RECRUITER_TOKEN.REVOKE_COMPANY_VERIFICATION_USE_CASE)
+		private readonly _revokeCompanyVerificationUseCase: IExecutable<
+			{ recruiterId: string; dto: RevokeCompanyVerificationDto },
+			ResponseRecruiterDto
+		>,
 	) {}
 
 	@Post(RECRUITER_ROUTERS.DEFAULT)
@@ -170,5 +192,47 @@ export class RecruiterController implements IRecruiterController {
 	@HttpCode(HttpStatus.OK)
 	async verifyCompany(@Body() dto: VerifyRecruiterCompanyDto): Promise<ResponseRecruiterDto> {
 		return this._verifyCompanyUseCase.execute(dto);
+	}
+
+	@UseGuards(RecruiterBlockedGuard)
+	@Post("verification/start")
+	@HttpCode(HttpStatus.OK)
+	async startVerificationSession(
+		@Req() req: Request,
+		@Body() dto: StartVerificationSessionDto,
+	): Promise<{ message: string; otp?: string }> {
+		return this._startVerificationSessionUseCase.execute({ recruiterId: req.user.id, dto });
+	}
+
+	@UseGuards(RecruiterBlockedGuard)
+	@Get("verification/session")
+	@HttpCode(HttpStatus.OK)
+	async getVerificationSession(@Req() req: Request): Promise<{ step: string; cin: string; otp: string } | null> {
+		return this._getVerificationSessionUseCase.execute(req.user.id);
+	}
+
+	@UseGuards(RecruiterBlockedGuard)
+	@Delete("verification/session")
+	@HttpCode(HttpStatus.OK)
+	async deleteVerificationSession(@Req() req: Request): Promise<{ message: string }> {
+		return this._deleteVerificationSessionUseCase.execute(req.user.id);
+	}
+
+	@UseGuards(RecruiterBlockedGuard)
+	@Post("verification/verify")
+	@HttpCode(HttpStatus.OK)
+	async verifyOtpSession(@Req() req: Request, @Body() dto: VerifyOtpDto): Promise<{ message: string }> {
+		await this._verifyOtpSessionUseCase.execute({ recruiterId: req.user.id, dto });
+		return { message: "Company verified successfully" };
+	}
+
+	@Patch(`:${RECRUITER_ROUTERS.ID_PARAM}/revoke-verification`)
+	@Roles(ROLES.ADMIN)
+	@HttpCode(HttpStatus.OK)
+	async revokeVerification(
+		@Param(RECRUITER_ROUTERS.ID_PARAM) recruiterId: string,
+		@Body() dto: RevokeCompanyVerificationDto,
+	): Promise<ResponseRecruiterDto> {
+		return this._revokeCompanyVerificationUseCase.execute({ recruiterId, dto });
 	}
 }

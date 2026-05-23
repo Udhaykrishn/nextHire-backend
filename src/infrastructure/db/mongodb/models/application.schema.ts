@@ -16,4 +16,8 @@ export class Application {
 }
 
 export const ApplicationSchema = SchemaFactory.createForClass(Application);
-export type ApplicationType = InferSchemaType<typeof ApplicationSchema> & { _id: string; createdAt: Date; updatedAt: Date };
+export type ApplicationType = InferSchemaType<typeof ApplicationSchema> & {
+	_id: string;
+	createdAt: Date;
+	updatedAt: Date;
+};

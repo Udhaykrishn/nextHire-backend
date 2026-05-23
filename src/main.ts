@@ -30,7 +30,6 @@ async function bootstrap() {
 	app.use(json({ limit: "100kb" }));
 	app.use(urlencoded({ extended: true, limit: "100kb" }));
 
-
 	app.use((req, _res, next) => {
 		Object.defineProperty(req, "query", {
 			value: { ...req.query },

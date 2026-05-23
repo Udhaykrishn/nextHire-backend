@@ -34,7 +34,7 @@ export class CertificateController {
 
 	@Get(CERTIFICATE_ROUTER.DEFAULT)
 	async getAll(@Req() req: AuthenticatedRequest, @Query("userId") userId?: string) {
-		const targetUserId = (req.user.role === USER_ROLE.ADMIN && userId) ? userId : req.user.id;
+		const targetUserId = req.user.role === USER_ROLE.ADMIN && userId ? userId : req.user.id;
 		return await this._getCertificatesUseCase.execute(targetUserId);
 	}
 

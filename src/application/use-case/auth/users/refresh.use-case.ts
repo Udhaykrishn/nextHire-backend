@@ -67,4 +67,3 @@ export class UserRefreshUseCase implements IExecutable<string, UserRefreshTokenD
 		return { accessToken, sessionId: newSessionId };
 	}
 }
-

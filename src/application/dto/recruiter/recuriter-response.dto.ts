@@ -12,7 +12,9 @@ export class ResponseRecruiterDto {
 	public readonly category: string | null;
 	public readonly company_role: string;
 	public readonly is_verified_company: boolean;
+	public readonly verification_revoked_reason: string;
 	public readonly admin_approved: boolean;
+	public readonly job_count: number;
 
 	public readonly subscription: {
 		current_plan: string;
@@ -24,8 +26,6 @@ export class ResponseRecruiterDto {
 		url: string;
 	};
 
-
-
 	public readonly createdAt: Date;
-	public readonly updatedAt: Date | null;
+	public readonly updatedAt: Date | undefined;
 }

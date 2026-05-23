@@ -71,4 +71,3 @@ export class RecruiterRefreshUseCase implements IExecutable<string, RecruiterRef
 		return { accessToken, sessionId: newSessionId };
 	}
 }
-
