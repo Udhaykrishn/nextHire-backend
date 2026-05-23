@@ -1,40 +1,27 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { Inject, Injectable, NotFoundException } from "@nestjs/common";
 import type { IExecutable } from "@/application/interface/executable.interface";
 import { RECRUITER_TOKEN } from "@/application/enums/recruiter";
-import { RECRUITER_MAPPER } from "@/application/enums";
-import type { IRecruiterApplicationMappers } from "@/application/interface/mappers/recruiter/application.mapper";
 import type { IRecruiterRepository } from "@/application/interface/repository";
 import type { RecruiterEntity } from "@/domain/entity/recruiter.entity";
-
-import { NotFoundException } from "@nestjs/common";
 import { RECRUITER_MESSAGES } from "@/domain/enums/messages/recruiter-message.enum";
 import type { IS3Service } from "@/infrastructure/services/interface";
 import type { FileInfo } from "@/infrastructure/services/implements";
 
-interface UploadProfileImageInput {
-	recruiterId: string;
-	file: Express.Multer.File;
-}
-
 @Injectable()
-export class UploadRecruiterProfileImageUseCase implements IExecutable<UploadProfileImageInput, { message: string }> {
+export class DeleteRecruiterProfileImageUseCase implements IExecutable<string, { message: string }> {
 	constructor(
 		@Inject(RECRUITER_TOKEN.RECRUITER_REPOSITORY)
 		private readonly _recruiterRepository: IRecruiterRepository<RecruiterEntity>,
 		@Inject("S3_SERVICE")
 		private readonly _s3Service: IS3Service<FileInfo, Express.Multer.File>,
-	) { }
+	) {}
 
-	async execute(input: UploadProfileImageInput): Promise<{ message: string }> {
-		const { recruiterId, file } = input;
-
-		// Find the recruiter
+	async execute(recruiterId: string): Promise<{ message: string }> {
 		const recruiter = await this._recruiterRepository.findById(recruiterId);
 		if (!recruiter) {
 			throw new NotFoundException(RECRUITER_MESSAGES.RECRUITER_NOT_FOUND);
 		}
 
-		// Delete old profile image if exists
 		if (recruiter.profile_url?.key) {
 			try {
 				await this._s3Service.deleteFile(recruiter.profile_url.key);
@@ -43,14 +30,10 @@ export class UploadRecruiterProfileImageUseCase implements IExecutable<UploadPro
 			}
 		}
 
-		// Upload new image to S3
-		const fileInfo = await this._s3Service.uploadFile(file);
-
-		// Update recruiter with new profile URL
 		const updatedRecruiter = await this._recruiterRepository.findByIdAndUpdate(recruiterId, {
 			profile_url: {
-				key: fileInfo.key,
-				url: fileInfo.url,
+				key: "",
+				url: "",
 			},
 		} as Partial<RecruiterEntity>);
 
@@ -58,6 +41,6 @@ export class UploadRecruiterProfileImageUseCase implements IExecutable<UploadPro
 			throw new NotFoundException(RECRUITER_MESSAGES.RECRUITER_NOT_FOUND);
 		}
 
-		return { message: "Profile image uploaded successfully" };
+		return { message: "Profile image deleted successfully" };
 	}
 }

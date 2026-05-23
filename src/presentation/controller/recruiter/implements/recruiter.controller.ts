@@ -70,8 +70,10 @@ export class RecruiterController implements IRecruiterController {
 		@Inject(RECRUITER_TOKEN.UPLOAD_PROFILE_IMAGE_USE_CASE)
 		private readonly _uploadProfileImageUseCase: IExecutable<
 			{ recruiterId: string; file: Express.Multer.File },
-			ResponseRecruiterDto
+			{ message: string }
 		>,
+		@Inject(RECRUITER_TOKEN.DELETE_PROFILE_IMAGE_USE_CASE)
+		private readonly _deleteProfileImageUseCase: IExecutable<string, { message: string }>,
 		@Inject(RECRUITER_TOKEN.RECRUITER_FIND_BY_EMAIL_USE_CASE)
 		private readonly _findByEmailUseCase: IExecutable<string, ResponseRecruiterDto>,
 		@Inject(RECRUITER_TOKEN.VERIFY_RECRUITER_COMPANY_USE_CASE)
@@ -179,12 +181,19 @@ export class RecruiterController implements IRecruiterController {
 	async uploadProfileImage(
 		@Req() req: Request,
 		@UploadedFile() file: Express.Multer.File,
-	): Promise<ResponseRecruiterDto> {
+	): Promise<{ message: string }> {
 		if (!file) {
 			throw new BadRequestException("No file uploaded");
 		}
 		const recruiter = await this._getOneUseCase.execute(req.user.id);
 		return this._uploadProfileImageUseCase.execute({ recruiterId: recruiter.id, file });
+	}
+
+	@UseGuards(RecruiterBlockedGuard)
+	@Delete(RECRUITER_ROUTERS.UPLOAD_PROFILE_IMAGE)
+	@HttpCode(HttpStatus.OK)
+	async deleteProfileImage(@Req() req: Request): Promise<{ message: string }> {
+		return this._deleteProfileImageUseCase.execute(req.user.id);
 	}
 
 	@UseGuards(RecruiterBlockedGuard)

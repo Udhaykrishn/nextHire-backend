@@ -10,6 +10,7 @@ import {
 	RecruiterChangePasswordUseCase,
 	UpdateRecruiterUseCase,
 	UploadRecruiterProfileImageUseCase,
+	DeleteRecruiterProfileImageUseCase,
 	RecruiterFindByEmailUseCase,
 	VerifyRecruiterCompanyUseCase,
 	SubscribeRecruiterUseCase,
@@ -61,6 +62,10 @@ import { RedisModule } from "../redis.module";
 			useClass: UploadRecruiterProfileImageUseCase,
 		},
 		{
+			provide: RECRUITER_TOKEN.DELETE_PROFILE_IMAGE_USE_CASE,
+			useClass: DeleteRecruiterProfileImageUseCase,
+		},
+		{
 			provide: RECRUITER_TOKEN.RECRUITER_FIND_BY_EMAIL_USE_CASE,
 			useClass: RecruiterFindByEmailUseCase,
 		},
@@ -106,6 +111,7 @@ import { RedisModule } from "../redis.module";
 		RECRUITER_TOKEN.RECRUITER_CHANGE_PASSWORD_USE_CASE,
 		RECRUITER_TOKEN.CHECK_RECRUITER_BLOCKED_USE_CASE,
 		RECRUITER_TOKEN.UPLOAD_PROFILE_IMAGE_USE_CASE,
+		RECRUITER_TOKEN.DELETE_PROFILE_IMAGE_USE_CASE,
 		RECRUITER_TOKEN.RECRUITER_FIND_BY_EMAIL_USE_CASE,
 		RECRUITER_TOKEN.VERIFY_RECRUITER_COMPANY_USE_CASE,
 		RECRUITER_TOKEN.SUBSCRIBE_RECRUITER_USE_CASE,

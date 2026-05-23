@@ -23,12 +23,14 @@ export class RecruiterApplicationMapper implements IRecruiterApplicationMappers<
 			category: recruiter.category,
 			company_role: recruiter.company_role,
 			is_verified_company: recruiter.is_verified_company,
+			verification_revoked_reason: recruiter.verification_revoked_reason,
 			admin_approved: recruiter.admin_approved,
+			job_count: 0,
 			subscription: recruiter.subscription,
 			profile_url: recruiter.profile_url,
 
 			createdAt: recruiter.createdAt,
-			updatedAt: recruiter.updatedAt || null,
+			updatedAt: recruiter.updatedAt ?? undefined,
 		};
 	}
 
@@ -48,6 +50,8 @@ export class RecruiterApplicationMapper implements IRecruiterApplicationMappers<
 			company_role: data.company_role ?? RECRUITER_ROLE.HR,
 			is_verified_company: data.is_verified_company ?? false,
 			admin_approved: data.admin_approved ?? false,
+			verification_revoked_reason: data.verification_revoked_reason ?? "",
+			profile_url: data.profile_url ?? { key: "", url: "" },
 			subscription: data.subscription ?? {
 				current_plan: "free",
 				is_subscribed: false,

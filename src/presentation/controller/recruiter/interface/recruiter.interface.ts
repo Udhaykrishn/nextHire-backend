@@ -16,5 +16,6 @@ export interface IRecruiterController {
 	update(recruiterId: string, dto: UpdateRecruiterDto): Promise<ResponseRecruiterDto>;
 	blockUnblock(recruiterId: string): Promise<ResponseRecruiterDto>;
 	changePassword(recruiterId: string, dto: ChangePasswordDto): Promise<ResponseRecruiterDto>;
-	uploadProfileImage(req: Request, file: Express.Multer.File): Promise<ResponseRecruiterDto>;
+	uploadProfileImage(req: Request, file: Express.Multer.File): Promise<{ message: string }>;
+	deleteProfileImage(req: Request): Promise<{ message: string }>;
 }
