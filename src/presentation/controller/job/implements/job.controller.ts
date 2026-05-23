@@ -24,6 +24,7 @@ import { ROLES } from "@/presentation/enums";
 import type { AuthenticatedRequest } from "@/presentation/interface/request.interface";
 import { CreateJobDto } from "@/application/dto/job/create-job.dto";
 import { JobEntity } from "@/domain/entity/job.entity";
+import { toJobResponse, toJobResponseWithScore } from "@/presentation/mappers/job-response.mapper";
 import { JobApplicationEntity } from "@/domain/entity/job-application.entity";
 import { ApplyJobDto } from "@/application/use-case/job/apply-job.use-case";
 import type { PaginationDto } from "@/application/dto/pagiation";
@@ -53,17 +54,18 @@ export class JobController implements IJobController {
 	) {}
 
 	@Post(JOB_ROUTERS.DEFAULT)
-	@Permissions(PERMISSION.JOB_CREATE)
+	@Roles(ROLES.RECRUITER)
 	@HttpCode(HttpStatus.CREATED)
-	async create(@Req() req: AuthenticatedRequest, @Body() dto: CreateJobDto): Promise<JobEntity> {
+	async create(@Req() req: AuthenticatedRequest, @Body() dto: CreateJobDto) {
 		// Ensure the company_id is set to the current user's ID (recruiter)
 		dto.company_id = req.user.id;
 		dto.posted_by = req.user.id;
-		return this._createJobUseCase.execute(dto);
+		const job = await this._createJobUseCase.execute(dto);
+		return toJobResponse(job);
 	}
 
 	@Post(`${JOB_ROUTERS.APPLY}/:${JOB_ROUTERS.ID_PARAM}`)
-	@Permissions(PERMISSION.APPLICATION_CREATE)
+	@Roles(ROLES.USER)
 	@HttpCode(HttpStatus.CREATED)
 	async apply(
 		@Req() req: AuthenticatedRequest,
@@ -73,16 +75,18 @@ export class JobController implements IJobController {
 	}
 
 	@Get(JOB_ROUTERS.RECRUITER)
-	@Permissions(PERMISSION.JOB_CREATE)
-	async getRecruiterJobs(@Req() req: AuthenticatedRequest): Promise<JobEntity[]> {
-		return this._getRecruiterJobsUseCase.execute(req.user.id);
+	@Roles(ROLES.RECRUITER)
+	async getRecruiterJobs(@Req() req: AuthenticatedRequest) {
+		const jobs = await this._getRecruiterJobsUseCase.execute(req.user.id);
+		return jobs.map((job) => toJobResponse(job));
 	}
 
 	@Get(`${JOB_ROUTERS.RECRUITER}/:${JOB_ROUTERS.ID_PARAM}`)
 	@Roles(ROLES.ADMIN)
 	@HttpCode(HttpStatus.OK)
-	async getJobsByRecruiterId(@Param(JOB_ROUTERS.ID_PARAM) recruiterId: string): Promise<JobEntity[]> {
-		return this._getRecruiterJobsUseCase.execute(recruiterId);
+	async getJobsByRecruiterId(@Param(JOB_ROUTERS.ID_PARAM) recruiterId: string) {
+		const jobs = await this._getRecruiterJobsUseCase.execute(recruiterId);
+		return jobs.map((job) => toJobResponse(job));
 	}
 
 	@Get(JOB_ROUTERS.ALL)
@@ -93,21 +97,27 @@ export class JobController implements IJobController {
 		@Query("page", ParseIntPipe) page: number = 1,
 		@Query("limit", ParseIntPipe) limit: number = 10,
 		@Query("status") status?: string,
-	): Promise<PaginationResponse<JobEntity> | null> {
+	) {
 		const paginationDto: PaginationDto = {
 			search,
 			page,
 			limit,
 			status,
 		};
-		return this._getAllJobsUseCase.execute(paginationDto);
+		const result = await this._getAllJobsUseCase.execute(paginationDto);
+		if (!result) return null;
+		return {
+			...result,
+			data: result.data.map((job) => toJobResponse(job)),
+		};
 	}
 
 	@Patch(JOB_ROUTERS.BLOCK)
 	@Roles(ROLES.ADMIN)
 	@HttpCode(HttpStatus.OK)
-	async blockUnblockJob(@Param(JOB_ROUTERS.ID_PARAM) jobId: string): Promise<JobEntity> {
-		return this._blockUnblockJobUseCase.execute(jobId);
+	async blockUnblockJob(@Param(JOB_ROUTERS.ID_PARAM) jobId: string) {
+		const job = await this._blockUnblockJobUseCase.execute(jobId);
+		return toJobResponse(job);
 	}
 
 	@Get(JOB_ROUTERS.DEFAULT)
@@ -118,7 +128,7 @@ export class JobController implements IJobController {
 		@Query("search") search?: string,
 		@Query("page", ParseIntPipe) page: number = 1,
 		@Query("limit", ParseIntPipe) limit: number = 10,
-	): Promise<PaginationResponse<JobEntity & { matchScore?: number }> | null> {
+	) {
 		const paginationDto: PaginationDto = {
 			search,
 			page,
@@ -140,7 +150,7 @@ export class JobController implements IJobController {
 			} else {
 				jobWithScore.matchScore = 0;
 			}
-			return jobWithScore;
+			return toJobResponseWithScore(jobWithScore);
 		});
 
 		return {
@@ -155,7 +165,7 @@ export class JobController implements IJobController {
 	async getJobById(
 		@Req() req: AuthenticatedRequest,
 		@Param(JOB_ROUTERS.ID_PARAM) jobId: string,
-	): Promise<(JobEntity & { matchScore?: number }) | null> {
+	) {
 		const job = await this._jobRepository.findById(jobId);
 		if (!job) {
 			throw new NotFoundException("Job not found");
@@ -173,7 +183,7 @@ export class JobController implements IJobController {
 			jobWithScore.matchScore = 0;
 		}
 
-		return jobWithScore;
+		return toJobResponseWithScore(jobWithScore);
 	}
 
 	private calculateMatchScore(user: UserEntity, job: JobEntity): number {
