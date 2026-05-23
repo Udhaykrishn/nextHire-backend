@@ -44,6 +44,7 @@ export class RecruiterPresitanceMapper implements IRecruiterPresitanceMapper<Rec
 			is_verified_company: doc.is_verified_company ?? false,
 			verification_revoked_reason: doc.verification_revoked_reason ?? "",
 			admin_approved: doc.admin_approved ?? false,
+			profile_url: doc.profile_url ?? { key: "", url: "" },
 			subscription: doc.subscription ?? {
 				current_plan: "free",
 				is_subscribed: false,
