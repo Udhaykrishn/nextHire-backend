@@ -6,3 +6,4 @@ export type { IS3Service } from "./aws-s3.interface";
 export type { IMailService } from "./mail.interface";
 export type { IUuidService } from "./uuid-service.interface";
 export type { ISessionVerificationService } from "./session-verification-service.interface";
+export type { IEventEmitter } from "./event-emitter.interface"; 
