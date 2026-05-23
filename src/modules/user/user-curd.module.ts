@@ -84,4 +84,4 @@ import { Module } from "@nestjs/common";
 		USERS_TOKEN.DELETE_RESUME_USE_CASE,
 	],
 })
-export class UserCrudModule { }
+export class UserCrudModule {}

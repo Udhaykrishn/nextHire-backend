@@ -18,6 +18,7 @@ export class RecruiterEntity {
 	private _company_role: string = RECRUITER_ROLE.HR;
 	private _job_count: number = 0;
 	private _is_verified_company: boolean = false;
+	private _verification_revoked_reason: string = "";
 	private _admin_approved: boolean = false;
 	private _profile_url: { key: string; url: string } = {
 		key: "",
@@ -50,6 +51,7 @@ export class RecruiterEntity {
 		company_role: string,
 		job_count: number,
 		is_verified_company: boolean,
+		verification_revoked_reason: string,
 		admin_approved: boolean,
 		profile_url: { key: string; url: string },
 		subscription: { current_plan: string; is_subscribed: boolean },
@@ -71,6 +73,7 @@ export class RecruiterEntity {
 		this._company_role = company_role;
 		this._job_count = job_count;
 		this._is_verified_company = is_verified_company;
+		this._verification_revoked_reason = verification_revoked_reason;
 		this._admin_approved = admin_approved;
 		this._profile_url = profile_url;
 		this._subscription = subscription;
@@ -95,6 +98,7 @@ export class RecruiterEntity {
 		company_role?: string;
 		job_count?: number;
 		is_verified_company?: boolean;
+		verification_revoked_reason?: string;
 		admin_approved?: boolean;
 		profile_url?: { key: string; url: string };
 		subscription?: { current_plan: string; is_subscribed: boolean };
@@ -118,6 +122,7 @@ export class RecruiterEntity {
 			data.company_role ?? RECRUITER_ROLE.HR,
 			data.job_count ?? 0,
 			data.is_verified_company ?? false,
+			data.verification_revoked_reason ?? "",
 			data.admin_approved ?? false,
 			data.profile_url ?? { key: "", url: "" },
 			data.subscription ?? { current_plan: "free", is_subscribed: false },
@@ -188,6 +193,10 @@ export class RecruiterEntity {
 		return this._is_verified_company;
 	}
 
+	get verification_revoked_reason(): string {
+		return this._verification_revoked_reason;
+	}
+
 	get admin_approved(): boolean {
 		return this._admin_approved;
 	}
@@ -250,6 +259,12 @@ export class RecruiterEntity {
 
 	verifyCompany(): void {
 		this._is_verified_company = true;
+		this._verification_revoked_reason = "";
+	}
+
+	revokeCompanyVerification(reason: string): void {
+		this._is_verified_company = false;
+		this._verification_revoked_reason = reason;
 	}
 
 	approveByAdmin(): void {

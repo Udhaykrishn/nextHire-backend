@@ -17,7 +17,7 @@ export class GetOneRecruiterUseCase implements IExecutable<string, ResponseRecru
 
 		@Inject(RECRUITER_TOKEN.RECRUITER_REPOSITORY)
 		private readonly _recruiterRepository: IRecruiterRepository<RecruiterEntity>,
-	) { }
+	) {}
 
 	async execute(recruiterId: string): Promise<ResponseRecruiterDto> {
 		const recruiter = await this._recruiterRepository.findById(recruiterId);

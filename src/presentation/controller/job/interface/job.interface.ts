@@ -15,4 +15,11 @@ export interface IJobController {
 		status?: string,
 	): Promise<PaginationResponse<JobEntity> | null>;
 	blockUnblockJob(jobId: string): Promise<JobEntity>;
+	getJobsForCandidate(
+		req: AuthenticatedRequest,
+		search?: string,
+		page?: number,
+		limit?: number,
+	): Promise<PaginationResponse<JobEntity & { matchScore?: number }> | null>;
+	getJobById(req: AuthenticatedRequest, jobId: string): Promise<(JobEntity & { matchScore?: number }) | null>;
 }

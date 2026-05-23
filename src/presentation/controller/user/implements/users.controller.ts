@@ -74,7 +74,7 @@ export class UserController implements IUserController {
 		>,
 		@Inject(USERS_TOKEN.DELETE_RESUME_USE_CASE)
 		private readonly _deleteResumeUseCase: IExecutable<string, ResponseUserDto>,
-	) { }
+	) {}
 
 	@Post(USER_ROUTERS.DEFAULT)
 	@HttpCode(HttpStatus.CREATED)

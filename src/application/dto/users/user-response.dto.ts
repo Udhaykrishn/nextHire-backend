@@ -5,6 +5,7 @@ export class ResponseUserDto {
 	public readonly phone: string;
 	public readonly experience: string;
 	public readonly role_of_title: string;
+	public readonly location: string;
 	public readonly status: string;
 	public readonly resume_url: {
 		key: string;
@@ -32,7 +33,5 @@ export class ResponseUserDto {
 		key: string;
 		url: string;
 	};
-	public readonly cinNumber: string;
-	public readonly isCompanyVerified: boolean;
 	public readonly block_description?: string;
 }

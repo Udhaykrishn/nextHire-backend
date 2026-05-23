@@ -48,6 +48,9 @@ export class Recruiter {
 	@Prop({ default: false })
 	is_verified_company: boolean;
 
+	@Prop({ default: "" })
+	verification_revoked_reason: string;
+
 	@Prop({ default: false })
 	admin_approved: boolean;
 

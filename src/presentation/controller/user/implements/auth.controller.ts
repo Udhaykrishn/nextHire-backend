@@ -50,7 +50,7 @@ export class AuthUserController implements IAuthUserController {
 		private readonly _resetPasswordUseCase: IExecutable<ResetPasswordDto, ResetPasswordResponseDto>,
 		@Inject(AUTH_USER_TOKEN.USER_VERIFY_RESET_TOKEN_USE_CASE)
 		private readonly _verifyResetTokenUseCase: IExecutable<string, boolean>,
-	) { }
+	) {}
 
 	@Post(USER_AUTH_ROUTER.VERIFY_RESET_TOKEN)
 	async verifyResetToken(@Body() body: { token: string }) {

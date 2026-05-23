@@ -5,3 +5,4 @@ export { OtpService } from "./otp.service";
 export { type FileInfo, S3Service } from "./aws-s3.service";
 export { MailService } from "./mail.service";
 export { UuidService } from "./uuid.service";
+export { SessionVerificationService } from "./session-verification.service";

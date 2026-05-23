@@ -1,5 +1,5 @@
 export * from "./recruiter-create.use-case";
-export * from "./recuriter-update.use-case"; // Typo in filename
+export * from "./recuriter-update.use-case";
 export * from "./recruiter-get-all.use-case";
 export * from "./recruiter-get-one.use-case";
 export * from "./recruiter-block-unblock.use-case";
@@ -8,4 +8,9 @@ export * from "./recruiter-check-status-blocked.use-case";
 export * from "./upload-profile-image.use-case";
 export * from "./recruiter-find-by-email.use-case";
 export * from "./recruiter-verify-company.use-case";
+export * from "./start-verification-session.use-case";
+export * from "./get-verification-session.use-case";
+export * from "./verify-otp-session.use-case";
+export * from "./delete-verification-session.use-case";
+export * from "./revoke-company-verification.use-case";
 export * from "./recruiter-subscribe.use-case";

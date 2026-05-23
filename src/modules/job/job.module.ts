@@ -45,4 +45,4 @@ import { UserLiteModule } from "../user/user-db.module";
 		JOB_TOKEN.BLOCK_UNBLOCK_JOB_USE_CASE,
 	],
 })
-export class JobModule { }
+export class JobModule {}

@@ -46,7 +46,10 @@ export class UpdateUserUseCase implements IExecutable<{ userId: string; data: Up
 		if (data.role_of_title) {
 			user.changeRoleOfTitle(data.role_of_title);
 		}
-		if (data.bio) {
+		if (data.location !== undefined) {
+			user.changeLocation(data.location);
+		}
+		if (data.bio !== undefined) {
 			user.changeBio(data.bio);
 		}
 		if (data.social_link) {
@@ -57,9 +60,6 @@ export class UpdateUserUseCase implements IExecutable<{ userId: string; data: Up
 		}
 		if (data.languages) {
 			user.changeLanguages(data.languages);
-		}
-		if (data.cinNumber) {
-			user.changeCinNumber(data.cinNumber);
 		}
 
 		const updatedUser = await this._userRepository.findByIdAndUpdate(userId, user);

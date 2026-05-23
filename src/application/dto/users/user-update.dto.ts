@@ -18,14 +18,15 @@ import { Type } from "class-transformer";
 class SocialLinkDto {
 	@IsOptional()
 	@ValidateIf((o) => o.linkedin !== "" && o.linkedin !== undefined && o.linkedin !== null)
-	@Matches(/^https:\/\/([a-zA-Z0-9\-]+\.)?linkedin\.com\/.*$/, {
-		message: "LinkedIn profile must be a valid HTTPS URL matching linkedin.com (e.g. https://www.linkedin.com/in/username)",
+	@Matches(/^https:\/\/([a-zA-Z0-9-]+\.)?linkedin\.com\/.*$/, {
+		message:
+			"LinkedIn profile must be a valid HTTPS URL matching linkedin.com (e.g. https://www.linkedin.com/in/username)",
 	})
 	linkedin: string;
 
 	@IsOptional()
 	@ValidateIf((o) => o.portfolio !== "" && o.portfolio !== undefined && o.portfolio !== null)
-	@Matches(/^https:\/\/(www\.)?([a-zA-Z0-9\-]+\.)+[a-zA-Z]{2,4}(\/\S*)?$/, {
+	@Matches(/^https:\/\/(www\.)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,4}(\/\S*)?$/, {
 		message: "Portfolio must be a valid HTTPS URL (e.g. https://myportfolio.com) and cannot be localhost",
 	})
 	portfolio: string;
@@ -63,8 +64,11 @@ export class UpdateUserDto {
 
 	@IsOptional()
 	@IsString()
-	@MaxLength(100)
 	role_of_title?: string;
+
+	@IsOptional()
+	@IsString()
+	location?: string;
 
 	@IsOptional()
 	@IsString()
@@ -86,10 +90,6 @@ export class UpdateUserDto {
 	@ValidateNested({ each: true })
 	@Type(() => LanguageDto)
 	languages?: LanguageDto[];
-
-	@IsOptional()
-	@IsString()
-	cinNumber?: string;
 }
 
 export class LanguageDto {

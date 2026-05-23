@@ -5,4 +5,5 @@ export enum REDIS_KEYS {
 	OTP = "otp:",
 	RESEND_COUNT = "otp:resend_count:",
 	RESET_TOKEN = "RESET_TOKEN:",
+	COMPANY_VERIFY = "company_verify:",
 }

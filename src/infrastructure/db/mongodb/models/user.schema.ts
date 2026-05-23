@@ -24,6 +24,9 @@ export class User {
 	@Prop()
 	role_of_title: string;
 
+	@Prop()
+	location: string;
+
 	@Prop({
 		type: String,
 		default: USER_STATUS.PENDING,
@@ -106,12 +109,6 @@ export class User {
 		name: string;
 		proficiency: string;
 	}[];
-
-	@Prop({ type: String, default: "" })
-	cinNumber: string;
-
-	@Prop({ type: Boolean, default: false })
-	isCompanyVerified: boolean;
 
 	@Prop({ type: String, default: "" })
 	block_description: string;
