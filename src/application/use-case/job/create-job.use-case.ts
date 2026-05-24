@@ -45,6 +45,7 @@ export class CreateJobUseCase implements IExecutable<CreateJobDto, JobEntity> {
 			...data,
 			company_id: data.company_id,
 			posted_by: data.posted_by,
+			companyLogo: recruiter.profile_url?.url || "",
 		});
 
 		const savedJob = await this._jobRepository.save(job);

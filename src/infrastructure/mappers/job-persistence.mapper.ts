@@ -11,6 +11,7 @@ export class JobPersistenceMapper implements IJobPersistenceMapper<JobEntity, Jo
 
 			belongingCompany: data.belongingCompany,
 			hiringCompany: data.hiringCompany,
+			companyLogo: data.companyLogo,
 			experienceType: data.experienceType,
 			jobTitle: data.jobTitle,
 			jobCategory: data.jobCategory,
@@ -81,6 +82,7 @@ export class JobPersistenceMapper implements IJobPersistenceMapper<JobEntity, Jo
 
 			belongingCompany: data.belongingCompany || "",
 			hiringCompany: data.hiringCompany || "",
+			companyLogo: data.companyLogo || "",
 			experienceType: data.experienceType || "",
 			jobTitle: data.jobTitle || "",
 			jobCategory: data.jobCategory || "",

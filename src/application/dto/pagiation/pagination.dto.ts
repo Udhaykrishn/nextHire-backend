@@ -1,4 +1,4 @@
-import { IsOptional, IsString, IsNumber, MaxLength, MinLength, IsPositive } from "class-validator";
+import { IsOptional, IsString, IsNumber, MaxLength, MinLength, IsPositive, IsBoolean, IsArray } from "class-validator";
 import { Type } from "class-transformer";
 
 export class PaginationDto {
@@ -11,6 +11,29 @@ export class PaginationDto {
 	@IsOptional()
 	@IsString()
 	status?: string;
+
+	@IsOptional()
+	@IsBoolean()
+	is_published?: boolean;
+
+	@IsOptional()
+	@IsString()
+	location?: string;
+
+	@IsOptional()
+	@IsArray()
+	@IsString({ each: true })
+	experience?: string[];
+
+	@IsOptional()
+	@IsArray()
+	@IsString({ each: true })
+	salary?: string[];
+
+	@IsOptional()
+	@IsArray()
+	@IsString({ each: true })
+	jobTypes?: string[];
 
 	@Type(() => Number)
 	@IsOptional()
