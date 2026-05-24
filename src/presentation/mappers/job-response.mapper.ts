@@ -5,6 +5,7 @@ export function toJobResponse(job: JobEntity) {
 		id: job.id,
 		belongingCompany: job.belongingCompany,
 		hiringCompany: job.hiringCompany,
+		companyLogo: job.companyLogo,
 		experienceType: job.experienceType,
 		jobTitle: job.jobTitle,
 		jobCategory: job.jobCategory,

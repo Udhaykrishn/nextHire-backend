@@ -13,6 +13,9 @@ export class Jobs {
 	hiringCompany: string | null;
 
 	@Prop({ type: String, default: null })
+	companyLogo: string | null;
+
+	@Prop({ type: String, default: null })
 	experienceType: string | null;
 
 	@Prop({ type: String, default: null })
