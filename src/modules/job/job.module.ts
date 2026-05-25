@@ -6,7 +6,10 @@ import { GetAllJobsUseCase } from "@/application/use-case/job/get-all-jobs.use-c
 import { BlockUnblockJobUseCase } from "@/application/use-case/job/block-unblock-job.use-case";
 import { UpdateJobUseCase } from "@/application/use-case/job/update-job.use-case";
 import { GetCandidateJobsUseCase } from "@/application/use-case/job/get-candidate-jobs.use-case";
+import { GetCandidateApplicationsUseCase } from "@/application/use-case/job/get-candidate-applications.use-case";
 import { GetJobByIdUseCase } from "@/application/use-case/job/get-job-by-id.use-case";
+import { GetJobStatsUseCase } from "@/application/use-case/job/get-job-stats.use-case";
+import { GetJobApplicationsUseCase } from "@/application/use-case/job/get-job-applications.use-case";
 import { JOB_TOKEN } from "@/application/enums/tokens/job-token.enum";
 import { RecruiterLiteModule } from "../recruiter/recuriter-lite.module";
 import { JobLiteModule } from "./job-lite.module";
@@ -42,8 +45,20 @@ import { JobController } from "@/presentation/controller/job/implements/job.cont
 			useClass: GetCandidateJobsUseCase,
 		},
 		{
+			provide: JOB_TOKEN.GET_CANDIDATE_APPLICATIONS_USE_CASE,
+			useClass: GetCandidateApplicationsUseCase,
+		},
+		{
 			provide: JOB_TOKEN.GET_JOB_BY_ID_USE_CASE,
 			useClass: GetJobByIdUseCase,
+		},
+		{
+			provide: JOB_TOKEN.GET_JOB_STATS_USE_CASE,
+			useClass: GetJobStatsUseCase,
+		},
+		{
+			provide: JOB_TOKEN.GET_JOB_APPLICATIONS_USE_CASE,
+			useClass: GetJobApplicationsUseCase,
 		},
 		{
 			provide: JOB_TOKEN.BLOCK_UNBLOCK_JOB_USE_CASE,
@@ -57,6 +72,8 @@ import { JobController } from "@/presentation/controller/job/implements/job.cont
 		JOB_TOKEN.GET_ALL_JOBS_USE_CASE,
 		JOB_TOKEN.GET_CANDIDATE_JOBS_USE_CASE,
 		JOB_TOKEN.GET_JOB_BY_ID_USE_CASE,
+		JOB_TOKEN.GET_JOB_STATS_USE_CASE,
+		JOB_TOKEN.GET_JOB_APPLICATIONS_USE_CASE,
 		JOB_TOKEN.BLOCK_UNBLOCK_JOB_USE_CASE,
 		JOB_TOKEN.UPDATE_JOB_USE_CASE,
 	],
