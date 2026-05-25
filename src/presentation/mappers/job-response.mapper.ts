@@ -66,11 +66,19 @@ export function toJobResponse(job: JobEntity) {
 	};
 }
 
-export function toJobResponseWithScore(jobWithScore: JobEntity & { matchScore?: number }) {
+export function toJobResponseWithScore(jobWithScore: JobEntity & { matchScore?: number; hasApplied?: boolean; applicationStatus?: string; stats?: any }) {
 	const response = toJobResponse(jobWithScore) as Record<string, unknown>;
 	if (jobWithScore.matchScore !== undefined) {
 		response.matchScore = jobWithScore.matchScore;
 	}
+	if (jobWithScore.hasApplied !== undefined) {
+		response.hasApplied = jobWithScore.hasApplied;
+	}
+	if (jobWithScore.applicationStatus !== undefined) {
+		response.applicationStatus = jobWithScore.applicationStatus;
+	}
+	if (jobWithScore.stats !== undefined) {
+		response.stats = jobWithScore.stats;
+	}
 	return response;
 }
-

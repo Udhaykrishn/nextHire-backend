@@ -10,7 +10,6 @@ import {
 	Req,
 	UseGuards,
 	Query,
-	ParseIntPipe,
 	Patch,
 } from "@nestjs/common";
 import type { IExecutable } from "@/application/interface/executable.interface";
@@ -31,6 +30,9 @@ import type { PaginationResponse } from "@/domain/types/paginations";
 import { IJobController } from "../interface/job.interface";
 import type { GetCandidateJobsDto } from "@/application/use-case/job/get-candidate-jobs.use-case";
 import type { GetJobByIdDto } from "@/application/use-case/job/get-job-by-id.use-case";
+import type { GetCandidateApplicationsDto, GetCandidateApplicationsResponse } from "@/application/use-case/job/get-candidate-applications.use-case";
+import type { JobStatsResponse } from "@/application/use-case/job/get-job-stats.use-case";
+import type { GetJobApplicationsDto, JobApplicationResponse } from "@/application/use-case/job/get-job-applications.use-case";
 
 @UseGuards(AuthGuard, RoleGuard, PermissionGuard)
 @Controller(JOB_ROUTERS.ROUTER)
@@ -48,6 +50,12 @@ export class JobController implements IJobController {
 		private readonly _getCandidateJobsUseCase: IExecutable<GetCandidateJobsDto, PaginationResponse<JobEntity & { matchScore?: number }> | null>,
 		@Inject(JOB_TOKEN.GET_JOB_BY_ID_USE_CASE)
 		private readonly _getJobByIdUseCase: IExecutable<GetJobByIdDto, JobEntity & { matchScore?: number }>,
+		@Inject(JOB_TOKEN.GET_CANDIDATE_APPLICATIONS_USE_CASE)
+		private readonly _getCandidateApplicationsUseCase: IExecutable<GetCandidateApplicationsDto, GetCandidateApplicationsResponse>,
+		@Inject(JOB_TOKEN.GET_JOB_STATS_USE_CASE)
+		private readonly _getJobStatsUseCase: IExecutable<string, JobStatsResponse>,
+		@Inject(JOB_TOKEN.GET_JOB_APPLICATIONS_USE_CASE)
+		private readonly _getJobApplicationsUseCase: IExecutable<GetJobApplicationsDto, PaginationResponse<JobApplicationResponse>>,
 		@Inject(JOB_TOKEN.BLOCK_UNBLOCK_JOB_USE_CASE)
 		private readonly _blockUnblockJobUseCase: IExecutable<string, JobEntity>,
 		@Inject(JOB_TOKEN.UPDATE_JOB_USE_CASE)
@@ -158,7 +166,7 @@ export class JobController implements IJobController {
 			jobTypes: parseArray(jobTypes),
 		};
 
-		const userId = req.user?.role === "USER" ? req.user.id : undefined;
+		const userId = req.user?.role === ROLES.USER ? req.user.id : undefined;
 
 		const paginationResult = await this._getCandidateJobsUseCase.execute({
 			paginationDto,
@@ -173,6 +181,60 @@ export class JobController implements IJobController {
 		};
 	}
 
+	@Get(JOB_ROUTERS.APPLICATIONS)
+	@Roles(ROLES.USER)
+	@HttpCode(HttpStatus.OK)
+	async getCandidateApplications(
+		@Req() req: AuthenticatedRequest,
+		@Query("search") search?: string,
+		@Query("status") status?: string,
+	) {
+		const result = await this._getCandidateApplicationsUseCase.execute({
+			userId: req.user.id,
+			search,
+			status,
+		});
+		return {
+			data: result.data.map((r) => ({
+				application: {
+					id: r.application.id,
+					jobId: r.application.jobId,
+					status: r.application.status,
+					createdAt: r.application.createdAt,
+					updatedAt: r.application.updatedAt,
+				},
+				job: toJobResponse(r.job),
+			})),
+			stats: result.stats
+		};
+	}
+
+	@Get(`:${JOB_ROUTERS.ID_PARAM}/stats`)
+	@Roles(ROLES.ADMIN, ROLES.RECRUITER)
+	@HttpCode(HttpStatus.OK)
+	async getJobStats(@Param(JOB_ROUTERS.ID_PARAM) jobId: string) {
+		return this._getJobStatsUseCase.execute(jobId);
+	}
+
+	@Get(`:${JOB_ROUTERS.ID_PARAM}/applications`)
+	@Roles(ROLES.ADMIN, ROLES.RECRUITER)
+	@HttpCode(HttpStatus.OK)
+	async getJobApplications(
+		@Param(JOB_ROUTERS.ID_PARAM) jobId: string,
+		@Query("page") page: string = "1",
+		@Query("limit") limit: string = "10",
+		@Query("search") search?: string,
+		@Query("status") status?: string,
+	) {
+		return this._getJobApplicationsUseCase.execute({ 
+			jobId, 
+			page: Number(page), 
+			limit: Number(limit),
+			search,
+			status
+		});
+	}
+
 	@Get(`:${JOB_ROUTERS.ID_PARAM}`)
 	@Public()
 	@HttpCode(HttpStatus.OK)
@@ -180,7 +242,7 @@ export class JobController implements IJobController {
 		@Req() req: AuthenticatedRequest,
 		@Param(JOB_ROUTERS.ID_PARAM) jobId: string,
 	) {
-		const userId = req.user?.role === "USER" ? req.user.id : undefined;
+		const userId = req.user?.role === ROLES.USER ? req.user.id : undefined;
 
 		const job = await this._getJobByIdUseCase.execute({
 			jobId,
