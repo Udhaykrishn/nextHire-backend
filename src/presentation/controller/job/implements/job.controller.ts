@@ -15,6 +15,7 @@ import {
 import type { IExecutable } from "@/application/interface/executable.interface";
 import { AuthGuard, RoleGuard, PermissionGuard } from "@/presentation/guards";
 import { Roles, Public } from "@/presentation/decorators";
+import { UserBlockedGuard, RecruiterBlockedGuard } from "@/presentation/guards/block";
 import { JOB_ROUTERS } from "@/presentation/enums/job-router.enum";
 import { JOB_TOKEN } from "@/application/enums/tokens";
 import { ROLES } from "@/presentation/enums";
@@ -38,7 +39,7 @@ import type { CalculateMatchScoreDto } from "@/application/use-case/job/calculat
 import { toJobResponse, toJobResponseWithScore } from "@/presentation/mappers/job-response.mapper";
 import type { JobEntity } from "@/domain/entity/job.entity";
 
-@UseGuards(AuthGuard, RoleGuard, PermissionGuard)
+@UseGuards(AuthGuard, RoleGuard, PermissionGuard, UserBlockedGuard, RecruiterBlockedGuard)
 @Controller(JOB_ROUTERS.ROUTER)
 export class JobController implements IJobController {
 	constructor(

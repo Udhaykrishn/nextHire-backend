@@ -4,8 +4,12 @@ import type { IExecutable } from "@/application/interface/executable.interface";
 import type { JobEntity } from "@/domain/entity/job.entity";
 import type { UserEntity } from "@/domain/entity/user.entity";
 import type { IJobRepository, IUserRepository } from "@/application/interface/repository";
+import { RECRUITER_TOKEN } from "@/application/enums/recruiter/recruiter-token.enum";
+import type { IRecruiterRepository } from "@/application/interface/repository/recruiter-repository.interface";
+import type { RecruiterEntity } from "@/domain/entity/recruiter.entity";
 import type { PaginationDto } from "@/application/dto/pagiation";
 import type { PaginationResponse } from "@/domain/types/paginations";
+import { JOB_STATUS, RECRUITER_STATUS } from "@/domain/enums/status";
 
 export interface GetCandidateJobsDto {
 	paginationDto: PaginationDto;
@@ -20,11 +24,19 @@ export class GetCandidateJobsUseCase
 		private readonly _jobRepository: IJobRepository<JobEntity>,
 		@Inject(USERS_TOKEN.USER_REPOSITORY)
 		private readonly _userRepository: IUserRepository<UserEntity>,
+		@Inject(RECRUITER_TOKEN.RECRUITER_REPOSITORY)
+		private readonly _recruiterRepository: IRecruiterRepository<RecruiterEntity>,
 	) { }
 
 	async execute(dto: GetCandidateJobsDto): Promise<PaginationResponse<JobEntity & { matchScore?: number }> | null> {
-		const allJobs = await this._jobRepository.findUnpaginatedJobs(dto.paginationDto);
-		if (!allJobs) return null;
+		const allJobsRaw = await this._jobRepository.findUnpaginatedJobs(dto.paginationDto);
+		if (!allJobsRaw) return null;
+
+		const companyIds = Array.from(new Set(allJobsRaw.map(j => j.posted_by || j.company_id || "")));
+		const recruiters = await Promise.all(companyIds.map(id => this._recruiterRepository.findById(id).catch(() => null)));
+		const blockedRecruiterIds = new Set(recruiters.filter(r => r && r.status === RECRUITER_STATUS.BLOCKED).map(r => r?.id));
+
+		const allJobs = allJobsRaw.filter(job => !blockedRecruiterIds.has(job.posted_by || job.company_id || ""));
 
 		let user: UserEntity | null = null;
 		if (dto.userId) {
