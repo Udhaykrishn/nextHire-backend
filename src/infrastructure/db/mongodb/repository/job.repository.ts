@@ -107,13 +107,8 @@ export class JobRepository extends BaseRepository<JobEntity, JobType> implements
 		if (pages.sort === "Newest") {
 			sortOptions = { created_at: -1 };
 		} else if (pages.sort === "Salary (High to Low)") {
-			// Sorting based on maxSalary, ensure numeric conversion if possible
-			// Assuming maxSalary is either numeric string or can be evaluated.
-			// Actually MongoDB string sorting might not be perfect for numbers,
-			// but we will apply basic sort on maxSalary.
 			sortOptions = { maxSalary: -1 };
 		} else if (pages.sort === "Relevance") {
-			// If text search is active, we can sort by text score, else fallback to newest
 			if (pages.search) {
 				sortOptions = { score: { $meta: "textScore" } };
 			}

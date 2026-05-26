@@ -25,7 +25,7 @@ export class CsrfMiddleware implements NestMiddleware {
 			this.csurfMiddleware(req, res, (err) => {
 				if (err) return next(err);
 				res.cookie("XSRF-TOKEN", req.csrfToken(), {
-					httpOnly: false,
+					httpOnly: true,
 					secure: process.env.NODE_ENV === "production",
 					sameSite: "lax",
 					path: "/",
