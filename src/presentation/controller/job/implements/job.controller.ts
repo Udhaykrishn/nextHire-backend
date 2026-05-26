@@ -21,10 +21,9 @@ import { ROLES } from "@/presentation/enums";
 import type { AuthenticatedRequest } from "@/presentation/interface/request.interface";
 import { CreateJobDto } from "@/application/dto/job/create-job.dto";
 import { UpdateJobDto } from "@/application/dto/job/update-job.dto";
-import { JobEntity } from "@/domain/entity/job.entity";
-import { toJobResponse, toJobResponseWithScore } from "@/presentation/mappers/job-response.mapper";
-import { JobApplicationEntity } from "@/domain/entity/job-application.entity";
+import { JOB_STATUS } from "@/domain/enums/status";
 import { ApplyJobDto } from "@/application/use-case/job/apply-job.use-case";
+import { ResponseJobDto } from "@/application/dto/job/response-job.dto";
 import type { PaginationDto } from "@/application/dto/pagiation";
 import type { PaginationResponse } from "@/domain/types/paginations";
 import { IJobController } from "../interface/job.interface";
@@ -32,34 +31,42 @@ import type { GetCandidateJobsDto } from "@/application/use-case/job/get-candida
 import type { GetJobByIdDto } from "@/application/use-case/job/get-job-by-id.use-case";
 import type { GetCandidateApplicationsDto, GetCandidateApplicationsResponse } from "@/application/use-case/job/get-candidate-applications.use-case";
 import type { JobStatsResponse } from "@/application/use-case/job/get-job-stats.use-case";
+import { UpdateApplicationStatusDto } from "@/application/dto/job/update-application-status.dto";
 import type { GetJobApplicationsDto, JobApplicationResponse } from "@/application/use-case/job/get-job-applications.use-case";
+import type { CalculateMatchScoreDto } from "@/application/use-case/job/calculate-match-score.use-case";
+import { toJobResponse, toJobResponseWithScore } from "@/presentation/mappers/job-response.mapper";
+import type { JobEntity } from "@/domain/entity/job.entity";
 
 @UseGuards(AuthGuard, RoleGuard, PermissionGuard)
 @Controller(JOB_ROUTERS.ROUTER)
 export class JobController implements IJobController {
 	constructor(
 		@Inject(JOB_TOKEN.CREATE_JOB_USE_CASE)
-		private readonly _createJobUseCase: IExecutable<CreateJobDto, JobEntity>,
+		private readonly _createJobUseCase: IExecutable<CreateJobDto, ResponseJobDto>,
 		@Inject(JOB_TOKEN.APPLY_JOB_USE_CASE)
-		private readonly _applyJobUseCase: IExecutable<ApplyJobDto, JobApplicationEntity>,
+		private readonly _applyJobUseCase: IExecutable<ApplyJobDto, JobApplicationResponse>,
 		@Inject(JOB_TOKEN.GET_RECRUITER_JOBS_USE_CASE)
-		private readonly _getRecruiterJobsUseCase: IExecutable<string, JobEntity[]>,
+		private readonly _getRecruiterJobsUseCase: IExecutable<string, ResponseJobDto[]>,
 		@Inject(JOB_TOKEN.GET_ALL_JOBS_USE_CASE)
-		private readonly _getAllJobsUseCase: IExecutable<PaginationDto, PaginationResponse<JobEntity> | null>,
+		private readonly _getAllJobsUseCase: IExecutable<PaginationDto, PaginationResponse<ResponseJobDto> | null>,
 		@Inject(JOB_TOKEN.GET_CANDIDATE_JOBS_USE_CASE)
-		private readonly _getCandidateJobsUseCase: IExecutable<GetCandidateJobsDto, PaginationResponse<JobEntity & { matchScore?: number }> | null>,
+		private readonly _getCandidateJobsUseCase: IExecutable<GetCandidateJobsDto, PaginationResponse<ResponseJobDto & { matchScore?: number }> | null>,
 		@Inject(JOB_TOKEN.GET_JOB_BY_ID_USE_CASE)
-		private readonly _getJobByIdUseCase: IExecutable<GetJobByIdDto, JobEntity & { matchScore?: number }>,
+		private readonly _getJobByIdUseCase: IExecutable<GetJobByIdDto, ResponseJobDto & { matchScore?: number }>,
 		@Inject(JOB_TOKEN.GET_CANDIDATE_APPLICATIONS_USE_CASE)
 		private readonly _getCandidateApplicationsUseCase: IExecutable<GetCandidateApplicationsDto, GetCandidateApplicationsResponse>,
 		@Inject(JOB_TOKEN.GET_JOB_STATS_USE_CASE)
 		private readonly _getJobStatsUseCase: IExecutable<string, JobStatsResponse>,
 		@Inject(JOB_TOKEN.GET_JOB_APPLICATIONS_USE_CASE)
 		private readonly _getJobApplicationsUseCase: IExecutable<GetJobApplicationsDto, PaginationResponse<JobApplicationResponse>>,
+		@Inject(JOB_TOKEN.UPDATE_APPLICATION_STATUS_USE_CASE)
+		private readonly _updateApplicationStatusUseCase: IExecutable<{ dto: UpdateApplicationStatusDto; recruiterId: string }, void>,
 		@Inject(JOB_TOKEN.BLOCK_UNBLOCK_JOB_USE_CASE)
-		private readonly _blockUnblockJobUseCase: IExecutable<string, JobEntity>,
+		private readonly _blockUnblockJobUseCase: IExecutable<string, ResponseJobDto>,
 		@Inject(JOB_TOKEN.UPDATE_JOB_USE_CASE)
-		private readonly _updateJobUseCase: IExecutable<{ jobId: string; dto: UpdateJobDto }, JobEntity>,
+		private readonly _updateJobUseCase: IExecutable<{ jobId: string; dto: UpdateJobDto }, ResponseJobDto>,
+		@Inject(JOB_TOKEN.CALCULATE_MATCH_SCORE_USE_CASE)
+		private readonly _calculateMatchScoreUseCase: IExecutable<CalculateMatchScoreDto, { matchScore: number; breakdown: Record<string, unknown> }>,
 	) { }
 
 	@Post(JOB_ROUTERS.DEFAULT)
@@ -69,7 +76,7 @@ export class JobController implements IJobController {
 		dto.company_id = req.user.id;
 		dto.posted_by = req.user.id;
 		const job = await this._createJobUseCase.execute(dto);
-		return toJobResponse(job);
+		return toJobResponse(job as unknown as JobEntity);
 	}
 
 	@Post(`${JOB_ROUTERS.APPLY}/:${JOB_ROUTERS.ID_PARAM}`)
@@ -78,7 +85,7 @@ export class JobController implements IJobController {
 	async apply(
 		@Req() req: AuthenticatedRequest,
 		@Param(JOB_ROUTERS.ID_PARAM) jobId: string,
-	): Promise<JobApplicationEntity> {
+	): Promise<JobApplicationResponse> {
 		return this._applyJobUseCase.execute({ userId: req.user.id, jobId });
 	}
 
@@ -86,7 +93,7 @@ export class JobController implements IJobController {
 	@Roles(ROLES.RECRUITER)
 	async getRecruiterJobs(@Req() req: AuthenticatedRequest) {
 		const jobs = await this._getRecruiterJobsUseCase.execute(req.user.id);
-		return jobs.map((job) => toJobResponse(job));
+		return (jobs as unknown as JobEntity[]).map(toJobResponse);
 	}
 
 	@Get(`${JOB_ROUTERS.RECRUITER}/:${JOB_ROUTERS.ID_PARAM}`)
@@ -94,7 +101,7 @@ export class JobController implements IJobController {
 	@HttpCode(HttpStatus.OK)
 	async getJobsByRecruiterId(@Param(JOB_ROUTERS.ID_PARAM) recruiterId: string) {
 		const jobs = await this._getRecruiterJobsUseCase.execute(recruiterId);
-		return jobs.map((job) => toJobResponse(job));
+		return (jobs as unknown as JobEntity[]).map(toJobResponse);
 	}
 
 	@Get(JOB_ROUTERS.ALL)
@@ -116,7 +123,7 @@ export class JobController implements IJobController {
 		if (!result) return null;
 		return {
 			...result,
-			data: result.data.map((job) => toJobResponse(job)),
+			data: (result.data as unknown as JobEntity[]).map(toJobResponse)
 		};
 	}
 
@@ -125,7 +132,18 @@ export class JobController implements IJobController {
 	@HttpCode(HttpStatus.OK)
 	async blockUnblockJob(@Param(JOB_ROUTERS.ID_PARAM) jobId: string) {
 		const job = await this._blockUnblockJobUseCase.execute(jobId);
-		return toJobResponse(job);
+		return toJobResponse(job as unknown as JobEntity);
+	}
+
+	@Get(`:${JOB_ROUTERS.ID_PARAM}/candidates/:candidateId/match-score`)
+	@Roles(ROLES.ADMIN, ROLES.RECRUITER)
+	@HttpCode(HttpStatus.OK)
+	async getCandidateMatchScore(
+		@Param(JOB_ROUTERS.ID_PARAM) jobId: string,
+		@Param("candidateId") candidateId: string,
+		@Query("retry") retry?: string
+	) {
+		return this._calculateMatchScoreUseCase.execute({ jobId, candidateId, retry: retry === "true" });
 	}
 
 	@Patch(`:${JOB_ROUTERS.ID_PARAM}`)
@@ -133,7 +151,7 @@ export class JobController implements IJobController {
 	@HttpCode(HttpStatus.OK)
 	async updateJob(@Param(JOB_ROUTERS.ID_PARAM) jobId: string, @Body() dto: UpdateJobDto) {
 		const job = await this._updateJobUseCase.execute({ jobId, dto });
-		return toJobResponse(job);
+		return toJobResponse(job as unknown as JobEntity);
 	}
 
 	@Get(JOB_ROUTERS.DEFAULT)
@@ -158,7 +176,7 @@ export class JobController implements IJobController {
 			search,
 			page: parseInt(page, 10) || 1,
 			limit: parseInt(limit, 10) || 10,
-			status: "OPEN",
+			status: JOB_STATUS.OPEN,
 			is_published: true,
 			location,
 			experience: parseArray(experience),
@@ -177,7 +195,7 @@ export class JobController implements IJobController {
 
 		return {
 			...paginationResult,
-			data: paginationResult.data.map((job) => toJobResponseWithScore(job)),
+			data: (paginationResult.data as unknown as (JobEntity & { matchScore?: number })[]).map(toJobResponseWithScore)
 		};
 	}
 
@@ -203,7 +221,7 @@ export class JobController implements IJobController {
 					createdAt: r.application.createdAt,
 					updatedAt: r.application.updatedAt,
 				},
-				job: toJobResponse(r.job),
+				job: r.job as unknown as ResponseJobDto,
 			})),
 			stats: result.stats
 		};
@@ -235,6 +253,23 @@ export class JobController implements IJobController {
 		});
 	}
 
+	@Patch(`application/:applicationId/status`)
+	@Roles(ROLES.RECRUITER)
+	@HttpCode(HttpStatus.OK)
+	async updateApplicationStatus(
+		@Req() req: AuthenticatedRequest,
+		@Param("applicationId") applicationId: string,
+		@Body() dto: UpdateApplicationStatusDto
+	) {
+		return this._updateApplicationStatusUseCase.execute({ 
+			dto: {
+				applicationId,
+				status: dto.status
+			},
+			recruiterId: req.user.id
+		});
+	}
+
 	@Get(`:${JOB_ROUTERS.ID_PARAM}`)
 	@Public()
 	@HttpCode(HttpStatus.OK)
@@ -250,6 +285,6 @@ export class JobController implements IJobController {
 			userRole: req.user?.role,
 		});
 
-		return toJobResponseWithScore(job);
+		return toJobResponseWithScore(job as unknown as (JobEntity & { matchScore?: number }));
 	}
 }

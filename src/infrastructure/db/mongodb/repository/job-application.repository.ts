@@ -66,7 +66,16 @@ export class JobApplicationRepository
 		const skip = (page - 1) * limit;
 
 		const matchStage: any = { jobId: String(jobId) };
-		if (status) matchStage.status = status;
+		let sortStage: any = { createdAt: -1 };
+
+		if (status) {
+			if (status === "AI_MATCHED") {
+				// No status filter, but we sort by matchScore instead
+				sortStage = { matchScore: -1, createdAt: -1 };
+			} else {
+				matchStage.status = status;
+			}
+		}
 
 		const pipeline: any[] = [
 			{ $match: matchStage },
@@ -97,7 +106,7 @@ export class JobApplicationRepository
 		const countPipeline = [...pipeline, { $count: "total" }];
 		const dataPipeline = [
 			...pipeline,
-			{ $sort: { createdAt: -1 } },
+			{ $sort: sortStage },
 			{ $skip: skip },
 			{ $limit: limit }
 		];
@@ -112,6 +121,8 @@ export class JobApplicationRepository
 			id: String(doc._id),
 			jobId: doc.jobId,
 			status: doc.status,
+			matchScore: doc.matchScore || 0,
+			matchBreakdown: doc.matchBreakdown,
 			createdAt: doc.createdAt,
 			updatedAt: doc.updatedAt,
 			candidate: {
@@ -123,6 +134,9 @@ export class JobApplicationRepository
 				profileImageKey: doc.candidateData.profile_url?.key || null,
 				resume: doc.candidateData.resume_url?.url || null,
 				resumeKey: doc.candidateData.resume_url?.key || null,
+				bio: doc.candidateData.bio || null,
+				experience: doc.candidateData.experience || null,
+				skills: doc.candidateData.skills || [],
 			}
 		}));
 

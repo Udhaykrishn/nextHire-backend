@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import type { HydratedDocument, InferSchemaType } from "mongoose";
+import { JOB_STATUS } from "@/domain/enums/status";
 
 export type JobsDocument = HydratedDocument<Jobs>;
 
@@ -178,7 +179,7 @@ export class Jobs {
 	@Prop({ type: String, default: null })
 	posted_by: string | null;
 
-	@Prop({ type: String, default: "OPEN" })
+	@Prop({ type: String, enum: JOB_STATUS, default: JOB_STATUS.OPEN })
 	status: string | null;
 
 	@Prop({ type: Boolean, default: false })

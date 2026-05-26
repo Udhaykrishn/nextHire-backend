@@ -4,3 +4,8 @@ export enum AUTH_EVENTS {
 	OTP_GENERATED = "auth.otp.generated",
 	FORGOT_PASSWORD = "auth.password.forgot",
 }
+
+export enum JOB_EVENTS {
+	JOB_CREATED = "job.created",
+	JOB_APPLIED = "job.applied",
+}

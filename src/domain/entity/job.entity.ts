@@ -1,3 +1,5 @@
+import { JOB_STATUS } from "../enums/status";
+
 export interface IJobEntityData {
 	id?: string;
 
@@ -283,7 +285,7 @@ export class JobEntity {
 			selectedPlan: data.selectedPlan || "",
 			company_id: data.company_id,
 			posted_by: data.posted_by,
-			status: data.status || "OPEN",
+			status: data.status || JOB_STATUS.OPEN,
 			is_published: data.is_published || false,
 			created_at: data.created_at || new Date().toISOString(),
 			updated_at: data.updated_at || new Date().toISOString(),

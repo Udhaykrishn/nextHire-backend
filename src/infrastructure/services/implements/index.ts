@@ -7,3 +7,5 @@ export { MailService } from "./mail.service";
 export { UuidService } from "./uuid.service";
 export { SessionVerificationService } from "./session-verification.service";
 export { EventEmitterService } from "./event-emitter.service";
+export { GroqAiService } from "./groq-ai.service";
+export { PdfParserService } from "./pdf-parser.service";

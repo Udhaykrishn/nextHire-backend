@@ -6,6 +6,7 @@ import type { UserEntity } from "@/domain/entity/user.entity";
 import type { JobApplicationEntity } from "@/domain/entity/job-application.entity";
 import type { IJobRepository, IUserRepository } from "@/application/interface/repository";
 import type { IJobApplicationRepository } from "@/application/interface/repository/job-application-repository.interface";
+import { JOB_MESSAGES } from "@/domain/enums/messages";
 import { ROLES } from "@/presentation/enums";
 
 export interface GetJobByIdDto {
@@ -28,7 +29,7 @@ export class GetJobByIdUseCase implements IExecutable<GetJobByIdDto, JobEntity &
 	async execute(dto: GetJobByIdDto): Promise<JobEntity & { matchScore?: number; hasApplied?: boolean; applicationStatus?: string }> {
 		const job = await this._jobRepository.findById(dto.jobId);
 		if (!job) {
-			throw new NotFoundException("Job not found");
+			throw new NotFoundException(JOB_MESSAGES.JOB_NOT_FOUND);
 		}
 
 		let user: UserEntity | null = null;
@@ -36,7 +37,7 @@ export class GetJobByIdUseCase implements IExecutable<GetJobByIdDto, JobEntity &
 		// If a candidate is requesting, hide unpublished jobs
 		if (dto.userRole === ROLES.USER) {
 			if (!job.is_published) {
-				throw new NotFoundException("Job not found");
+				throw new NotFoundException(JOB_MESSAGES.JOB_NOT_FOUND);
 			}
 			if (dto.userId) {
 				user = await this._userRepository.findById(dto.userId);

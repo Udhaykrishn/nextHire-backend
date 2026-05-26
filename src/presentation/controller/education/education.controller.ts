@@ -13,7 +13,7 @@ import type { AuthenticatedRequest } from "@/presentation/interface/request.inte
 
 @Controller(EDUCATION_ROUTER.ROUTER)
 @UseGuards(AuthGuard, RoleGuard)
-@Roles(USER_ROLE.USER, USER_ROLE.ADMIN)
+@Roles(USER_ROLE.USER, USER_ROLE.ADMIN, USER_ROLE.RECRUITER)
 export class EducationController {
 	constructor(
 		@Inject(EDUCATION_TOKEN.CREATE_EDUCATION_USE_CASE)
@@ -34,7 +34,7 @@ export class EducationController {
 
 	@Get(EDUCATION_ROUTER.DEFAULT)
 	async getAll(@Req() req: AuthenticatedRequest, @Query("userId") userId?: string) {
-		const targetUserId = req.user.role === USER_ROLE.ADMIN && userId ? userId : req.user.id;
+		const targetUserId = (req.user.role === USER_ROLE.ADMIN || req.user.role === USER_ROLE.RECRUITER) && userId ? userId : req.user.id;
 		return await this._getEducationsUseCase.execute(targetUserId);
 	}
 
