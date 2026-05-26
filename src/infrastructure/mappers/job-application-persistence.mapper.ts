@@ -13,6 +13,8 @@ export class JobApplicationPersistenceMapper
 			userId: data.userId,
 			jobId: data.jobId,
 			status: data.status,
+			matchScore: data.matchScore,
+			matchBreakdown: data.matchBreakdown,
 			createdAt: data.createdAt,
 			updatedAt: data.updatedAt,
 		};
@@ -24,6 +26,8 @@ export class JobApplicationPersistenceMapper
 			userId: data.userId.toString(),
 			jobId: data.jobId.toString(),
 			status: data.status as APPLICATION_STATUS,
+			matchScore: data.matchScore,
+			matchBreakdown: data.matchBreakdown,
 			createdAt: data.createdAt,
 			updatedAt: data.updatedAt,
 		});

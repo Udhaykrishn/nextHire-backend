@@ -2,7 +2,7 @@ import { Injectable, Logger } from "@nestjs/common";
 import { OnEvent } from "@nestjs/event-emitter";
 import { InjectQueue } from "@nestjs/bullmq";
 import { Queue } from "bullmq";
-import { AUTH_EVENTS } from "@/domain/enums/events.enum";
+import { AUTH_EVENTS, JOB_EVENTS } from "@/domain/enums/events.enum";
 
 @Injectable()
 export class NotificationListener {
@@ -70,6 +70,51 @@ export class NotificationListener {
 			type: "welcome",
 			data: {
 				name: payload.name,
+			},
+		});
+	}
+
+	@OnEvent(JOB_EVENTS.JOB_CREATED)
+	async handleJobCreated(payload: { email: string; name: string; jobTitle: string; companyName: string }) {
+		this.logger.log(`Handling Job Created event for ${payload.email}`);
+		await this.queue.add(this.JOB_NAME, {
+			recipientId: payload.email,
+			recipientEmail: payload.email,
+			type: "job_created",
+			data: {
+				name: payload.name,
+				jobTitle: payload.jobTitle,
+				companyName: payload.companyName,
+			},
+		});
+	}
+
+	@OnEvent(JOB_EVENTS.JOB_APPLIED)
+	async handleJobApplied(payload: { candidateEmail: string; candidateName: string; recruiterEmail: string; recruiterName: string; jobTitle: string; companyName: string }) {
+		this.logger.log(`Handling Job Applied event for ${payload.candidateEmail} and ${payload.recruiterEmail}`);
+		
+		// 1. Email to candidate
+		await this.queue.add(this.JOB_NAME, {
+			recipientId: payload.candidateEmail,
+			recipientEmail: payload.candidateEmail,
+			type: "job_applied_candidate",
+			data: {
+				name: payload.candidateName,
+				jobTitle: payload.jobTitle,
+				companyName: payload.companyName,
+			},
+		});
+
+		// 2. Email to recruiter
+		await this.queue.add(this.JOB_NAME, {
+			recipientId: payload.recruiterEmail,
+			recipientEmail: payload.recruiterEmail,
+			type: "job_applied_recruiter",
+			data: {
+				name: payload.recruiterName,
+				candidateName: payload.candidateName,
+				jobTitle: payload.jobTitle,
+				companyName: payload.companyName,
 			},
 		});
 	}

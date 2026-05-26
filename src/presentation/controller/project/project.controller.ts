@@ -13,7 +13,7 @@ import type { AuthenticatedRequest } from "@/presentation/interface/request.inte
 
 @Controller(PROJECT_ROUTER.ROUTER)
 @UseGuards(AuthGuard, RoleGuard)
-@Roles(USER_ROLE.USER, USER_ROLE.ADMIN)
+@Roles(USER_ROLE.USER, USER_ROLE.ADMIN, USER_ROLE.RECRUITER)
 export class ProjectController {
 	constructor(
 		@Inject(PROJECT_TOKEN.CREATE_PROJECT_USE_CASE)
@@ -36,7 +36,7 @@ export class ProjectController {
 
 	@Get(PROJECT_ROUTER.DEFAULT)
 	async getAll(@Req() req: AuthenticatedRequest, @Query("userId") userId?: string) {
-		const targetUserId = req.user.role === USER_ROLE.ADMIN && userId ? userId : req.user.id;
+		const targetUserId = (req.user.role === USER_ROLE.ADMIN || req.user.role === USER_ROLE.RECRUITER) && userId ? userId : req.user.id;
 		return await this._getProjectsUseCase.execute(targetUserId);
 	}
 

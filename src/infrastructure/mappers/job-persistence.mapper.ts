@@ -1,6 +1,7 @@
 import type { IJobPersistenceMapper } from "@/application/interface/mappers/job/job-persistence.mapper";
 import { JobEntity } from "@/domain/entity/job.entity";
 import type { JobType } from "../db/mongodb/models/job.schema";
+import { JOB_STATUS } from "@/domain/enums/status";
 import { Injectable } from "@nestjs/common";
 
 @Injectable()
@@ -140,7 +141,7 @@ export class JobPersistenceMapper implements IJobPersistenceMapper<JobEntity, Jo
 
 			company_id: data.company_id || "",
 			posted_by: data.posted_by || "",
-			status: data.status || "OPEN",
+			status: data.status || JOB_STATUS.OPEN,
 			is_published: data.is_published || false,
 			created_at: data.created_at || "",
 			updated_at: data.updated_at || "",

@@ -4,6 +4,7 @@ export interface JobApplicationReadModel {
 	id: string;
 	jobId: string;
 	status: string;
+	matchScore: number;
 	createdAt: Date;
 	updatedAt: Date;
 	candidate: {
@@ -15,6 +16,9 @@ export interface JobApplicationReadModel {
 		profileImageKey?: string | null;
 		resume: string | null;
 		resumeKey?: string | null;
+		bio?: string | null;
+		experience?: string | null;
+		skills?: string[];
 	};
 }
 

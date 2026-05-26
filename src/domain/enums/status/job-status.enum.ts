@@ -1,0 +1,6 @@
+export enum JOB_STATUS {
+	OPEN = "OPEN",
+	BLOCKED = "BLOCKED",
+	CLOSED = "CLOSED",
+	DRAFT = "DRAFT",
+}

@@ -5,11 +5,14 @@ import { MailService } from "../services/implements";
 
 interface EmailJobData {
 	recipientEmail: string;
-	type: "otp" | "forgot_password";
+	type: "otp" | "forgot_password" | "welcome" | "job_created" | "job_applied_candidate" | "job_applied_recruiter";
 	data: {
 		name: string;
 		otp?: string;
 		link?: string;
+		jobTitle?: string;
+		companyName?: string;
+		candidateName?: string;
 	};
 }
 
@@ -39,6 +42,18 @@ export class EmailQueueProcessor extends WorkerHost {
 		} else if (type === "forgot_password") {
 			subject = "Reset Your Password - NextHire";
 			html = this.getForgotPasswordTemplate(data.name, data.link ?? "");
+		} else if (type === "welcome") {
+			subject = "Welcome to NextHire!";
+			html = this.getWelcomeTemplate(data.name);
+		} else if (type === "job_created") {
+			subject = `Job Successfully Posted: ${data.jobTitle}`;
+			html = this.getJobCreatedTemplate(data.name, data.jobTitle ?? "", data.companyName ?? "");
+		} else if (type === "job_applied_candidate") {
+			subject = `Application Received: ${data.jobTitle} at ${data.companyName}`;
+			html = this.getJobAppliedCandidateTemplate(data.name, data.jobTitle ?? "", data.companyName ?? "");
+		} else if (type === "job_applied_recruiter") {
+			subject = `New Application for ${data.jobTitle}`;
+			html = this.getJobAppliedRecruiterTemplate(data.name, data.candidateName ?? "", data.jobTitle ?? "", data.companyName ?? "");
 		}
 
 		if (subject && html) {
@@ -95,6 +110,79 @@ export class EmailQueueProcessor extends WorkerHost {
 					<span style="word-break: break-all; color: #3B82F6;">${link}</span></p>
 					<hr style="border: 0; border-top: 1px solid #E2E8F0; margin: 25px 0;">
 					<p style="color: #94A3B8; font-size: 12px; text-align: center;">If you didn't request a password reset, your account is still secure and you can ignore this email.</p>
+				</div>
+				<div style="text-align: center; margin-top: 30px; color: #94A3B8; font-size: 12px;">
+					&copy; 2024 NextHire. All rights reserved.
+				</div>
+			</div>
+		`;
+	}
+
+	private getWelcomeTemplate(name: string): string {
+		return `
+			<div style="font-family: 'Inter', sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e1e1e1; border-radius: 12px; background-color: #ffffff;">
+				<div style="text-align: center; margin-bottom: 30px;">
+					<h1 style="color: #0F172A; margin: 0; font-size: 24px; font-weight: 700;">NextHire</h1>
+				</div>
+				<div style="padding: 20px; background-color: #F8FAFC; border-radius: 8px;">
+					<h2 style="color: #1E293B; margin-top: 0; font-size: 18px;">Welcome to NextHire, ${name}!</h2>
+					<p style="color: #475569; line-height: 1.6;">We're excited to have you on board. NextHire is the premium platform to connect top talent with great opportunities.</p>
+					<p style="color: #475569; line-height: 1.6;">Explore the platform to discover new possibilities!</p>
+				</div>
+			</div>
+		`;
+	}
+
+	private getJobCreatedTemplate(name: string, jobTitle: string, companyName: string): string {
+		return `
+			<div style="font-family: 'Inter', sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e1e1e1; border-radius: 12px; background-color: #ffffff;">
+				<div style="text-align: center; margin-bottom: 30px;">
+					<h1 style="color: #0F172A; margin: 0; font-size: 24px; font-weight: 700;">NextHire</h1>
+					<p style="color: #64748B; font-size: 14px; margin-top: 4px;">Job Posting Confirmed</p>
+				</div>
+				<div style="padding: 20px; background-color: #F8FAFC; border-radius: 8px;">
+					<h2 style="color: #1E293B; margin-top: 0; font-size: 18px;">Hello ${name},</h2>
+					<p style="color: #475569; line-height: 1.6;">Your job posting for <strong>${jobTitle}</strong> at <strong>${companyName}</strong> is now active!</p>
+					<p style="color: #475569; line-height: 1.6;">Candidates can now discover and apply to your open position. We will notify you whenever you receive a new application.</p>
+				</div>
+				<div style="text-align: center; margin-top: 30px; color: #94A3B8; font-size: 12px;">
+					&copy; 2024 NextHire. All rights reserved.
+				</div>
+			</div>
+		`;
+	}
+
+	private getJobAppliedCandidateTemplate(name: string, jobTitle: string, companyName: string): string {
+		return `
+			<div style="font-family: 'Inter', sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e1e1e1; border-radius: 12px; background-color: #ffffff;">
+				<div style="text-align: center; margin-bottom: 30px;">
+					<h1 style="color: #0F172A; margin: 0; font-size: 24px; font-weight: 700;">NextHire</h1>
+					<p style="color: #64748B; font-size: 14px; margin-top: 4px;">Application Successfully Submitted</p>
+				</div>
+				<div style="padding: 20px; background-color: #F8FAFC; border-radius: 8px;">
+					<h2 style="color: #1E293B; margin-top: 0; font-size: 18px;">Hi ${name},</h2>
+					<p style="color: #475569; line-height: 1.6;">We have successfully sent your application for the <strong>${jobTitle}</strong> position at <strong>${companyName}</strong>.</p>
+					<p style="color: #475569; line-height: 1.6;">The recruiting team will review your profile shortly. You can track your application status directly from your dashboard.</p>
+					<p style="color: #475569; line-height: 1.6;">Best of luck!</p>
+				</div>
+				<div style="text-align: center; margin-top: 30px; color: #94A3B8; font-size: 12px;">
+					&copy; 2024 NextHire. All rights reserved.
+				</div>
+			</div>
+		`;
+	}
+
+	private getJobAppliedRecruiterTemplate(name: string, candidateName: string, jobTitle: string, companyName: string): string {
+		return `
+			<div style="font-family: 'Inter', sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e1e1e1; border-radius: 12px; background-color: #ffffff;">
+				<div style="text-align: center; margin-bottom: 30px;">
+					<h1 style="color: #0F172A; margin: 0; font-size: 24px; font-weight: 700;">NextHire</h1>
+					<p style="color: #64748B; font-size: 14px; margin-top: 4px;">New Candidate Application</p>
+				</div>
+				<div style="padding: 20px; background-color: #F8FAFC; border-radius: 8px;">
+					<h2 style="color: #1E293B; margin-top: 0; font-size: 18px;">Hello ${name},</h2>
+					<p style="color: #475569; line-height: 1.6;">Good news! <strong>${candidateName}</strong> has just applied for the <strong>${jobTitle}</strong> position at <strong>${companyName}</strong>.</p>
+					<p style="color: #475569; line-height: 1.6;">Log into your recruiter dashboard to review their resume and match score, and take the next step in the hiring process.</p>
 				</div>
 				<div style="text-align: center; margin-top: 30px; color: #94A3B8; font-size: 12px;">
 					&copy; 2024 NextHire. All rights reserved.

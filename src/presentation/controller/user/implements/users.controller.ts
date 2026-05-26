@@ -148,7 +148,7 @@ export class UserController implements IUserController {
 	}
 
 	@Get(":id")
-	@Roles(ROLES.ADMIN)
+	@Roles(ROLES.ADMIN, ROLES.RECRUITER)
 	@HttpCode(HttpStatus.OK)
 	async getUserById(@Param("id") id: string): Promise<ResponseUserDto> {
 		return this._getOneUserUseCase.execute(id);

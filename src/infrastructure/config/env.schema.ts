@@ -12,6 +12,7 @@ export const envSchema = z.object({
 
 	GEMINI_API: z.string().min(1, "GEMINI_API is required"),
 	GEMINI_API_KEY: z.string().min(1, "GEMINI_API_KEY is required"),
+	GROQ_API_KEY: z.string().min(1, "GROQ_API_KEY is required").optional(),
 	FRONTEND_API: z.string().min(1, "FRONTEND_API is required"),
 
 	JWT_SECRET: z.string().min(1, "JWT_SECRET is required"),

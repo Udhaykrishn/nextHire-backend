@@ -4,6 +4,7 @@ import { JOB_TOKEN } from "@/application/enums/tokens";
 import type { IJobRepository } from "@/application/interface/repository";
 import type { JobEntity } from "@/domain/entity/job.entity";
 import type { UpdateJobDto } from "@/application/dto/job/update-job.dto";
+import { JOB_MESSAGES } from "@/domain/enums/messages";
 
 export interface UpdateJobInput {
 	jobId: string;
@@ -20,7 +21,7 @@ export class UpdateJobUseCase implements IExecutable<UpdateJobInput, JobEntity> 
 	async execute(input: UpdateJobInput): Promise<JobEntity> {
 		const job = await this._jobRepository.findByIdAndUpdate(input.jobId, input.dto);
 		if (!job) {
-			throw new NotFoundException("Job not found");
+			throw new NotFoundException(JOB_MESSAGES.JOB_NOT_FOUND);
 		}
 		return job;
 	}
