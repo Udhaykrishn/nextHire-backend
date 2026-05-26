@@ -38,7 +38,7 @@ export class ApplyJobUseCase implements IExecutable<ApplyJobDto, JobApplicationE
 		@Inject(RECRUITER_TOKEN.RECRUITER_REPOSITORY)
 		private readonly _recruiterRepository: IRecruiterRepository<RecruiterEntity>,
 		private readonly eventEmitter: EventEmitter2,
-	) { }
+	) {}
 
 	async execute(data: ApplyJobDto): Promise<JobApplicationEntity> {
 		const job = await this._jobRepository.findById(data.jobId);
@@ -79,7 +79,7 @@ export class ApplyJobUseCase implements IExecutable<ApplyJobDto, JobApplicationE
 				{
 					applicationId: savedApplication.id,
 					jobId: data.jobId,
-					candidateId: data.userId
+					candidateId: data.userId,
 				},
 				{
 					attempts: 3,
@@ -88,13 +88,13 @@ export class ApplyJobUseCase implements IExecutable<ApplyJobDto, JobApplicationE
 						delay: 5000,
 					},
 					removeOnComplete: true,
-				}
+				},
 			);
 		} catch (e) {
 			console.error("Failed to push to ai-matching-queue", e);
 		}
 
-		if (recruiter && recruiter.email) {
+		if (recruiter?.email) {
 			this.eventEmitter.emit(JOB_EVENTS.JOB_APPLIED, {
 				candidateEmail: user.email,
 				candidateName: user.name,
@@ -106,6 +106,5 @@ export class ApplyJobUseCase implements IExecutable<ApplyJobDto, JobApplicationE
 		}
 
 		return savedApplication;
-
 	}
 }

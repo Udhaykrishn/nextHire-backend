@@ -30,7 +30,7 @@ export class UpdateApplicationStatusUseCase implements IExecutable<UpdateApplica
 
 	async execute({ dto, recruiterId }: UpdateApplicationStatusPayload): Promise<void> {
 		const application = await this._jobApplicationRepository.findById(dto.applicationId);
-		
+
 		if (!application) {
 			throw new NotFoundException("Job application not found");
 		}
@@ -48,7 +48,7 @@ export class UpdateApplicationStatusUseCase implements IExecutable<UpdateApplica
 		await this._jobApplicationRepository.findByIdAndUpdate(dto.applicationId, application);
 
 		const user = await this._userRepository.findById(application.userId);
-		if (user && user.email) {
+		if (user?.email) {
 			this.eventEmitter.emit(JOB_EVENTS.APPLICATION_STATUS_UPDATED, {
 				candidateEmail: user.email,
 				candidateName: user.name,

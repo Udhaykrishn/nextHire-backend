@@ -58,7 +58,7 @@ export class SessionVerificationService implements ISessionVerificationService {
 		}
 
 		const sessionData = JSON.parse(sessionStr) as Record<string, unknown>;
-		if (sessionData["otp"] !== otp) {
+		if (sessionData.otp !== otp) {
 			throw new BadRequestException("Invalid OTP");
 		}
 

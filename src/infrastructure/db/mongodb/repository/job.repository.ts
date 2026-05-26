@@ -58,14 +58,16 @@ export class JobRepository extends BaseRepository<JobEntity, JobType> implements
 		}
 
 		if (pages.experience && pages.experience.length > 0) {
-			const expConditions = pages.experience.map((exp) => {
-				const val = { $convert: { input: "$minExperience", to: "double", onError: 0, onNull: 0 } };
-				if (exp === "Entry Level") return { $lte: [val, 1] };
-				if (exp === "Mid Level") return { $and: [{ $gt: [val, 1] }, { $lte: [val, 3] }] };
-				if (exp === "Senior Level") return { $and: [{ $gt: [val, 3] }, { $lte: [val, 7] }] };
-				if (exp === "Director") return { $gt: [val, 7] };
-				return null;
-			}).filter(Boolean);
+			const expConditions = pages.experience
+				.map((exp) => {
+					const val = { $convert: { input: "$minExperience", to: "double", onError: 0, onNull: 0 } };
+					if (exp === "Entry Level") return { $lte: [val, 1] };
+					if (exp === "Mid Level") return { $and: [{ $gt: [val, 1] }, { $lte: [val, 3] }] };
+					if (exp === "Senior Level") return { $and: [{ $gt: [val, 3] }, { $lte: [val, 7] }] };
+					if (exp === "Director") return { $gt: [val, 7] };
+					return null;
+				})
+				.filter(Boolean);
 
 			if (expConditions.length > 0) {
 				andConditions.push({ $expr: { $or: expConditions } });
@@ -100,7 +102,7 @@ export class JobRepository extends BaseRepository<JobEntity, JobType> implements
 		const skip = (pages.page - 1) * pages.limit;
 		const filter = this.buildFilter(pages);
 
-		let sortOptions: any = { created_at: -1 }; // Default: Newest
+		let sortOptions: Record<string, 1 | -1> = { created_at: -1 }; // Default: Newest
 
 		if (pages.sort === "Newest") {
 			sortOptions = { created_at: -1 };

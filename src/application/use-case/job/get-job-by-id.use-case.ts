@@ -30,9 +30,11 @@ export class GetJobByIdUseCase implements IExecutable<GetJobByIdDto, JobEntity &
 		private readonly _jobApplicationRepository: IJobApplicationRepository<JobApplicationEntity>,
 		@Inject(RECRUITER_TOKEN.RECRUITER_REPOSITORY)
 		private readonly _recruiterRepository: IRecruiterRepository<RecruiterEntity>,
-	) { }
+	) {}
 
-	async execute(dto: GetJobByIdDto): Promise<JobEntity & { matchScore?: number; hasApplied?: boolean; applicationStatus?: string }> {
+	async execute(
+		dto: GetJobByIdDto,
+	): Promise<JobEntity & { matchScore?: number; hasApplied?: boolean; applicationStatus?: string }> {
 		const job = await this._jobRepository.findById(dto.jobId);
 		if (!job) {
 			throw new NotFoundException(JOB_MESSAGES.JOB_NOT_FOUND);
@@ -54,12 +56,20 @@ export class GetJobByIdUseCase implements IExecutable<GetJobByIdDto, JobEntity &
 			}
 		}
 
-		const jobWithScore = job as JobEntity & { matchScore?: number; hasApplied?: boolean; applicationStatus?: string; stats?: any };
+		const jobWithScore = job as JobEntity & {
+			matchScore?: number;
+			hasApplied?: boolean;
+			applicationStatus?: string;
+			stats?: Record<string, unknown>;
+		};
 		jobWithScore.hasApplied = false;
 
 		if (user) {
 			jobWithScore.matchScore = this.calculateMatchScore(user, job);
-			const application = await this._jobApplicationRepository.findByUserAndJob(user.id!, job.id!);
+			const application = await this._jobApplicationRepository.findByUserAndJob(
+				user.id as string,
+				job.id as string,
+			);
 			if (application) {
 				jobWithScore.hasApplied = true;
 				jobWithScore.applicationStatus = application.status;
@@ -69,7 +79,7 @@ export class GetJobByIdUseCase implements IExecutable<GetJobByIdDto, JobEntity &
 		}
 
 		if (dto.userRole === ROLES.ADMIN || dto.userRole === ROLES.RECRUITER) {
-			const applications = await this._jobApplicationRepository.findByJobId(job.id!);
+			const applications = await this._jobApplicationRepository.findByJobId(job.id as string);
 			jobWithScore.stats = {
 				total: applications.length,
 				reviewing: applications.filter((a) => a.status === "REVIEWING").length,

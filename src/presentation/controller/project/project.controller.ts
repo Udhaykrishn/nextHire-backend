@@ -36,7 +36,10 @@ export class ProjectController {
 
 	@Get(PROJECT_ROUTER.DEFAULT)
 	async getAll(@Req() req: AuthenticatedRequest, @Query("userId") userId?: string) {
-		const targetUserId = (req.user.role === USER_ROLE.ADMIN || req.user.role === USER_ROLE.RECRUITER) && userId ? userId : req.user.id;
+		const targetUserId =
+			(req.user.role === USER_ROLE.ADMIN || req.user.role === USER_ROLE.RECRUITER) && userId
+				? userId
+				: req.user.id;
 		return await this._getProjectsUseCase.execute(targetUserId);
 	}
 

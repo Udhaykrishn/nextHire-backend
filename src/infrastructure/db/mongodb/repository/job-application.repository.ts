@@ -1,7 +1,10 @@
 import type { ApplicationDocument } from "../models/application.schema";
 import { JobApplicationEntity } from "@/domain/entity/job-application.entity";
 import { BaseRepository } from "./base.repository";
-import type { IJobApplicationRepository, JobApplicationReadModel } from "@/application/interface/repository/job-application-repository.interface";
+import type {
+	IJobApplicationRepository,
+	JobApplicationReadModel,
+} from "@/application/interface/repository/job-application-repository.interface";
 import { JOB_MAPPER } from "@/application/enums/mappers/job-mapper.enum";
 import { Inject, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
@@ -12,7 +15,8 @@ import type { IJobApplicationPersistenceMapper } from "@/application/interface/m
 @Injectable()
 export class JobApplicationRepository
 	extends BaseRepository<JobApplicationEntity, ApplicationDocument>
-	implements IJobApplicationRepository<JobApplicationEntity> {
+	implements IJobApplicationRepository<JobApplicationEntity>
+{
 	constructor(
 		@InjectModel(Application.name) private readonly _applicationModel: Model<ApplicationDocument>,
 		@Inject(JOB_MAPPER.JOB_APPLICATION_PERSISTENCE)
@@ -44,7 +48,11 @@ export class JobApplicationRepository
 		return Promise.all(docs.map((doc) => this._mapper.fromMongo(doc as ApplicationDocument)));
 	}
 
-	async findByJobIdWithPagination(jobId: string, page: number, limit: number): Promise<{ data: JobApplicationEntity[]; total: number }> {
+	async findByJobIdWithPagination(
+		jobId: string,
+		page: number,
+		limit: number,
+	): Promise<{ data: JobApplicationEntity[]; total: number }> {
 		const skip = (page - 1) * limit;
 
 		const [docs, total] = await Promise.all([
@@ -54,7 +62,7 @@ export class JobApplicationRepository
 				.skip(skip)
 				.limit(limit)
 				.toArray(),
-			this._applicationModel.collection.countDocuments({ jobId: String(jobId) })
+			this._applicationModel.collection.countDocuments({ jobId: String(jobId) }),
 		]);
 
 		const entities = await Promise.all(docs.map((doc) => this._mapper.fromMongo(doc as ApplicationDocument)));
@@ -62,11 +70,17 @@ export class JobApplicationRepository
 		return { data: entities, total };
 	}
 
-	async findApplicationsWithCandidateDetails(jobId: string, page: number, limit: number, search?: string, status?: string): Promise<{ data: JobApplicationReadModel[]; total: number }> {
+	async findApplicationsWithCandidateDetails(
+		jobId: string,
+		page: number,
+		limit: number,
+		search?: string,
+		status?: string,
+	): Promise<{ data: JobApplicationReadModel[]; total: number }> {
 		const skip = (page - 1) * limit;
 
-		const matchStage: any = { jobId: String(jobId) };
-		let sortStage: any = { createdAt: -1 };
+		const matchStage: Record<string, unknown> = { jobId: String(jobId) };
+		let sortStage: Record<string, 1 | -1> = { createdAt: -1 };
 
 		if (status) {
 			if (status === "AI_MATCHED") {
@@ -77,68 +91,88 @@ export class JobApplicationRepository
 			}
 		}
 
-		const pipeline: any[] = [
+		const pipeline: Record<string, unknown>[] = [
 			{ $match: matchStage },
 			{
 				$addFields: {
-					userObjId: { $toObjectId: "$userId" }
-				}
+					userObjId: { $toObjectId: "$userId" },
+				},
 			},
 			{
 				$lookup: {
 					from: "users",
 					localField: "userObjId",
 					foreignField: "_id",
-					as: "candidateData"
-				}
+					as: "candidateData",
+				},
 			},
-			{ $unwind: "$candidateData" }
+			{ $unwind: "$candidateData" },
 		];
 
 		if (search) {
 			pipeline.push({
 				$match: {
-					"candidateData.name": { $regex: search, $options: "i" }
-				}
+					"candidateData.name": { $regex: search, $options: "i" },
+				},
 			});
 		}
 
 		const countPipeline = [...pipeline, { $count: "total" }];
-		const dataPipeline = [
-			...pipeline,
-			{ $sort: sortStage },
-			{ $skip: skip },
-			{ $limit: limit }
-		];
+		const dataPipeline = [...pipeline, { $sort: sortStage }, { $skip: skip }, { $limit: limit }];
 
 		const [countResult, dataResult] = await Promise.all([
 			this._applicationModel.aggregate(countPipeline),
-			this._applicationModel.aggregate(dataPipeline)
+			this._applicationModel.aggregate(dataPipeline),
 		]);
 
 		const total = countResult[0]?.total || 0;
-		const data = dataResult.map((doc: any) => ({
-			id: String(doc._id),
-			jobId: doc.jobId,
-			status: doc.status,
-			matchScore: doc.matchScore || 0,
-			matchBreakdown: doc.matchBreakdown,
-			createdAt: doc.createdAt,
-			updatedAt: doc.updatedAt,
-			candidate: {
-				id: String(doc.candidateData._id),
-				name: doc.candidateData.name,
-				email: doc.candidateData.email,
-				phone: doc.candidateData.phone || null,
-				profileImage: doc.candidateData.profile_url?.url || null,
-				profileImageKey: doc.candidateData.profile_url?.key || null,
-				resume: doc.candidateData.resume_url?.url || null,
-				resumeKey: doc.candidateData.resume_url?.key || null,
-				bio: doc.candidateData.bio || null,
-				experience: doc.candidateData.experience || null,
-				skills: doc.candidateData.skills || [],
-			}
-		}));
+
+		interface AggregatedApp {
+			_id: unknown;
+			jobId: string;
+			status: string;
+			matchScore?: number;
+			matchBreakdown?: unknown;
+			createdAt: string;
+			updatedAt: string;
+			candidateData: {
+				_id: unknown;
+				name: string;
+				email: string;
+				phone?: string;
+				profile_url?: { url?: string; key?: string };
+				resume_url?: { url?: string; key?: string };
+				bio?: string;
+				experience?: string;
+				skills?: string[];
+			};
+		}
+
+		const data = dataResult.map((doc: unknown) => {
+			const d = doc as AggregatedApp;
+			return {
+				id: String(d._id),
+				jobId: d.jobId,
+				status: d.status,
+				matchScore: d.matchScore || 0,
+				matchBreakdown: d.matchBreakdown,
+				createdAt: d.createdAt,
+				updatedAt: d.updatedAt,
+				candidate: {
+					id: String(d.candidateData._id),
+					name: d.candidateData.name,
+					email: d.candidateData.email,
+					phone: d.candidateData.phone || null,
+					profileImage: d.candidateData.profile_url?.url || null,
+					profileImageKey: d.candidateData.profile_url?.key || null,
+					resume: d.candidateData.resume_url?.url || null,
+					resumeKey: d.candidateData.resume_url?.key || null,
+					bio: d.candidateData.bio || null,
+					experience: d.candidateData.experience || null,
+					skills: d.candidateData.skills || [],
+				},
+			};
+		});
 
 		return { data, total };
 	}

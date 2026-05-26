@@ -90,9 +90,16 @@ export class NotificationListener {
 	}
 
 	@OnEvent(JOB_EVENTS.JOB_APPLIED)
-	async handleJobApplied(payload: { candidateEmail: string; candidateName: string; recruiterEmail: string; recruiterName: string; jobTitle: string; companyName: string }) {
+	async handleJobApplied(payload: {
+		candidateEmail: string;
+		candidateName: string;
+		recruiterEmail: string;
+		recruiterName: string;
+		jobTitle: string;
+		companyName: string;
+	}) {
 		this.logger.log(`Handling Job Applied event for ${payload.candidateEmail} and ${payload.recruiterEmail}`);
-		
+
 		// 1. Email to candidate
 		await this.queue.add(this.JOB_NAME, {
 			recipientId: payload.candidateEmail,

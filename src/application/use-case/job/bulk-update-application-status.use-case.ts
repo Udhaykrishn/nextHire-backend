@@ -44,7 +44,7 @@ export class BulkUpdateApplicationStatusUseCase implements IExecutable<BulkUpdat
 
 		// Verify recruiter has permission for all these applications
 		// We'll group by jobId to minimize job fetches
-		const jobIds = [...new Set(applications.map(app => app.jobId))];
+		const jobIds = [...new Set(applications.map((app) => app.jobId))];
 		const jobs: JobEntity[] = [];
 		for (const jobId of jobIds) {
 			const job = await this._jobRepository.findById(jobId);
@@ -62,10 +62,10 @@ export class BulkUpdateApplicationStatusUseCase implements IExecutable<BulkUpdat
 			application.changeStatus(dto.status);
 			await this._jobApplicationRepository.findByIdAndUpdate(application.id as string, application);
 
-			const job = jobs.find(j => j.id === application.jobId);
+			const job = jobs.find((j) => j.id === application.jobId);
 			const user = await this._userRepository.findById(application.userId);
-			
-			if (user && user.email && job) {
+
+			if (user?.email && job) {
 				this.eventEmitter.emit(JOB_EVENTS.APPLICATION_STATUS_UPDATED, {
 					candidateEmail: user.email,
 					candidateName: user.name,
