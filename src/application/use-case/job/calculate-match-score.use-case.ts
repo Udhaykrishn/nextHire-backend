@@ -5,7 +5,7 @@ import { USER_MESSAGES } from "@/domain/enums/messages/user-error-message.enum";
 import type { IExecutable } from "@/application/interface/executable.interface";
 import type { JobEntity } from "@/domain/entity/job.entity";
 import type { UserEntity } from "@/domain/entity/user.entity";
-import type { IJobRepository, IUserRepository } from "@/application/interface/repository";
+import type { IJobApplicationRepository, IJobRepository, IUserRepository } from "@/application/interface/repository";
 import type { IAiService } from "@/infrastructure/services/interface/ai-service.interface";
 import type { IS3Service } from "@/infrastructure/services/interface";
 import type { FileInfo } from "@/infrastructure/services/implements";
