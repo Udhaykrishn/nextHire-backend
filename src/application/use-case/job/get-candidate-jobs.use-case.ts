@@ -9,7 +9,7 @@ import type { IRecruiterRepository } from "@/application/interface/repository/re
 import type { RecruiterEntity } from "@/domain/entity/recruiter.entity";
 import type { PaginationDto } from "@/application/dto/pagiation";
 import type { PaginationResponse } from "@/domain/types/paginations";
-import { JOB_STATUS, RECRUITER_STATUS } from "@/domain/enums/status";
+import { RECRUITER_STATUS } from "@/domain/enums/status";
 
 export interface GetCandidateJobsDto {
 	paginationDto: PaginationDto;
@@ -18,7 +18,8 @@ export interface GetCandidateJobsDto {
 
 @Injectable()
 export class GetCandidateJobsUseCase
-	implements IExecutable<GetCandidateJobsDto, PaginationResponse<JobEntity & { matchScore?: number }> | null> {
+	implements IExecutable<GetCandidateJobsDto, PaginationResponse<JobEntity & { matchScore?: number }> | null>
+{
 	constructor(
 		@Inject(JOB_TOKEN.JOB_REPOSITORY)
 		private readonly _jobRepository: IJobRepository<JobEntity>,
@@ -26,17 +27,21 @@ export class GetCandidateJobsUseCase
 		private readonly _userRepository: IUserRepository<UserEntity>,
 		@Inject(RECRUITER_TOKEN.RECRUITER_REPOSITORY)
 		private readonly _recruiterRepository: IRecruiterRepository<RecruiterEntity>,
-	) { }
+	) {}
 
 	async execute(dto: GetCandidateJobsDto): Promise<PaginationResponse<JobEntity & { matchScore?: number }> | null> {
 		const allJobsRaw = await this._jobRepository.findUnpaginatedJobs(dto.paginationDto);
 		if (!allJobsRaw) return null;
 
-		const companyIds = Array.from(new Set(allJobsRaw.map(j => j.posted_by || j.company_id || "")));
-		const recruiters = await Promise.all(companyIds.map(id => this._recruiterRepository.findById(id).catch(() => null)));
-		const blockedRecruiterIds = new Set(recruiters.filter(r => r && r.status === RECRUITER_STATUS.BLOCKED).map(r => r?.id));
+		const companyIds = Array.from(new Set(allJobsRaw.map((j) => j.posted_by || j.company_id || "")));
+		const recruiters = await Promise.all(
+			companyIds.map((id) => this._recruiterRepository.findById(id).catch(() => null)),
+		);
+		const blockedRecruiterIds = new Set(
+			recruiters.filter((r) => r && r.status === RECRUITER_STATUS.BLOCKED).map((r) => r?.id),
+		);
 
-		const allJobs = allJobsRaw.filter(job => !blockedRecruiterIds.has(job.posted_by || job.company_id || ""));
+		const allJobs = allJobsRaw.filter((job) => !blockedRecruiterIds.has(job.posted_by || job.company_id || ""));
 
 		let user: UserEntity | null = null;
 		if (dto.userId) {

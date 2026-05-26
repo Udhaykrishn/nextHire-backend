@@ -27,5 +27,11 @@ export interface IJobApplicationRepository<T> extends IBaseRepository<T> {
 	findByUserId(userId: string): Promise<T[]>;
 	findByJobId(jobId: string): Promise<T[]>;
 	findByJobIdWithPagination(jobId: string, page: number, limit: number): Promise<{ data: T[]; total: number }>;
-	findApplicationsWithCandidateDetails(jobId: string, page: number, limit: number, search?: string, status?: string): Promise<{ data: JobApplicationReadModel[]; total: number }>;
+	findApplicationsWithCandidateDetails(
+		jobId: string,
+		page: number,
+		limit: number,
+		search?: string,
+		status?: string,
+	): Promise<{ data: JobApplicationReadModel[]; total: number }>;
 }

@@ -20,7 +20,7 @@ export class UpdateProjectUseCase implements IExecutable<UpdateProjectDto, Respo
 	) {}
 
 	async execute(data: UpdateProjectDto): Promise<ResponseProjectDto> {
-		const project = await this._projectRepository.findById(data.id!);
+		const project = await this._projectRepository.findById(data.id as string);
 		if (!project) {
 			throw new NotFoundException(USER_PROFILE_MESSAGES.PROJECT_NOT_FOUND);
 		}

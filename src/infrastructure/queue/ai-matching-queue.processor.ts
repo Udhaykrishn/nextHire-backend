@@ -19,7 +19,10 @@ export class AiMatchingQueueProcessor extends WorkerHost {
 
 	constructor(
 		@Inject(JOB_TOKEN.CALCULATE_MATCH_SCORE_USE_CASE)
-		private readonly _calculateMatchScoreUseCase: IExecutable<CalculateMatchScoreDto, { matchScore: number; breakdown: Record<string, unknown> }>,
+		private readonly _calculateMatchScoreUseCase: IExecutable<
+			CalculateMatchScoreDto,
+			{ matchScore: number; breakdown: Record<string, unknown> }
+		>,
 		@Inject(JOB_TOKEN.JOB_APPLICATION_REPOSITORY)
 		private readonly _jobApplicationRepository: IJobApplicationRepository<JobApplicationEntity>,
 	) {

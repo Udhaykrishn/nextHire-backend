@@ -1,8 +1,6 @@
 import { Inject, Injectable } from "@nestjs/common";
 import type { IExecutable } from "@/application/interface/executable.interface";
 import { RECRUITER_TOKEN } from "@/application/enums/recruiter";
-import { RECRUITER_MAPPER } from "@/application/enums";
-import type { IRecruiterApplicationMappers } from "@/application/interface/mappers/recruiter/application.mapper";
 import type { IRecruiterRepository } from "@/application/interface/repository";
 import type { RecruiterEntity } from "@/domain/entity/recruiter.entity";
 
@@ -23,7 +21,7 @@ export class UploadRecruiterProfileImageUseCase implements IExecutable<UploadPro
 		private readonly _recruiterRepository: IRecruiterRepository<RecruiterEntity>,
 		@Inject("S3_SERVICE")
 		private readonly _s3Service: IS3Service<FileInfo, Express.Multer.File>,
-	) { }
+	) {}
 
 	async execute(input: UploadProfileImageInput): Promise<{ message: string }> {
 		const { recruiterId, file } = input;

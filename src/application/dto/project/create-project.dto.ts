@@ -17,7 +17,7 @@ import {
 import { Type } from "class-transformer";
 
 function IsPastOrToday(validationOptions?: ValidationOptions) {
-	return (object: Object, propertyName: string) => {
+	return (object: object, propertyName: string) => {
 		registerDecorator({
 			name: "isPastOrToday",
 			target: object.constructor,

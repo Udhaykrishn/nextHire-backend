@@ -24,9 +24,9 @@ import { AiMatchingQueueProcessor } from "@/infrastructure/queue/ai-matching-que
 
 @Module({
 	imports: [
-		RecruiterLiteModule, 
-		JobLiteModule, 
-		UserLiteModule, 
+		RecruiterLiteModule,
+		JobLiteModule,
+		UserLiteModule,
 		CommonModule,
 		BullModule.registerQueue({
 			name: "ai-matching-queue",
@@ -108,4 +108,4 @@ import { AiMatchingQueueProcessor } from "@/infrastructure/queue/ai-matching-que
 		JOB_TOKEN.CALCULATE_MATCH_SCORE_USE_CASE,
 	],
 })
-export class JobModule { }
+export class JobModule {}
