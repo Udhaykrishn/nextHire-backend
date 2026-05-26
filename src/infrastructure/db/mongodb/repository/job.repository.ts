@@ -102,7 +102,7 @@ export class JobRepository extends BaseRepository<JobEntity, JobType> implements
 		const skip = (pages.page - 1) * pages.limit;
 		const filter = this.buildFilter(pages);
 
-		let sortOptions: Record<string, 1 | -1> = { created_at: -1 }; // Default: Newest
+		let sortOptions: Record<string, 1 | -1 | { $meta: string }> = { created_at: -1 }; // Default: Newest
 
 		if (pages.sort === "Newest") {
 			sortOptions = { created_at: -1 };
