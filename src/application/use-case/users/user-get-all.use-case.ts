@@ -41,7 +41,16 @@ export class GetAllUsersUseCase implements IExecutable<PaginationDto, Pagination
 						const signedUrl = await this._s3Service.getSignedUrlForRead(user.profile_url.key);
 						user.changeProfileUrl(user.profile_url.key, signedUrl);
 					} catch (error) {
-						console.error("Error signing URL:", error);
+						console.error("Error signing profile URL:", error);
+					}
+				}
+
+				if (user.resume_url?.key) {
+					try {
+						const signedUrl = await this._s3Service.getSignedUrlForRead(user.resume_url.key);
+						user.changeResumeUrl(user.resume_url.key, signedUrl);
+					} catch (error) {
+						console.error("Error signing resume URL:", error);
 					}
 				}
 			}),

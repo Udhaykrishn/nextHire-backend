@@ -10,27 +10,29 @@ import {
 	Req,
 	UseGuards,
 	Query,
-	ParseIntPipe,
 	Patch,
-	NotFoundException,
 } from "@nestjs/common";
 import type { IExecutable } from "@/application/interface/executable.interface";
 import { AuthGuard, RoleGuard, PermissionGuard } from "@/presentation/guards";
-import { Permissions, Roles } from "@/presentation/decorators";
+import { Roles, Public } from "@/presentation/decorators";
 import { JOB_ROUTERS } from "@/presentation/enums/job-router.enum";
-import { JOB_TOKEN, USERS_TOKEN } from "@/application/enums/tokens";
-import { PERMISSION } from "@/domain/enums";
+import { JOB_TOKEN } from "@/application/enums/tokens";
 import { ROLES } from "@/presentation/enums";
 import type { AuthenticatedRequest } from "@/presentation/interface/request.interface";
 import { CreateJobDto } from "@/application/dto/job/create-job.dto";
+import { UpdateJobDto } from "@/application/dto/job/update-job.dto";
 import { JobEntity } from "@/domain/entity/job.entity";
+import { toJobResponse, toJobResponseWithScore } from "@/presentation/mappers/job-response.mapper";
 import { JobApplicationEntity } from "@/domain/entity/job-application.entity";
 import { ApplyJobDto } from "@/application/use-case/job/apply-job.use-case";
 import type { PaginationDto } from "@/application/dto/pagiation";
 import type { PaginationResponse } from "@/domain/types/paginations";
 import { IJobController } from "../interface/job.interface";
-import type { IUserRepository, IJobRepository } from "@/application/interface/repository";
-import type { UserEntity } from "@/domain/entity/user.entity";
+import type { GetCandidateJobsDto } from "@/application/use-case/job/get-candidate-jobs.use-case";
+import type { GetJobByIdDto } from "@/application/use-case/job/get-job-by-id.use-case";
+import type { GetCandidateApplicationsDto, GetCandidateApplicationsResponse } from "@/application/use-case/job/get-candidate-applications.use-case";
+import type { JobStatsResponse } from "@/application/use-case/job/get-job-stats.use-case";
+import type { GetJobApplicationsDto, JobApplicationResponse } from "@/application/use-case/job/get-job-applications.use-case";
 
 @UseGuards(AuthGuard, RoleGuard, PermissionGuard)
 @Controller(JOB_ROUTERS.ROUTER)
@@ -44,26 +46,34 @@ export class JobController implements IJobController {
 		private readonly _getRecruiterJobsUseCase: IExecutable<string, JobEntity[]>,
 		@Inject(JOB_TOKEN.GET_ALL_JOBS_USE_CASE)
 		private readonly _getAllJobsUseCase: IExecutable<PaginationDto, PaginationResponse<JobEntity> | null>,
+		@Inject(JOB_TOKEN.GET_CANDIDATE_JOBS_USE_CASE)
+		private readonly _getCandidateJobsUseCase: IExecutable<GetCandidateJobsDto, PaginationResponse<JobEntity & { matchScore?: number }> | null>,
+		@Inject(JOB_TOKEN.GET_JOB_BY_ID_USE_CASE)
+		private readonly _getJobByIdUseCase: IExecutable<GetJobByIdDto, JobEntity & { matchScore?: number }>,
+		@Inject(JOB_TOKEN.GET_CANDIDATE_APPLICATIONS_USE_CASE)
+		private readonly _getCandidateApplicationsUseCase: IExecutable<GetCandidateApplicationsDto, GetCandidateApplicationsResponse>,
+		@Inject(JOB_TOKEN.GET_JOB_STATS_USE_CASE)
+		private readonly _getJobStatsUseCase: IExecutable<string, JobStatsResponse>,
+		@Inject(JOB_TOKEN.GET_JOB_APPLICATIONS_USE_CASE)
+		private readonly _getJobApplicationsUseCase: IExecutable<GetJobApplicationsDto, PaginationResponse<JobApplicationResponse>>,
 		@Inject(JOB_TOKEN.BLOCK_UNBLOCK_JOB_USE_CASE)
 		private readonly _blockUnblockJobUseCase: IExecutable<string, JobEntity>,
-		@Inject(USERS_TOKEN.USER_REPOSITORY)
-		private readonly _userRepository: IUserRepository<UserEntity>,
-		@Inject(JOB_TOKEN.JOB_REPOSITORY)
-		private readonly _jobRepository: IJobRepository<JobEntity>,
-	) {}
+		@Inject(JOB_TOKEN.UPDATE_JOB_USE_CASE)
+		private readonly _updateJobUseCase: IExecutable<{ jobId: string; dto: UpdateJobDto }, JobEntity>,
+	) { }
 
 	@Post(JOB_ROUTERS.DEFAULT)
-	@Permissions(PERMISSION.JOB_CREATE)
+	@Roles(ROLES.RECRUITER)
 	@HttpCode(HttpStatus.CREATED)
-	async create(@Req() req: AuthenticatedRequest, @Body() dto: CreateJobDto): Promise<JobEntity> {
-		// Ensure the company_id is set to the current user's ID (recruiter)
+	async create(@Req() req: AuthenticatedRequest, @Body() dto: CreateJobDto) {
 		dto.company_id = req.user.id;
 		dto.posted_by = req.user.id;
-		return this._createJobUseCase.execute(dto);
+		const job = await this._createJobUseCase.execute(dto);
+		return toJobResponse(job);
 	}
 
 	@Post(`${JOB_ROUTERS.APPLY}/:${JOB_ROUTERS.ID_PARAM}`)
-	@Permissions(PERMISSION.APPLICATION_CREATE)
+	@Roles(ROLES.USER)
 	@HttpCode(HttpStatus.CREATED)
 	async apply(
 		@Req() req: AuthenticatedRequest,
@@ -73,16 +83,18 @@ export class JobController implements IJobController {
 	}
 
 	@Get(JOB_ROUTERS.RECRUITER)
-	@Permissions(PERMISSION.JOB_CREATE)
-	async getRecruiterJobs(@Req() req: AuthenticatedRequest): Promise<JobEntity[]> {
-		return this._getRecruiterJobsUseCase.execute(req.user.id);
+	@Roles(ROLES.RECRUITER)
+	async getRecruiterJobs(@Req() req: AuthenticatedRequest) {
+		const jobs = await this._getRecruiterJobsUseCase.execute(req.user.id);
+		return jobs.map((job) => toJobResponse(job));
 	}
 
 	@Get(`${JOB_ROUTERS.RECRUITER}/:${JOB_ROUTERS.ID_PARAM}`)
 	@Roles(ROLES.ADMIN)
 	@HttpCode(HttpStatus.OK)
-	async getJobsByRecruiterId(@Param(JOB_ROUTERS.ID_PARAM) recruiterId: string): Promise<JobEntity[]> {
-		return this._getRecruiterJobsUseCase.execute(recruiterId);
+	async getJobsByRecruiterId(@Param(JOB_ROUTERS.ID_PARAM) recruiterId: string) {
+		const jobs = await this._getRecruiterJobsUseCase.execute(recruiterId);
+		return jobs.map((job) => toJobResponse(job));
 	}
 
 	@Get(JOB_ROUTERS.ALL)
@@ -90,124 +102,154 @@ export class JobController implements IJobController {
 	@HttpCode(HttpStatus.OK)
 	async getAllJobs(
 		@Query("search") search?: string,
-		@Query("page", ParseIntPipe) page: number = 1,
-		@Query("limit", ParseIntPipe) limit: number = 10,
+		@Query("page") page: string = "1",
+		@Query("limit") limit: string = "10",
 		@Query("status") status?: string,
-	): Promise<PaginationResponse<JobEntity> | null> {
+	) {
 		const paginationDto: PaginationDto = {
 			search,
-			page,
-			limit,
+			page: parseInt(page, 10) || 1,
+			limit: parseInt(limit, 10) || 10,
 			status,
 		};
-		return this._getAllJobsUseCase.execute(paginationDto);
+		const result = await this._getAllJobsUseCase.execute(paginationDto);
+		if (!result) return null;
+		return {
+			...result,
+			data: result.data.map((job) => toJobResponse(job)),
+		};
 	}
 
 	@Patch(JOB_ROUTERS.BLOCK)
 	@Roles(ROLES.ADMIN)
 	@HttpCode(HttpStatus.OK)
-	async blockUnblockJob(@Param(JOB_ROUTERS.ID_PARAM) jobId: string): Promise<JobEntity> {
-		return this._blockUnblockJobUseCase.execute(jobId);
+	async blockUnblockJob(@Param(JOB_ROUTERS.ID_PARAM) jobId: string) {
+		const job = await this._blockUnblockJobUseCase.execute(jobId);
+		return toJobResponse(job);
+	}
+
+	@Patch(`:${JOB_ROUTERS.ID_PARAM}`)
+	@Roles(ROLES.RECRUITER)
+	@HttpCode(HttpStatus.OK)
+	async updateJob(@Param(JOB_ROUTERS.ID_PARAM) jobId: string, @Body() dto: UpdateJobDto) {
+		const job = await this._updateJobUseCase.execute({ jobId, dto });
+		return toJobResponse(job);
 	}
 
 	@Get(JOB_ROUTERS.DEFAULT)
-	@Permissions(PERMISSION.JOB_READ)
+	@Public()
 	@HttpCode(HttpStatus.OK)
 	async getJobsForCandidate(
 		@Req() req: AuthenticatedRequest,
 		@Query("search") search?: string,
-		@Query("page", ParseIntPipe) page: number = 1,
-		@Query("limit", ParseIntPipe) limit: number = 10,
-	): Promise<PaginationResponse<JobEntity & { matchScore?: number }> | null> {
+		@Query("page") page: string = "1",
+		@Query("limit") limit: string = "10",
+		@Query("location") location?: string,
+		@Query("experience") experience?: string | string[],
+		@Query("salary") salary?: string | string[],
+		@Query("jobTypes") jobTypes?: string | string[],
+	) {
+		const parseArray = (val: string | string[] | undefined): string[] | undefined => {
+			if (!val) return undefined;
+			return Array.isArray(val) ? val : [val];
+		};
+
 		const paginationDto: PaginationDto = {
 			search,
-			page,
-			limit,
+			page: parseInt(page, 10) || 1,
+			limit: parseInt(limit, 10) || 10,
 			status: "OPEN",
+			is_published: true,
+			location,
+			experience: parseArray(experience),
+			salary: parseArray(salary),
+			jobTypes: parseArray(jobTypes),
 		};
-		const paginationResult = await this._getAllJobsUseCase.execute(paginationDto);
-		if (!paginationResult) return null;
 
-		let user: UserEntity | null = null;
-		if (req.user && req.user.role === "USER") {
-			user = await this._userRepository.findById(req.user.id);
-		}
+		const userId = req.user?.role === ROLES.USER ? req.user.id : undefined;
 
-		const dataWithScore = paginationResult.data.map((job) => {
-			const jobWithScore = job as JobEntity & { matchScore?: number };
-			if (user) {
-				jobWithScore.matchScore = this.calculateMatchScore(user, job);
-			} else {
-				jobWithScore.matchScore = 0;
-			}
-			return jobWithScore;
+		const paginationResult = await this._getCandidateJobsUseCase.execute({
+			paginationDto,
+			userId,
 		});
+
+		if (!paginationResult) return null;
 
 		return {
 			...paginationResult,
-			data: dataWithScore,
+			data: paginationResult.data.map((job) => toJobResponseWithScore(job)),
 		};
 	}
 
+	@Get(JOB_ROUTERS.APPLICATIONS)
+	@Roles(ROLES.USER)
+	@HttpCode(HttpStatus.OK)
+	async getCandidateApplications(
+		@Req() req: AuthenticatedRequest,
+		@Query("search") search?: string,
+		@Query("status") status?: string,
+	) {
+		const result = await this._getCandidateApplicationsUseCase.execute({
+			userId: req.user.id,
+			search,
+			status,
+		});
+		return {
+			data: result.data.map((r) => ({
+				application: {
+					id: r.application.id,
+					jobId: r.application.jobId,
+					status: r.application.status,
+					createdAt: r.application.createdAt,
+					updatedAt: r.application.updatedAt,
+				},
+				job: toJobResponse(r.job),
+			})),
+			stats: result.stats
+		};
+	}
+
+	@Get(`:${JOB_ROUTERS.ID_PARAM}/stats`)
+	@Roles(ROLES.ADMIN, ROLES.RECRUITER)
+	@HttpCode(HttpStatus.OK)
+	async getJobStats(@Param(JOB_ROUTERS.ID_PARAM) jobId: string) {
+		return this._getJobStatsUseCase.execute(jobId);
+	}
+
+	@Get(`:${JOB_ROUTERS.ID_PARAM}/applications`)
+	@Roles(ROLES.ADMIN, ROLES.RECRUITER)
+	@HttpCode(HttpStatus.OK)
+	async getJobApplications(
+		@Param(JOB_ROUTERS.ID_PARAM) jobId: string,
+		@Query("page") page: string = "1",
+		@Query("limit") limit: string = "10",
+		@Query("search") search?: string,
+		@Query("status") status?: string,
+	) {
+		return this._getJobApplicationsUseCase.execute({ 
+			jobId, 
+			page: Number(page), 
+			limit: Number(limit),
+			search,
+			status
+		});
+	}
+
 	@Get(`:${JOB_ROUTERS.ID_PARAM}`)
-	@Permissions(PERMISSION.JOB_READ)
+	@Public()
 	@HttpCode(HttpStatus.OK)
 	async getJobById(
 		@Req() req: AuthenticatedRequest,
 		@Param(JOB_ROUTERS.ID_PARAM) jobId: string,
-	): Promise<(JobEntity & { matchScore?: number }) | null> {
-		const job = await this._jobRepository.findById(jobId);
-		if (!job) {
-			throw new NotFoundException("Job not found");
-		}
+	) {
+		const userId = req.user?.role === ROLES.USER ? req.user.id : undefined;
 
-		let user: UserEntity | null = null;
-		if (req.user && req.user.role === "USER") {
-			user = await this._userRepository.findById(req.user.id);
-		}
+		const job = await this._getJobByIdUseCase.execute({
+			jobId,
+			userId,
+			userRole: req.user?.role,
+		});
 
-		const jobWithScore = job as JobEntity & { matchScore?: number };
-		if (user) {
-			jobWithScore.matchScore = this.calculateMatchScore(user, job);
-		} else {
-			jobWithScore.matchScore = 0;
-		}
-
-		return jobWithScore;
-	}
-
-	private calculateMatchScore(user: UserEntity, job: JobEntity): number {
-		// 1. Technical Skills Match (Weight: 60%)
-		let skillScore = 100;
-		if (job.skills && job.skills.length > 0) {
-			const jobSkills = job.skills.map((s) => s.trim().toLowerCase());
-			const userSkills = (user.skills || []).map((s) => s.trim().toLowerCase());
-			const matchedSkills = jobSkills.filter((s) => userSkills.includes(s));
-			skillScore = (matchedSkills.length / jobSkills.length) * 100;
-		}
-
-		// 2. Experience Match (Weight: 30%)
-		let experienceScore = 100;
-		const jobMinExp = parseFloat(job.minExperience || "0") || 0;
-		if (jobMinExp > 0) {
-			const userExp = parseFloat(user.experience || "0") || 0;
-			if (userExp >= jobMinExp) {
-				experienceScore = 100;
-			} else {
-				experienceScore = (userExp / jobMinExp) * 100;
-			}
-		}
-
-		// 3. Languages Match (Weight: 10%)
-		let languageScore = 100;
-		if (job.regionalLanguages && job.regionalLanguages.length > 0) {
-			const jobLanguages = job.regionalLanguages.map((l) => l.trim().toLowerCase());
-			const userLanguages = (user.languages || []).map((l) => l.name.trim().toLowerCase());
-			const matchedLanguages = jobLanguages.filter((l) => userLanguages.includes(l));
-			languageScore = (matchedLanguages.length / jobLanguages.length) * 100;
-		}
-
-		const overallScore = skillScore * 0.6 + experienceScore * 0.3 + languageScore * 0.1;
-		return Math.round(overallScore);
+		return toJobResponseWithScore(job);
 	}
 }

@@ -1,2 +1,3 @@
 export { Roles } from "./role.decorator";
-export { Permissions } from "./permissions.decorator";
+export { PERMISSIONS_KEY, Permissions } from "./permissions.decorator";
+export { IS_PUBLIC_KEY, Public } from "./public.decorator";

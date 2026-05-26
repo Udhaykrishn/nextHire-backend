@@ -5,5 +5,6 @@ export enum JOB_ROUTERS {
 	RECRUITER = "/recruiter",
 	ALL = "/all",
 	BLOCK = "/block/:jobId",
+	APPLICATIONS = "/applications",
 	ID_PARAM = "jobId",
 }

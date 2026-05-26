@@ -25,22 +25,78 @@ export class JobRepository extends BaseRepository<JobEntity, JobType> implements
 		return Promise.all(jobs.map((job) => this.mapper.fromMongo(job as JobType)));
 	}
 
-	async findAllJobs(pages: PaginationDto): Promise<PaginationResponse<JobEntity> | null> {
-		const skip = (pages.page - 1) * pages.limit;
-
+	private buildFilter(pages: PaginationDto): FilterQuery<JobType> {
 		const filter: FilterQuery<JobType> = {};
+		const andConditions: FilterQuery<JobType>[] = [];
 
-		if (pages.status) {
-			filter.status = pages.status;
-		}
+		if (pages.status) filter.status = pages.status;
+		if (pages.is_published !== undefined) filter.is_published = pages.is_published;
 
 		if (pages.search) {
-			filter.$or = [
-				{ jobTitle: { $regex: pages.search, $options: "i" } },
-				{ hiringCompany: { $regex: pages.search, $options: "i" } },
-				{ jobCategory: { $regex: pages.search, $options: "i" } },
-			];
+			andConditions.push({
+				$or: [
+					{ jobTitle: { $regex: pages.search, $options: "i" } },
+					{ hiringCompany: { $regex: pages.search, $options: "i" } },
+					{ jobCategory: { $regex: pages.search, $options: "i" } },
+				],
+			});
 		}
+
+		if (pages.location) {
+			andConditions.push({
+				$or: [
+					{ jobCity: { $regex: pages.location, $options: "i" } },
+					{ officeAddress: { $regex: pages.location, $options: "i" } },
+					{ locationType: { $regex: pages.location, $options: "i" } },
+				],
+			});
+		}
+
+		if (pages.jobTypes && pages.jobTypes.length > 0) {
+			const typeRegexes = pages.jobTypes.map((t) => ({ jobType: { $regex: t, $options: "i" } }));
+			andConditions.push({ $or: typeRegexes });
+		}
+
+		if (pages.experience && pages.experience.length > 0) {
+			const expConditions = pages.experience.map((exp) => {
+				const val = { $convert: { input: "$minExperience", to: "double", onError: 0, onNull: 0 } };
+				if (exp === "Entry Level") return { $lte: [val, 1] };
+				if (exp === "Mid Level") return { $and: [{ $gt: [val, 1] }, { $lte: [val, 3] }] };
+				if (exp === "Senior Level") return { $and: [{ $gt: [val, 3] }, { $lte: [val, 7] }] };
+				if (exp === "Director") return { $gt: [val, 7] };
+				return null;
+			}).filter(Boolean);
+
+			if (expConditions.length > 0) {
+				andConditions.push({ $expr: { $or: expConditions } });
+			}
+		}
+
+		if (pages.salary && pages.salary.length > 0) {
+			const salConditions = pages.salary.map((sal) => {
+				const val = { $convert: { input: "$minSalary", to: "double", onError: 0, onNull: 0 } };
+				if (sal === "₹0 - ₹3L") return { $lte: [val, 300000] };
+				if (sal === "₹3L - ₹5L") return { $and: [{ $gt: [val, 300000] }, { $lte: [val, 500000] }] };
+				if (sal === "₹5L - ₹10L") return { $and: [{ $gt: [val, 500000] }, { $lte: [val, 1000000] }] };
+				if (sal === "₹10L+") return { $gt: [val, 1000000] };
+				return null;
+			}).filter(Boolean);
+
+			if (salConditions.length > 0) {
+				andConditions.push({ $expr: { $or: salConditions } });
+			}
+		}
+
+		if (andConditions.length > 0) {
+			filter.$and = andConditions;
+		}
+
+		return filter;
+	}
+
+	async findAllJobs(pages: PaginationDto): Promise<PaginationResponse<JobEntity> | null> {
+		const skip = (pages.page - 1) * pages.limit;
+		const filter = this.buildFilter(pages);
 
 		const docs = await this.model.find(filter).skip(skip).limit(pages.limit).exec();
 		const total = await this.model.countDocuments(filter);
@@ -52,5 +108,11 @@ export class JobRepository extends BaseRepository<JobEntity, JobType> implements
 			page: page ?? 0,
 			total,
 		};
+	}
+
+	async findUnpaginatedJobs(pages: PaginationDto): Promise<JobEntity[]> {
+		const filter = this.buildFilter(pages);
+		const docs = await this.model.find(filter).exec();
+		return Promise.all(docs.map((doc) => this.mapper.fromMongo(doc as JobType)));
 	}
 }

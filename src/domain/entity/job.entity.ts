@@ -4,6 +4,7 @@ export interface IJobEntityData {
 	// Step 1
 	belongingCompany: string;
 	hiringCompany: string;
+	companyLogo?: string;
 	experienceType: string;
 	jobTitle: string;
 	jobCategory: string;
@@ -77,6 +78,7 @@ export class JobEntity {
 	// Step 1
 	private _belongingCompany: string;
 	private _hiringCompany: string;
+	private _companyLogo?: string;
 	private _experienceType: string;
 	private _jobTitle: string;
 	private _jobCategory: string;
@@ -148,6 +150,7 @@ export class JobEntity {
 
 		this._belongingCompany = data.belongingCompany;
 		this._hiringCompany = data.hiringCompany;
+		this._companyLogo = data.companyLogo;
 		this._experienceType = data.experienceType;
 		this._jobTitle = data.jobTitle;
 		this._jobCategory = data.jobCategory;
@@ -214,6 +217,7 @@ export class JobEntity {
 	static create(
 		data: Partial<IJobEntityData> & {
 			hiringCompany: string;
+			companyLogo?: string;
 			jobTitle: string;
 			experienceType: string;
 			jobCategory: string;
@@ -225,6 +229,7 @@ export class JobEntity {
 		const fullData: IJobEntityData = {
 			belongingCompany: data.belongingCompany || "",
 			hiringCompany: data.hiringCompany,
+			companyLogo: data.companyLogo || "",
 			experienceType: data.experienceType,
 			jobTitle: data.jobTitle,
 			jobCategory: data.jobCategory,
@@ -297,6 +302,9 @@ export class JobEntity {
 	}
 	get hiringCompany(): string {
 		return this._hiringCompany;
+	}
+	get companyLogo(): string | undefined {
+		return this._companyLogo;
 	}
 	get experienceType(): string {
 		return this._experienceType;
