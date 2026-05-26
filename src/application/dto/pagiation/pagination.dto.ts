@@ -35,6 +35,20 @@ export class PaginationDto {
 	@IsString({ each: true })
 	jobTypes?: string[];
 
+	@IsOptional()
+	@IsString()
+	sort?: string;
+
+	@Type(() => Number)
+	@IsOptional()
+	@IsNumber({}, { message: "minSalary must be a number" })
+	minSalary?: number;
+
+	@Type(() => Number)
+	@IsOptional()
+	@IsNumber({}, { message: "maxSalary must be a number" })
+	maxSalary?: number;
+
 	@Type(() => Number)
 	@IsOptional()
 	@IsNumber({}, { message: "Page must be a number" })

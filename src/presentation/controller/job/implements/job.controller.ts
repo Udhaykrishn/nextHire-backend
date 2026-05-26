@@ -32,6 +32,7 @@ import type { GetJobByIdDto } from "@/application/use-case/job/get-job-by-id.use
 import type { GetCandidateApplicationsDto, GetCandidateApplicationsResponse } from "@/application/use-case/job/get-candidate-applications.use-case";
 import type { JobStatsResponse } from "@/application/use-case/job/get-job-stats.use-case";
 import { UpdateApplicationStatusDto } from "@/application/dto/job/update-application-status.dto";
+import { BulkUpdateApplicationStatusDto } from "@/application/dto/job/bulk-update-application-status.dto";
 import type { GetJobApplicationsDto, JobApplicationResponse } from "@/application/use-case/job/get-job-applications.use-case";
 import type { CalculateMatchScoreDto } from "@/application/use-case/job/calculate-match-score.use-case";
 import { toJobResponse, toJobResponseWithScore } from "@/presentation/mappers/job-response.mapper";
@@ -61,6 +62,8 @@ export class JobController implements IJobController {
 		private readonly _getJobApplicationsUseCase: IExecutable<GetJobApplicationsDto, PaginationResponse<JobApplicationResponse>>,
 		@Inject(JOB_TOKEN.UPDATE_APPLICATION_STATUS_USE_CASE)
 		private readonly _updateApplicationStatusUseCase: IExecutable<{ dto: UpdateApplicationStatusDto; recruiterId: string }, void>,
+		@Inject(JOB_TOKEN.BULK_UPDATE_APPLICATION_STATUS_USE_CASE)
+		private readonly _bulkUpdateApplicationStatusUseCase: IExecutable<{ dto: BulkUpdateApplicationStatusDto; recruiterId: string }, void>,
 		@Inject(JOB_TOKEN.BLOCK_UNBLOCK_JOB_USE_CASE)
 		private readonly _blockUnblockJobUseCase: IExecutable<string, ResponseJobDto>,
 		@Inject(JOB_TOKEN.UPDATE_JOB_USE_CASE)
@@ -182,6 +185,9 @@ export class JobController implements IJobController {
 			experience: parseArray(experience),
 			salary: parseArray(salary),
 			jobTypes: parseArray(jobTypes),
+			sort: typeof req.query.sort === 'string' ? req.query.sort : undefined,
+			minSalary: typeof req.query.minSalary === 'string' ? parseInt(req.query.minSalary, 10) : undefined,
+			maxSalary: typeof req.query.maxSalary === 'string' ? parseInt(req.query.maxSalary, 10) : undefined,
 		};
 
 		const userId = req.user?.role === ROLES.USER ? req.user.id : undefined;
@@ -221,7 +227,7 @@ export class JobController implements IJobController {
 					createdAt: r.application.createdAt,
 					updatedAt: r.application.updatedAt,
 				},
-				job: r.job as unknown as ResponseJobDto,
+				job: toJobResponse(r.job as unknown as JobEntity),
 			})),
 			stats: result.stats
 		};
@@ -250,6 +256,19 @@ export class JobController implements IJobController {
 			limit: Number(limit),
 			search,
 			status
+		});
+	}
+
+	@Patch(`application/bulk/status`)
+	@Roles(ROLES.RECRUITER)
+	@HttpCode(HttpStatus.OK)
+	async bulkUpdateApplicationStatus(
+		@Req() req: AuthenticatedRequest,
+		@Body() dto: BulkUpdateApplicationStatusDto
+	) {
+		return this._bulkUpdateApplicationStatusUseCase.execute({
+			dto,
+			recruiterId: req.user.id
 		});
 	}
 
