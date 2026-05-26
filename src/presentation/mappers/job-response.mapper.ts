@@ -1,6 +1,7 @@
 import { JobEntity } from "@/domain/entity/job.entity";
+import { ResponseJobDto } from "@/application/dto/job/response-job.dto";
 
-export function toJobResponse(job: JobEntity) {
+export function toJobResponse(job: JobEntity): ResponseJobDto {
 	return {
 		id: job.id,
 		belongingCompany: job.belongingCompany,
@@ -63,11 +64,11 @@ export function toJobResponse(job: JobEntity) {
 		is_published: job.is_published,
 		created_at: job.created_at,
 		updated_at: job.updated_at,
-	};
+	} as unknown as ResponseJobDto;
 }
 
-export function toJobResponseWithScore(jobWithScore: JobEntity & { matchScore?: number; hasApplied?: boolean; applicationStatus?: string; stats?: any }) {
-	const response = toJobResponse(jobWithScore) as Record<string, unknown>;
+export function toJobResponseWithScore(jobWithScore: JobEntity & { matchScore?: number; hasApplied?: boolean; applicationStatus?: string; stats?: Record<string, unknown> }): ResponseJobDto & { matchScore?: number; hasApplied?: boolean; applicationStatus?: string; stats?: Record<string, unknown> } {
+	const response = toJobResponse(jobWithScore) as unknown as Record<string, unknown>;
 	if (jobWithScore.matchScore !== undefined) {
 		response.matchScore = jobWithScore.matchScore;
 	}
@@ -80,5 +81,5 @@ export function toJobResponseWithScore(jobWithScore: JobEntity & { matchScore?: 
 	if (jobWithScore.stats !== undefined) {
 		response.stats = jobWithScore.stats;
 	}
-	return response;
+	return response as unknown as ResponseJobDto & { matchScore?: number; hasApplied?: boolean; applicationStatus?: string; stats?: Record<string, unknown> };
 }

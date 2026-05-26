@@ -13,11 +13,18 @@ export class Application {
 
 	@Prop()
 	status: string;
+
+	@Prop({ default: 0 })
+	matchScore: number;
+
+	@Prop({ type: Object })
+	matchBreakdown?: Record<string, unknown>;
 }
 
 export const ApplicationSchema = SchemaFactory.createForClass(Application);
 export type ApplicationType = InferSchemaType<typeof ApplicationSchema> & {
 	_id: string;
+	matchBreakdown?: Record<string, unknown>;
 	createdAt: Date;
 	updatedAt: Date;
 };
