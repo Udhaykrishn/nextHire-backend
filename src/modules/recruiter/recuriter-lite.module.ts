@@ -10,9 +10,7 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { S3Service } from "@/infrastructure/services/implements";
 
 @Module({
-	imports: [MongooseModule.forFeature([
-		{ name: Recruiter.name, schema: Recruiterschema }
-	])],
+	imports: [MongooseModule.forFeature([{ name: Recruiter.name, schema: Recruiterschema }])],
 	providers: [
 		{
 			provide: RECRUITER_MAPPER.RECRUITER_APPLICATION,

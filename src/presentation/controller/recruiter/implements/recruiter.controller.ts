@@ -98,7 +98,6 @@ export class RecruiterController implements IRecruiterController {
 			{ recruiterId: string; dto: RevokeCompanyVerificationDto },
 			ResponseRecruiterDto
 		>,
-
 	) {}
 
 	@Post(RECRUITER_ROUTERS.DEFAULT)
@@ -236,8 +235,6 @@ export class RecruiterController implements IRecruiterController {
 		await this._verifyOtpSessionUseCase.execute({ recruiterId: req.user.id, dto });
 		return { message: "Company verified successfully" };
 	}
-
-
 
 	@Patch(`:${RECRUITER_ROUTERS.ID_PARAM}/revoke-verification`)
 	@Roles(ROLES.ADMIN)
