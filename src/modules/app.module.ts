@@ -15,6 +15,7 @@ import { ProjectModule } from "./project/project.module";
 import { AddressModule } from "./address/address.module";
 import { OTelModule } from "./otel.module";
 import { JobModule } from "./job/job.module";
+import { CompanyModule } from "./company/company.module";
 import { HealthController } from "@/presentation/controllers/health.controller";
 import { ThrottlerModule, ThrottlerGuard } from "@nestjs/throttler";
 import { APP_GUARD } from "@nestjs/core";
@@ -65,6 +66,7 @@ import { CsrfMiddleware } from "@/presentation/middleware/csrf.middleware";
 		AddressModule,
 		NotificationModule,
 		JobModule,
+		CompanyModule,
 	],
 	controllers: [HealthController],
 	providers: [
