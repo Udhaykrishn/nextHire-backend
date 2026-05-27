@@ -40,7 +40,7 @@ export class CreateJobUseCase implements IExecutable<CreateJobDto, JobEntity> {
 		const isSubscribed = recruiter.subscription?.is_subscribed || false;
 		const jobCount = recruiter.job_count || 0;
 
-		if (!isSubscribed && jobCount >= 1) {
+		if (!isSubscribed && jobCount >= 2) {
 			throw new ForbiddenException(RECRUITER_MESSAGES.SUBSCRIPTION_REQUIRED);
 		}
 

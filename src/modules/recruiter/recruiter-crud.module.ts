@@ -102,7 +102,6 @@ import { RedisModule } from "../redis.module";
 			provide: RECRUITER_TOKEN.REVOKE_COMPANY_VERIFICATION_USE_CASE,
 			useClass: RevokeCompanyVerificationUseCase,
 		},
-
 	],
 	exports: [
 		RECRUITER_TOKEN.RECRUITER_CREATE_USE_CASE,
@@ -122,7 +121,6 @@ import { RedisModule } from "../redis.module";
 		RECRUITER_TOKEN.VERIFY_OTP_SESSION_USE_CASE,
 		RECRUITER_TOKEN.DELETE_VERIFICATION_SESSION_USE_CASE,
 		RECRUITER_TOKEN.REVOKE_COMPANY_VERIFICATION_USE_CASE,
-
 	],
 })
 export class RecruiterCrudModule {}

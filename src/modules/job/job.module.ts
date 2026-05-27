@@ -16,9 +16,11 @@ import { CalculateMatchScoreUseCase } from "@/application/use-case/job/calculate
 import { JOB_TOKEN } from "@/application/enums/tokens/job-token.enum";
 import { RecruiterLiteModule } from "../recruiter/recuriter-lite.module";
 import { JobLiteModule } from "./job-lite.module";
-import { UserLiteModule } from "../user/user-db.module";
 import { JobController } from "@/presentation/controller/job/implements/job.controller";
+import { UserLiteModule } from "../user/user-db.module";
 import { CommonModule } from "../common.module";
+import { UserCrudModule } from "../user/user-curd.module";
+import { RecruiterCrudModule } from "../recruiter/recruiter-crud.module";
 import { BullModule } from "@nestjs/bullmq";
 import { AiMatchingQueueProcessor } from "@/infrastructure/queue/ai-matching-queue.processor";
 
@@ -27,6 +29,8 @@ import { AiMatchingQueueProcessor } from "@/infrastructure/queue/ai-matching-que
 		RecruiterLiteModule,
 		JobLiteModule,
 		UserLiteModule,
+		UserCrudModule,
+		RecruiterCrudModule,
 		CommonModule,
 		BullModule.registerQueue({
 			name: "ai-matching-queue",

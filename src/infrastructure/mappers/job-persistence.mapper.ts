@@ -8,7 +8,7 @@ import { Injectable } from "@nestjs/common";
 export class JobPersistenceMapper implements IJobPersistenceMapper<JobEntity, JobType> {
 	toMongo(data: JobEntity): JobType {
 		return {
-			_id: data.id ?? "",
+			...(data.id ? { _id: data.id } : {}),
 
 			belongingCompany: data.belongingCompany,
 			hiringCompany: data.hiringCompany,
