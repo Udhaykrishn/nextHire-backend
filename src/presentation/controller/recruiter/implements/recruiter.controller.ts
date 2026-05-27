@@ -31,6 +31,7 @@ import { RECRUITER_ROUTERS } from "@/presentation/enums/recuriter";
 import { RECRUITER_TOKEN } from "@/application/enums/recruiter";
 import { CreateRecruiterDto, ResponseRecruiterDto, VerifyRecruiterCompanyDto } from "@/application/dto/recruiter";
 import { UpdateRecruiterDto } from "@/application/dto/recruiter";
+
 import { StartVerificationSessionDto, VerifyOtpDto } from "@/application/dto/recruiter/verification-session.dto";
 import { RevokeCompanyVerificationDto } from "@/application/dto/recruiter/revoke-company-verification.dto";
 import { ChangePasswordDto } from "@/application/dto/users";
@@ -97,6 +98,7 @@ export class RecruiterController implements IRecruiterController {
 			{ recruiterId: string; dto: RevokeCompanyVerificationDto },
 			ResponseRecruiterDto
 		>,
+
 	) {}
 
 	@Post(RECRUITER_ROUTERS.DEFAULT)
@@ -234,6 +236,8 @@ export class RecruiterController implements IRecruiterController {
 		await this._verifyOtpSessionUseCase.execute({ recruiterId: req.user.id, dto });
 		return { message: "Company verified successfully" };
 	}
+
+
 
 	@Patch(`:${RECRUITER_ROUTERS.ID_PARAM}/revoke-verification`)
 	@Roles(ROLES.ADMIN)
