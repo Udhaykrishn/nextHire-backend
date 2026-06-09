@@ -7,3 +7,4 @@ export { CERTIFICATE_ROUTER } from "./certificate-router.enum";
 export { EDUCATION_ROUTER } from "./education-router.enum";
 export { PROJECT_ROUTER } from "./project-router.enum";
 export { ADDRESS_ROUTER } from "./address-router.enum";
+export { COMPANY_ROUTERS } from "./recuriter/company.router";

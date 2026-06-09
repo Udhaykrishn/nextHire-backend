@@ -5,6 +5,7 @@ import { CompanyRepository } from "../../infrastructure/db/mongodb/repositories/
 import { CreateCompanyUseCase } from "../../application/use-cases/company/create-company.use-case";
 import { GetCompaniesUseCase } from "../../application/use-cases/company/get-companies.use-case";
 import { CompanyController } from "../../presentation/controller/company/implements/company.controller";
+import { COMPANY_TOKEN } from "../../application/enums/tokens";
 import { JwtModule } from "@nestjs/jwt";
 
 @Module({
@@ -12,12 +13,18 @@ import { JwtModule } from "@nestjs/jwt";
 	controllers: [CompanyController],
 	providers: [
 		{
-			provide: "ICompanyRepository",
+			provide: COMPANY_TOKEN.COMPANY_REPOSITORY,
 			useClass: CompanyRepository,
 		},
-		CreateCompanyUseCase,
-		GetCompaniesUseCase,
+		{
+			provide: COMPANY_TOKEN.CREATE_COMPANY_USE_CASE,
+			useClass: CreateCompanyUseCase,
+		},
+		{
+			provide: COMPANY_TOKEN.GET_COMPANIES_USE_CASE,
+			useClass: GetCompaniesUseCase,
+		},
 	],
-	exports: ["ICompanyRepository"],
+	exports: [COMPANY_TOKEN.COMPANY_REPOSITORY],
 })
 export class CompanyModule {}

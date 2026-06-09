@@ -5,3 +5,4 @@ export { ADMIN_MESSAGES } from "./admin-message.enum";
 export { USER_PROFILE_MESSAGES } from "./user-profile-message.enum";
 export { JOB_MESSAGES } from "./job-message.enum";
 export { APPLICATION_MESSAGES } from "./application-message.enum";
+export { COMPANY_MESSAGES } from "./company-message.enum";

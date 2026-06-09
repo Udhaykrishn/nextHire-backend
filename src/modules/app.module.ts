@@ -59,6 +59,7 @@ import { CsrfMiddleware } from "@/presentation/middleware/csrf.middleware";
 		}),
 		AuthModule,
 		UserModule,
+		CompanyModule,
 		RecruiterModule,
 		CertificateModule,
 		EducationModule,
@@ -66,7 +67,6 @@ import { CsrfMiddleware } from "@/presentation/middleware/csrf.middleware";
 		AddressModule,
 		NotificationModule,
 		JobModule,
-		CompanyModule,
 	],
 	controllers: [HealthController],
 	providers: [

@@ -9,3 +9,4 @@ export type { IAddressRepository } from "./address-repository.interface";
 export type { IJobRepository } from "./job-repository.interface";
 export type { ISubscriptionRepository } from "./subscription-repository.interface";
 export type { IJobApplicationRepository } from "./job-application-repository.interface";
+export type { ICompanyRepository } from "./company-repository.interface";
