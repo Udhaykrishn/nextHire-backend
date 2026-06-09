@@ -8,3 +8,4 @@ export { EDUCATION_TOKEN } from "./education-token.enum";
 export { PROJECT_TOKEN } from "./project-token.enum";
 export { ADDRESS_TOKEN } from "./address-token.enum";
 export { JOB_TOKEN } from "./job-token.enum";
+export { COMPANY_TOKEN } from "./company-token.enum";

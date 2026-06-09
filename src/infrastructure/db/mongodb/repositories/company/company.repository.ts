@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
-import { ICompanyRepository } from "../../../../domain/repository/company.repository";
-import { CompanyDocument } from "../models/organization.schema";
+import type { ICompanyRepository } from "@/application/interface/repository";
+import type { CompanyDocument } from "@/infrastructure/db/mongodb/models/organization.schema";
 
 @Injectable()
 export class CompanyRepository implements ICompanyRepository {
