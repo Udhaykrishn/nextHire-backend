@@ -48,6 +48,9 @@ export class RecruiterPresitanceMapper implements IRecruiterPresitanceMapper<Rec
 			subscription: doc.subscription ?? {
 				current_plan: "free",
 				is_subscribed: false,
+				stripe_customer_id: "",
+				stripe_subscription_id: "",
+				status: "inactive",
 			},
 			job_count: doc.job_count ?? 0,
 			role:

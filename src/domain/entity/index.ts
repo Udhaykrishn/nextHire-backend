@@ -1,5 +1,6 @@
 export { UserEntity } from "./user.entity";
 export { AdminEntity } from "./admin.entity";
+export { CompanyEntity } from "./company.entity";
 export { CertificateEntity } from "./certificate.entity";
 export { ProjectEntity } from "./project.entity";
 export { EducationEntity } from "./education.entity";

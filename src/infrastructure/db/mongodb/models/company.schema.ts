@@ -70,11 +70,17 @@ export class Recruiter {
 		type: {
 			current_plan: { type: String, default: "free" },
 			is_subscribed: { type: Boolean, default: false },
+			stripe_customer_id: { type: String, default: "" },
+			stripe_subscription_id: { type: String, default: "" },
+			status: { type: String, default: "inactive" },
 		},
 	})
 	subscription: {
 		current_plan: string;
 		is_subscribed: boolean;
+		stripe_customer_id: string;
+		stripe_subscription_id: string;
+		status: string;
 	};
 }
 
