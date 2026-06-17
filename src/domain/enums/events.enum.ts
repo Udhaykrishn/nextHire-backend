@@ -8,4 +8,5 @@ export enum AUTH_EVENTS {
 export enum JOB_EVENTS {
 	JOB_CREATED = "job.created",
 	JOB_APPLIED = "job.applied",
+	APPLICATION_STATUS_UPDATED = "job.application.status_updated",
 }

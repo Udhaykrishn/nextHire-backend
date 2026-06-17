@@ -11,21 +11,26 @@ import { GetJobByIdUseCase } from "@/application/use-case/job/get-job-by-id.use-
 import { GetJobStatsUseCase } from "@/application/use-case/job/get-job-stats.use-case";
 import { GetJobApplicationsUseCase } from "@/application/use-case/job/get-job-applications.use-case";
 import { UpdateApplicationStatusUseCase } from "@/application/use-case/job/update-application-status.use-case";
+import { BulkUpdateApplicationStatusUseCase } from "@/application/use-case/job/bulk-update-application-status.use-case";
 import { CalculateMatchScoreUseCase } from "@/application/use-case/job/calculate-match-score.use-case";
 import { JOB_TOKEN } from "@/application/enums/tokens/job-token.enum";
 import { RecruiterLiteModule } from "../recruiter/recuriter-lite.module";
 import { JobLiteModule } from "./job-lite.module";
-import { UserLiteModule } from "../user/user-db.module";
 import { JobController } from "@/presentation/controller/job/implements/job.controller";
+import { UserLiteModule } from "../user/user-db.module";
 import { CommonModule } from "../common.module";
+import { UserCrudModule } from "../user/user-curd.module";
+import { RecruiterCrudModule } from "../recruiter/recruiter-crud.module";
 import { BullModule } from "@nestjs/bullmq";
 import { AiMatchingQueueProcessor } from "@/infrastructure/queue/ai-matching-queue.processor";
 
 @Module({
 	imports: [
-		RecruiterLiteModule, 
-		JobLiteModule, 
-		UserLiteModule, 
+		RecruiterLiteModule,
+		JobLiteModule,
+		UserLiteModule,
+		UserCrudModule,
+		RecruiterCrudModule,
 		CommonModule,
 		BullModule.registerQueue({
 			name: "ai-matching-queue",
@@ -86,6 +91,10 @@ import { AiMatchingQueueProcessor } from "@/infrastructure/queue/ai-matching-que
 			provide: JOB_TOKEN.CALCULATE_MATCH_SCORE_USE_CASE,
 			useClass: CalculateMatchScoreUseCase,
 		},
+		{
+			provide: JOB_TOKEN.BULK_UPDATE_APPLICATION_STATUS_USE_CASE,
+			useClass: BulkUpdateApplicationStatusUseCase,
+		},
 	],
 	exports: [
 		JobLiteModule,
@@ -99,7 +108,8 @@ import { AiMatchingQueueProcessor } from "@/infrastructure/queue/ai-matching-que
 		JOB_TOKEN.BLOCK_UNBLOCK_JOB_USE_CASE,
 		JOB_TOKEN.UPDATE_JOB_USE_CASE,
 		JOB_TOKEN.UPDATE_APPLICATION_STATUS_USE_CASE,
+		JOB_TOKEN.BULK_UPDATE_APPLICATION_STATUS_USE_CASE,
 		JOB_TOKEN.CALCULATE_MATCH_SCORE_USE_CASE,
 	],
 })
-export class JobModule { }
+export class JobModule {}

@@ -33,7 +33,7 @@ export class VerifyRecruiterOtpUseCase implements IExecutable<VerifyOTPDto, Veri
 
 		@Inject(COMMON_TOKEN.EVENT_EMITTER)
 		private readonly eventEmitter: IEventEmitter,
-	) { }
+	) {}
 
 	async execute(dto: VerifyOTPDto): Promise<VerifyResponseOTPDto> {
 		const recruiter = await this._redisService.get(

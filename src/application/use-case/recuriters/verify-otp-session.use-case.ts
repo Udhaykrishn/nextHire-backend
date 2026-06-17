@@ -30,7 +30,7 @@ export class VerifyOtpSessionUseCase implements IExecutable<{ recruiterId: strin
 		const sessionData = await this._sessionVerificationService.verifySession(recruiterId, "COMPANY_CIN", dto.otp);
 
 		// Update recruiter verified status
-		recruiter.changeCIN(sessionData["cin"] as string);
+		recruiter.changeCIN(sessionData.cin as string);
 		recruiter.verifyCompany();
 
 		await this._recruiterRepository.findByIdAndUpdate(recruiter.id as string, recruiter);

@@ -20,7 +20,7 @@ export class CreateJobUseCase implements IExecutable<CreateJobDto, JobEntity> {
 		@Inject(RECRUITER_TOKEN.RECRUITER_REPOSITORY)
 		private readonly _recruiterRepository: IRecruiterRepository<RecruiterEntity>,
 		private readonly eventEmitter: EventEmitter2,
-	) { }
+	) {}
 
 	async execute(data: CreateJobDto): Promise<JobEntity> {
 		if (!data.company_id || !data.posted_by) {
@@ -35,13 +35,6 @@ export class CreateJobUseCase implements IExecutable<CreateJobDto, JobEntity> {
 
 		if (!recruiter.is_verified_company) {
 			throw new ForbiddenException(RECRUITER_MESSAGES.RECRUITER_NOT_VERIFIED);
-		}
-
-		const isSubscribed = recruiter.subscription?.is_subscribed || false;
-		const jobCount = recruiter.job_count || 0;
-
-		if (!isSubscribed && jobCount >= 1) {
-			throw new ForbiddenException(RECRUITER_MESSAGES.SUBSCRIPTION_REQUIRED);
 		}
 
 		const job = JobEntity.create({

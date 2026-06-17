@@ -20,6 +20,8 @@ import {
 	DeleteVerificationSessionUseCase,
 	RevokeCompanyVerificationUseCase,
 } from "@/application/use-case/recuriters";
+import { RecruiterStripeListener } from "@/application/use-case/recuriters/recruiter-stripe.listener";
+
 import { CheckRecruiterBlockedUseCase } from "@/application/use-case/recuriters";
 import { CompanyVerificationService } from "@/infrastructure/services/implements/company-verification.service";
 
@@ -101,6 +103,7 @@ import { RedisModule } from "../redis.module";
 			provide: RECRUITER_TOKEN.REVOKE_COMPANY_VERIFICATION_USE_CASE,
 			useClass: RevokeCompanyVerificationUseCase,
 		},
+		RecruiterStripeListener,
 	],
 	exports: [
 		RECRUITER_TOKEN.RECRUITER_CREATE_USE_CASE,

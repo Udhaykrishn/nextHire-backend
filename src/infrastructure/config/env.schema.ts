@@ -28,6 +28,11 @@ export const envSchema = z.object({
 	REFRESH_TOKEN_EXPIRATION: z.coerce.number().default(604800000), // 7 days
 
 	NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
+
+	STRIPE_SECRET_KEY: z.string().min(1, "STRIPE_SECRET_KEY is required"),
+	STRIPE_WEBHOOK_SECRET: z.string().optional(),
+	STRIPE_CURRENCY: z.string().optional(),
+	STRIPE_FRONTEND_URL: z.string().optional(),
 });
 
 export type EnvConfig = z.infer<typeof envSchema>;

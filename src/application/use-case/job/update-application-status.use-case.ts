@@ -1,5 +1,9 @@
 import { Inject, Injectable, NotFoundException, ForbiddenException } from "@nestjs/common";
-import { JOB_TOKEN } from "@/application/enums/tokens";
+import { JOB_TOKEN, USERS_TOKEN } from "@/application/enums/tokens";
+import type { IUserRepository } from "@/application/interface/repository";
+import type { UserEntity } from "@/domain/entity/user.entity";
+import { EventEmitter2 } from "@nestjs/event-emitter";
+import { JOB_EVENTS } from "@/domain/enums/events.enum";
 import type { IJobApplicationRepository } from "@/application/interface/repository/job-application-repository.interface";
 import type { JobApplicationEntity } from "@/domain/entity/job-application.entity";
 import type { IJobRepository } from "@/application/interface/repository/job-repository.interface";
@@ -19,11 +23,14 @@ export class UpdateApplicationStatusUseCase implements IExecutable<UpdateApplica
 		private readonly _jobApplicationRepository: IJobApplicationRepository<JobApplicationEntity>,
 		@Inject(JOB_TOKEN.JOB_REPOSITORY)
 		private readonly _jobRepository: IJobRepository<JobEntity>,
+		@Inject(USERS_TOKEN.USER_REPOSITORY)
+		private readonly _userRepository: IUserRepository<UserEntity>,
+		private readonly eventEmitter: EventEmitter2,
 	) {}
 
 	async execute({ dto, recruiterId }: UpdateApplicationStatusPayload): Promise<void> {
 		const application = await this._jobApplicationRepository.findById(dto.applicationId);
-		
+
 		if (!application) {
 			throw new NotFoundException("Job application not found");
 		}
@@ -39,5 +46,16 @@ export class UpdateApplicationStatusUseCase implements IExecutable<UpdateApplica
 
 		application.changeStatus(dto.status);
 		await this._jobApplicationRepository.findByIdAndUpdate(dto.applicationId, application);
+
+		const user = await this._userRepository.findById(application.userId);
+		if (user?.email) {
+			this.eventEmitter.emit(JOB_EVENTS.APPLICATION_STATUS_UPDATED, {
+				candidateEmail: user.email,
+				candidateName: user.name,
+				jobTitle: job.jobTitle,
+				companyName: job.hiringCompany,
+				status: dto.status,
+			});
+		}
 	}
 }

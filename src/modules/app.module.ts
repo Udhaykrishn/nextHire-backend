@@ -1,4 +1,5 @@
 import { MongoDbModule } from "./mongodb.module";
+import { StripeModule } from "./stripe/stripe.module";
 import { type NestModule, type MiddlewareConsumer, Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { EventEmitterModule } from "@nestjs/event-emitter";
@@ -15,6 +16,7 @@ import { ProjectModule } from "./project/project.module";
 import { AddressModule } from "./address/address.module";
 import { OTelModule } from "./otel.module";
 import { JobModule } from "./job/job.module";
+import { CompanyModule } from "./company/company.module";
 import { HealthController } from "@/presentation/controllers/health.controller";
 import { ThrottlerModule, ThrottlerGuard } from "@nestjs/throttler";
 import { APP_GUARD } from "@nestjs/core";
@@ -58,6 +60,7 @@ import { CsrfMiddleware } from "@/presentation/middleware/csrf.middleware";
 		}),
 		AuthModule,
 		UserModule,
+		CompanyModule,
 		RecruiterModule,
 		CertificateModule,
 		EducationModule,
@@ -65,6 +68,7 @@ import { CsrfMiddleware } from "@/presentation/middleware/csrf.middleware";
 		AddressModule,
 		NotificationModule,
 		JobModule,
+		StripeModule,
 	],
 	controllers: [HealthController],
 	providers: [

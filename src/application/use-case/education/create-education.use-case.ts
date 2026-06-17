@@ -21,13 +21,13 @@ export class CreateEducationUseCase implements IExecutable<CreateEducationDto, R
 	) {}
 
 	async execute(data: CreateEducationDto): Promise<ResponseEducationDto> {
-		const currentEducation = await this._educationRepository.findByUserId(data.userId);
+		const currentEducation = await this._educationRepository.findByUserId(data.userId as string);
 		if (currentEducation.length >= PLAN_LIMITS.FREE.MAX_EDUCATION) {
 			throw new BadRequestException(USER_PROFILE_MESSAGES.EDUCATION_LIMIT_REACHED);
 		}
 
 		const education = EducationEntity.create({
-			userId: data.userId,
+			userId: data.userId as string,
 			institutionName: data.institutionName,
 			degree: data.degree,
 			fieldOfStudy: data.fieldOfStudy,

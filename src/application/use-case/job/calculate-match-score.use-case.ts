@@ -10,6 +10,7 @@ import type { IAiService } from "@/infrastructure/services/interface/ai-service.
 import type { IS3Service } from "@/infrastructure/services/interface";
 import type { FileInfo } from "@/infrastructure/services/implements";
 import type { IPdfParserService } from "@/infrastructure/services/interface";
+import { JobApplicationEntity } from "@/domain/entity";
 
 export interface CalculateMatchScoreDto {
 	jobId: string;
@@ -19,21 +20,22 @@ export interface CalculateMatchScoreDto {
 
 @Injectable()
 export class CalculateMatchScoreUseCase
-	implements IExecutable<CalculateMatchScoreDto, { matchScore: number; breakdown: Record<string, unknown> }> {
+	implements IExecutable<CalculateMatchScoreDto, { matchScore: number; breakdown: Record<string, unknown> }>
+{
 	constructor(
 		@Inject(JOB_TOKEN.JOB_REPOSITORY)
 		private readonly _jobRepository: IJobRepository<JobEntity>,
 		@Inject(USERS_TOKEN.USER_REPOSITORY)
 		private readonly _userRepository: IUserRepository<UserEntity>,
 		@Inject(JOB_TOKEN.JOB_APPLICATION_REPOSITORY)
-		private readonly _jobApplicationRepository: IJobApplicationRepository<any>,
+		private readonly _jobApplicationRepository: IJobApplicationRepository<JobApplicationEntity>,
 		@Inject(COMMON_TOKEN.AI_SERVICE)
 		private readonly _aiService: IAiService,
 		@Inject("S3_SERVICE")
 		private readonly _s3Service: IS3Service<FileInfo, Express.Multer.File>,
 		@Inject(COMMON_TOKEN.PDF_PARSER_SERVICE)
 		private readonly _pdfParserService: IPdfParserService,
-	) { }
+	) {}
 
 	async execute(dto: CalculateMatchScoreDto): Promise<{ matchScore: number; breakdown: Record<string, unknown> }> {
 		const job = await this._jobRepository.findById(dto.jobId);
@@ -89,7 +91,7 @@ Name: ${user.name}
 Bio/About: ${user.bio || "None"}
 Skills: ${user.skills?.join(", ")}
 Experience: ${user.experience || "0"} years
-Languages: ${user.languages?.map(l => l.name).join(", ")}
+Languages: ${user.languages?.map((l) => l.name).join(", ")}
 
 CANDIDATE PARSED RESUME:
 ${parsedResumeText.substring(0, 5000)}
@@ -119,26 +121,28 @@ You must return ONLY the following JSON structure, with no markdown formatting, 
 			const matchScore = parsed.matchScore || 0;
 			const breakdown = parsed.breakdown || { keywords: [], notes: "Analysis completed." };
 
-			if (application && application.id) {
+			if (application?.id) {
 				application.changeMatchScore(matchScore);
 				application.changeMatchBreakdown(breakdown);
-				await this._jobApplicationRepository.findByIdAndUpdate(application.id, application as any);
+				await this._jobApplicationRepository.findByIdAndUpdate(application.id, application);
 			}
 
 			return {
 				matchScore,
-				breakdown
+				breakdown,
 			};
-
 		} catch (error) {
 			console.error("AI Match generation failed", error);
 			const fallback = this.calculateManualMatchScore(user, job);
-			fallback.breakdown.notes = "Error: " + (error?.message || String(error));
+			fallback.breakdown.notes = `Error: ${error?.message || String(error)}`;
 			return fallback;
 		}
 	}
 
-	private calculateManualMatchScore(user: UserEntity, job: JobEntity): { matchScore: number; breakdown: any } {
+	private calculateManualMatchScore(
+		user: UserEntity,
+		job: JobEntity,
+	): { matchScore: number; breakdown: Record<string, unknown> } {
 		let skillScore = 100;
 		let matchedKeywords: string[] = [];
 		if (job.skills && job.skills.length > 0) {
@@ -174,8 +178,8 @@ You must return ONLY the following JSON structure, with no markdown formatting, 
 			matchScore: Math.round(overallScore),
 			breakdown: {
 				keywords: matchedKeywords.length > 0 ? matchedKeywords : ["Basic matching"],
-				notes: "Manual fallback calculation used due to AI service unavailability."
-			}
+				notes: "Manual fallback calculation used due to AI service unavailability.",
+			},
 		};
 	}
 }

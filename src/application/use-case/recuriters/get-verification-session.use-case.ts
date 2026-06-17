@@ -16,9 +16,9 @@ export class GetVerificationSessionUseCase
 		const session = await this._sessionVerificationService.getSession(recruiterId, "COMPANY_CIN");
 		if (!session) return null;
 		return {
-			step: session["step"] as string,
-			cin: session["cin"] as string,
-			otp: session["otp"] as string,
+			step: session.step as string,
+			cin: session.cin as string,
+			otp: session.otp as string,
 		};
 	}
 }

@@ -58,29 +58,33 @@ export class JobRepository extends BaseRepository<JobEntity, JobType> implements
 		}
 
 		if (pages.experience && pages.experience.length > 0) {
-			const expConditions = pages.experience.map((exp) => {
-				const val = { $convert: { input: "$minExperience", to: "double", onError: 0, onNull: 0 } };
-				if (exp === "Entry Level") return { $lte: [val, 1] };
-				if (exp === "Mid Level") return { $and: [{ $gt: [val, 1] }, { $lte: [val, 3] }] };
-				if (exp === "Senior Level") return { $and: [{ $gt: [val, 3] }, { $lte: [val, 7] }] };
-				if (exp === "Director") return { $gt: [val, 7] };
-				return null;
-			}).filter(Boolean);
+			const expConditions = pages.experience
+				.map((exp) => {
+					const val = { $convert: { input: "$minExperience", to: "double", onError: 0, onNull: 0 } };
+					if (exp === "Entry Level") return { $lte: [val, 1] };
+					if (exp === "Mid Level") return { $and: [{ $gt: [val, 1] }, { $lte: [val, 3] }] };
+					if (exp === "Senior Level") return { $and: [{ $gt: [val, 3] }, { $lte: [val, 7] }] };
+					if (exp === "Director") return { $gt: [val, 7] };
+					return null;
+				})
+				.filter(Boolean);
 
 			if (expConditions.length > 0) {
 				andConditions.push({ $expr: { $or: expConditions } });
 			}
 		}
 
-		if (pages.salary && pages.salary.length > 0) {
-			const salConditions = pages.salary.map((sal) => {
-				const val = { $convert: { input: "$minSalary", to: "double", onError: 0, onNull: 0 } };
-				if (sal === "₹0 - ₹3L") return { $lte: [val, 300000] };
-				if (sal === "₹3L - ₹5L") return { $and: [{ $gt: [val, 300000] }, { $lte: [val, 500000] }] };
-				if (sal === "₹5L - ₹10L") return { $and: [{ $gt: [val, 500000] }, { $lte: [val, 1000000] }] };
-				if (sal === "₹10L+") return { $gt: [val, 1000000] };
-				return null;
-			}).filter(Boolean);
+		if (pages.minSalary !== undefined || pages.maxSalary !== undefined) {
+			const salConditions: Record<string, unknown>[] = [];
+			const val = { $convert: { input: "$maxSalary", to: "double", onError: 0, onNull: 0 } };
+
+			if (pages.minSalary !== undefined && pages.maxSalary !== undefined) {
+				salConditions.push({ $and: [{ $gte: [val, pages.minSalary] }, { $lte: [val, pages.maxSalary] }] });
+			} else if (pages.minSalary !== undefined) {
+				salConditions.push({ $gte: [val, pages.minSalary] });
+			} else if (pages.maxSalary !== undefined) {
+				salConditions.push({ $lte: [val, pages.maxSalary] });
+			}
 
 			if (salConditions.length > 0) {
 				andConditions.push({ $expr: { $or: salConditions } });
@@ -98,7 +102,29 @@ export class JobRepository extends BaseRepository<JobEntity, JobType> implements
 		const skip = (pages.page - 1) * pages.limit;
 		const filter = this.buildFilter(pages);
 
-		const docs = await this.model.find(filter).skip(skip).limit(pages.limit).exec();
+		let sortOptions: Record<string, 1 | -1 | { $meta: string }> = { created_at: -1 }; // Default: Newest
+
+		if (pages.sort === "Newest") {
+			sortOptions = { created_at: -1 };
+		} else if (pages.sort === "Salary (High to Low)") {
+			sortOptions = { maxSalary: -1 };
+		} else if (pages.sort === "Relevance") {
+			if (pages.search) {
+				sortOptions = { score: { $meta: "textScore" } };
+			}
+		}
+
+		let query = this.model.find(filter);
+
+		if (sortOptions.score) {
+			query = query.sort(sortOptions);
+			// Mongoose needs text index for textScore, assuming it's regex search here, relevance might just be default
+			sortOptions = {}; // Reset since we are using regex, not $text in buildFilter
+		} else {
+			query = query.sort(sortOptions);
+		}
+
+		const docs = await query.skip(skip).limit(pages.limit).exec();
 		const total = await this.model.countDocuments(filter);
 		const page = Math.ceil(total / pages.limit);
 		const data = await Promise.all(docs.map((doc) => this.mapper.fromMongo(doc as JobType)));

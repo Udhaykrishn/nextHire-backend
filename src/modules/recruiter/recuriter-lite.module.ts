@@ -24,6 +24,7 @@ import { S3Service } from "@/infrastructure/services/implements";
 			provide: RECRUITER_TOKEN.RECRUITER_REPOSITORY,
 			useClass: RecruiterRepository,
 		},
+
 		{
 			provide: "S3_SERVICE",
 			useClass: S3Service,
@@ -34,6 +35,7 @@ import { S3Service } from "@/infrastructure/services/implements";
 		RECRUITER_TOKEN.RECRUITER_REPOSITORY,
 		RECRUITER_MAPPER.RECRUITER_PRESISTANCE,
 		RECRUITER_MAPPER.RECRUITER_APPLICATION,
+
 		"S3_SERVICE",
 	],
 })

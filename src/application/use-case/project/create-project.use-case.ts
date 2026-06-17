@@ -21,13 +21,13 @@ export class CreateProjectUseCase implements IExecutable<CreateProjectDto, Respo
 	) {}
 
 	async execute(data: CreateProjectDto): Promise<ResponseProjectDto> {
-		const currentProjects = await this._projectRepository.findByUserId(data.userId!);
+		const currentProjects = await this._projectRepository.findByUserId(data.userId as string);
 		if (currentProjects.length >= PLAN_LIMITS.FREE.MAX_PROJECTS) {
 			throw new BadRequestException(USER_PROFILE_MESSAGES.PROJECT_LIMIT_REACHED);
 		}
 
 		const project = ProjectEntity.create({
-			userId: data.userId!,
+			userId: data.userId as string,
 			projectName: data.projectName,
 			description: data.description,
 			startDate: data.startDate,

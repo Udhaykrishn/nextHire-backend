@@ -27,7 +27,9 @@ export interface GetCandidateApplicationsResponse {
 }
 
 @Injectable()
-export class GetCandidateApplicationsUseCase implements IExecutable<GetCandidateApplicationsDto, GetCandidateApplicationsResponse> {
+export class GetCandidateApplicationsUseCase
+	implements IExecutable<GetCandidateApplicationsDto, GetCandidateApplicationsResponse>
+{
 	constructor(
 		@Inject(JOB_TOKEN.JOB_APPLICATION_REPOSITORY)
 		private readonly _jobApplicationRepository: IJobApplicationRepository<JobApplicationEntity>,
@@ -38,7 +40,7 @@ export class GetCandidateApplicationsUseCase implements IExecutable<GetCandidate
 	async execute(dto: GetCandidateApplicationsDto): Promise<GetCandidateApplicationsResponse> {
 		const { userId, search, status } = dto;
 		const applications = await this._jobApplicationRepository.findByUserId(userId);
-		
+
 		const filteredBySearch: JobApplicationWithJob[] = [];
 		for (const app of applications) {
 			const job = await this._jobRepository.findById(app.jobId);
@@ -56,20 +58,21 @@ export class GetCandidateApplicationsUseCase implements IExecutable<GetCandidate
 		// Calculate stats based on search results
 		const stats = {
 			total: filteredBySearch.length,
-			reviewing: filteredBySearch.filter(a => a.application.status === "REVIEWING").length,
-			interviews: filteredBySearch.filter(a => ["SHORTLISTED", "INTERVIEWING"].includes(a.application.status)).length,
-			offers: filteredBySearch.filter(a => a.application.status === "HIRED").length,
+			reviewing: filteredBySearch.filter((a) => a.application.status === "REVIEWING").length,
+			interviews: filteredBySearch.filter((a) => ["SHORTLISTED", "INTERVIEWING"].includes(a.application.status))
+				.length,
+			offers: filteredBySearch.filter((a) => a.application.status === "HIRED").length,
 		};
 
 		// Apply status filter
-		const data = filteredBySearch.filter(a => {
+		const data = filteredBySearch.filter((a) => {
 			if (!status || status === "ALL") return true;
 			if (status === "INTERVIEWS") return ["SHORTLISTED", "INTERVIEWING"].includes(a.application.status);
 			if (status === "OFFERS") return a.application.status === "HIRED";
 			if (status === "REVIEWING") return a.application.status === "REVIEWING";
 			return true;
 		});
-		
+
 		return { data, stats };
 	}
 }

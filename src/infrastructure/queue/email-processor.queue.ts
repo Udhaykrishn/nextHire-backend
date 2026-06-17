@@ -53,7 +53,12 @@ export class EmailQueueProcessor extends WorkerHost {
 			html = this.getJobAppliedCandidateTemplate(data.name, data.jobTitle ?? "", data.companyName ?? "");
 		} else if (type === "job_applied_recruiter") {
 			subject = `New Application for ${data.jobTitle}`;
-			html = this.getJobAppliedRecruiterTemplate(data.name, data.candidateName ?? "", data.jobTitle ?? "", data.companyName ?? "");
+			html = this.getJobAppliedRecruiterTemplate(
+				data.name,
+				data.candidateName ?? "",
+				data.jobTitle ?? "",
+				data.companyName ?? "",
+			);
 		}
 
 		if (subject && html) {
@@ -172,7 +177,12 @@ export class EmailQueueProcessor extends WorkerHost {
 		`;
 	}
 
-	private getJobAppliedRecruiterTemplate(name: string, candidateName: string, jobTitle: string, companyName: string): string {
+	private getJobAppliedRecruiterTemplate(
+		name: string,
+		candidateName: string,
+		jobTitle: string,
+		companyName: string,
+	): string {
 		return `
 			<div style="font-family: 'Inter', sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e1e1e1; border-radius: 12px; background-color: #ffffff;">
 				<div style="text-align: center; margin-bottom: 30px;">

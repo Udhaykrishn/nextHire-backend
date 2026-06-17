@@ -18,7 +18,7 @@ import { JOB_EVENTS } from "@/domain/enums/events.enum";
 import { RECRUITER_TOKEN } from "@/application/enums/recruiter/recruiter-token.enum";
 import type { IRecruiterRepository } from "@/application/interface/repository/recruiter-repository.interface";
 import type { RecruiterEntity } from "@/domain/entity/recruiter.entity";
-
+import { JOB_STATUS, RECRUITER_STATUS, USER_STATUS } from "@/domain/enums/status";
 export interface ApplyJobDto {
 	userId: string;
 	jobId: string;
@@ -38,16 +38,21 @@ export class ApplyJobUseCase implements IExecutable<ApplyJobDto, JobApplicationE
 		@Inject(RECRUITER_TOKEN.RECRUITER_REPOSITORY)
 		private readonly _recruiterRepository: IRecruiterRepository<RecruiterEntity>,
 		private readonly eventEmitter: EventEmitter2,
-	) { }
+	) {}
 
 	async execute(data: ApplyJobDto): Promise<JobApplicationEntity> {
 		const job = await this._jobRepository.findById(data.jobId);
-		if (!job) {
+		if (!job || job.status === JOB_STATUS.BLOCKED || !job.is_published) {
+			throw new NotFoundException(JOB_MESSAGES.JOB_NOT_FOUND);
+		}
+
+		const recruiter = await this._recruiterRepository.findById(job.posted_by || job.company_id || "");
+		if (recruiter && recruiter.status === RECRUITER_STATUS.BLOCKED) {
 			throw new NotFoundException(JOB_MESSAGES.JOB_NOT_FOUND);
 		}
 
 		const user = await this._userRepository.findById(data.userId);
-		if (!user) {
+		if (!user || user.status === USER_STATUS.BLOCK) {
 			throw new NotFoundException(USER_MESSAGES.USER_NOT_FOUND);
 		}
 
@@ -74,7 +79,7 @@ export class ApplyJobUseCase implements IExecutable<ApplyJobDto, JobApplicationE
 				{
 					applicationId: savedApplication.id,
 					jobId: data.jobId,
-					candidateId: data.userId
+					candidateId: data.userId,
 				},
 				{
 					attempts: 3,
@@ -83,14 +88,13 @@ export class ApplyJobUseCase implements IExecutable<ApplyJobDto, JobApplicationE
 						delay: 5000,
 					},
 					removeOnComplete: true,
-				}
+				},
 			);
 		} catch (e) {
 			console.error("Failed to push to ai-matching-queue", e);
 		}
 
-		const recruiter = await this._recruiterRepository.findById(job.posted_by || job.company_id || "");
-		if (recruiter && recruiter.email) {
+		if (recruiter?.email) {
 			this.eventEmitter.emit(JOB_EVENTS.JOB_APPLIED, {
 				candidateEmail: user.email,
 				candidateName: user.name,
@@ -102,6 +106,5 @@ export class ApplyJobUseCase implements IExecutable<ApplyJobDto, JobApplicationE
 		}
 
 		return savedApplication;
-
 	}
 }

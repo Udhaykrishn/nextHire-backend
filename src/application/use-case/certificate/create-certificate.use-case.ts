@@ -21,13 +21,13 @@ export class CreateCertificateUseCase implements IExecutable<CreateCertificateDt
 	) {}
 
 	async execute(data: CreateCertificateDto): Promise<ResponseCertificateDto> {
-		const currentCertificates = await this._certificateRepository.findByUserId(data.userId);
+		const currentCertificates = await this._certificateRepository.findByUserId(data.userId as string);
 		if (currentCertificates.length >= PLAN_LIMITS.FREE.MAX_CERTIFICATES) {
 			throw new BadRequestException(USER_PROFILE_MESSAGES.CERTIFICATE_LIMIT_REACHED);
 		}
 
 		const certificate = CertificateEntity.create({
-			userId: data.userId,
+			userId: data.userId as string,
 			certificateName: data.certificateName,
 			issuingOrganization: data.issuingOrganization,
 			issueDate: data.issueDate,

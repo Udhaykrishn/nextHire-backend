@@ -28,9 +28,15 @@ export class RecruiterEntity {
 	private _subscription: {
 		current_plan: string;
 		is_subscribed: boolean;
+		stripe_customer_id: string;
+		stripe_subscription_id: string;
+		status: string;
 	} = {
 		current_plan: "free",
 		is_subscribed: false,
+		stripe_customer_id: "",
+		stripe_subscription_id: "",
+		status: "inactive",
 	};
 
 	private _createdAt: Date;
@@ -54,7 +60,13 @@ export class RecruiterEntity {
 		verification_revoked_reason: string,
 		admin_approved: boolean,
 		profile_url: { key: string; url: string },
-		subscription: { current_plan: string; is_subscribed: boolean },
+		subscription: {
+			current_plan: string;
+			is_subscribed: boolean;
+			stripe_customer_id: string;
+			stripe_subscription_id: string;
+			status: string;
+		},
 		createdAt: Date,
 		updatedAt: Date | undefined,
 		role?: RoleEntity,
@@ -101,7 +113,13 @@ export class RecruiterEntity {
 		verification_revoked_reason?: string;
 		admin_approved?: boolean;
 		profile_url?: { key: string; url: string };
-		subscription?: { current_plan: string; is_subscribed: boolean };
+		subscription?: {
+			current_plan: string;
+			is_subscribed: boolean;
+			stripe_customer_id: string;
+			stripe_subscription_id: string;
+			status: string;
+		};
 
 		createdAt?: Date;
 		updatedAt?: Date;
@@ -125,7 +143,13 @@ export class RecruiterEntity {
 			data.verification_revoked_reason ?? "",
 			data.admin_approved ?? false,
 			data.profile_url ?? { key: "", url: "" },
-			data.subscription ?? { current_plan: "free", is_subscribed: false },
+			data.subscription ?? {
+				current_plan: "free",
+				is_subscribed: false,
+				stripe_customer_id: "",
+				stripe_subscription_id: "",
+				status: "inactive",
+			},
 			data.createdAt ?? new Date(),
 			data.updatedAt,
 			data.role,
@@ -201,7 +225,13 @@ export class RecruiterEntity {
 		return this._admin_approved;
 	}
 
-	get subscription(): { current_plan: string; is_subscribed: boolean } {
+	get subscription(): {
+		current_plan: string;
+		is_subscribed: boolean;
+		stripe_customer_id: string;
+		stripe_subscription_id: string;
+		status: string;
+	} {
 		return this._subscription;
 	}
 
@@ -271,7 +301,13 @@ export class RecruiterEntity {
 		this._admin_approved = true;
 	}
 
-	changeSubscription(subscription: { current_plan: string; is_subscribed: boolean }): void {
+	changeSubscription(subscription: {
+		current_plan: string;
+		is_subscribed: boolean;
+		stripe_customer_id: string;
+		stripe_subscription_id: string;
+		status: string;
+	}): void {
 		this._subscription = subscription;
 	}
 

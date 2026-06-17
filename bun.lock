@@ -7,6 +7,7 @@
       "dependencies": {
         "@aws-sdk/client-s3": "^3.943.0",
         "@aws-sdk/s3-request-presigner": "^3.943.0",
+        "@golevelup/nestjs-stripe": "^3.0.0",
         "@google/genai": "^1.30.0",
         "@google/generative-ai": "^0.24.1",
         "@nestjs/bullmq": "^11.0.4",
@@ -58,6 +59,7 @@
         "reflect-metadata": "^0.2.2",
         "rxjs": "^7.8.1",
         "save": "^2.9.0",
+        "stripe": "^20.4.1",
         "uuid": "^13.0.0",
         "xss": "^1.0.15",
         "zod": "^4.1.13",
@@ -310,6 +312,10 @@
     "@emnapi/wasi-threads": ["@emnapi/wasi-threads@1.1.0", "", { "dependencies": { "tslib": "2.8.1" } }, "sha512-WI0DdZ8xFSbgMjR1sFsKABJ/C5OnRrjT06JXbZKexJGrDuPTzZdDYfFlsgcCXCyf+suG5QU2e/y1Wo2V/OapLQ=="],
 
     "@epic-web/invariant": ["@epic-web/invariant@1.0.0", "", {}, "sha512-lrTPqgvfFQtR/eY/qkIzp98OGdNJu0m5ji3q/nJI8v3SXkRKEnWiOxMmbvcSoAIzv/cGiuvRy57k4suKQSAdwA=="],
+
+    "@golevelup/nestjs-discovery": ["@golevelup/nestjs-discovery@7.0.3", "", { "peerDependencies": { "@nestjs/common": "^11.1.21", "@nestjs/core": "^11.1.21" } }, "sha512-wBlSxU1wgBS+x4adwgp2qklXKCC9sufn8zrrSJ1WSCEHb48OBMrn0FskU862CFPwyotJaElRrirHTICAOsl1Mg=="],
+
+    "@golevelup/nestjs-stripe": ["@golevelup/nestjs-stripe@3.0.0", "", { "dependencies": { "@golevelup/nestjs-discovery": "^7.0.0" }, "peerDependencies": { "stripe": "^20.4.1" } }, "sha512-Faf95dd5yYT5tGrEW2B1kSskr1FPI5ZQp+3Huxr89SeUSbx92vVU3QY6WYYnOUdkrxTI5+uvxfR4U0wjF5zdQQ=="],
 
     "@google/genai": ["@google/genai@1.30.0", "", { "dependencies": { "google-auth-library": "10.5.0", "ws": "8.18.3" } }, "sha512-3MRcgczBFbUat1wIlZoLJ0vCCfXgm7Qxjh59cZi2X08RgWLtm9hKOspzp7TOg1TV2e26/MLxR2GR5yD5GmBV2w=="],
 
@@ -2236,6 +2242,8 @@
     "strip-final-newline": ["strip-final-newline@2.0.0", "", {}, "sha512-BrpvfNAE3dcvq7ll3xVumzjKjZQ5tI1sEUIKr3Uoks0XUl45St3FlatVqef9prk4jRDzhW6WZg+3bk93y6pLjA=="],
 
     "strip-json-comments": ["strip-json-comments@3.1.1", "", {}, "sha512-6fPc+R4ihwqP6N/aIv2f1gMH8lOVtWQHoqC4yK6oSDVVocumAsfCqjkXnqiYMhmMwS/mEHLp7Vehlt3ql6lEig=="],
+
+    "stripe": ["stripe@20.4.1", "", { "peerDependencies": { "@types/node": ">=16" }, "optionalPeers": ["@types/node"] }, "sha512-axCguHItc8Sxt0HC6aSkdVRPffjYPV7EQqZRb2GkIa8FzWDycE7nHJM19C6xAIynH1Qp1/BHiopSi96jGBxT0w=="],
 
     "strnum": ["strnum@2.1.1", "", {}, "sha512-7ZvoFTiCnGxBtDqJ//Cu6fWtZtc7Y3x+QOirG15wztbdngGSkht27o2pyGWrVy0b4WAy3jbKmnoK6g5VlVNUUw=="],
 

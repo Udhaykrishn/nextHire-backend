@@ -23,6 +23,9 @@ export class SubscribeRecruiterUseCase implements IExecutable<SubscribeRecruiter
 		recruiter.changeSubscription({
 			current_plan: data.plan,
 			is_subscribed: true,
+			stripe_customer_id: recruiter.subscription.stripe_customer_id,
+			stripe_subscription_id: recruiter.subscription.stripe_subscription_id,
+			status: recruiter.subscription.status,
 		});
 
 		// Here we could also Create Subscription Entity and save history

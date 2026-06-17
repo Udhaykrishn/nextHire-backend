@@ -2,7 +2,6 @@ import {
 	IsEmail,
 	IsString,
 	IsOptional,
-	IsUrl,
 	MinLength,
 	MaxLength,
 	ValidateNested,

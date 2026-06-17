@@ -19,7 +19,11 @@ export interface IJobController {
 		status?: string,
 	): Promise<PaginationResponse<ResponseJobDto> | null>;
 	blockUnblockJob(jobId: string): Promise<ResponseJobDto>;
-	getCandidateMatchScore(jobId: string, candidateId: string, retry?: string): Promise<{ matchScore: number; breakdown: Record<string, unknown> }>;
+	getCandidateMatchScore(
+		jobId: string,
+		candidateId: string,
+		retry?: string,
+	): Promise<{ matchScore: number; breakdown: Record<string, unknown> }>;
 	updateJob(jobId: string, dto: UpdateJobDto): Promise<ResponseJobDto>;
 	getJobsForCandidate(
 		req: AuthenticatedRequest,
@@ -35,7 +39,10 @@ export interface IJobController {
 		req: AuthenticatedRequest,
 		search?: string,
 		status?: string,
-	): Promise<{ data: { application: Record<string, unknown>; job: ResponseJobDto }[]; stats: Record<string, unknown> }>;
+	): Promise<{
+		data: { application: Record<string, unknown>; job: ResponseJobDto }[];
+		stats: Record<string, unknown>;
+	}>;
 	getJobStats(jobId: string): Promise<JobStatsResponse>;
 	getJobApplications(
 		jobId: string,
@@ -49,5 +56,5 @@ export interface IJobController {
 		applicationId: string,
 		dto: UpdateApplicationStatusDto,
 	): Promise<void>;
-	getJobById(req: AuthenticatedRequest, jobId: string): Promise<ResponseJobDto & { matchScore?: number } | null>;
+	getJobById(req: AuthenticatedRequest, jobId: string): Promise<(ResponseJobDto & { matchScore?: number }) | null>;
 }

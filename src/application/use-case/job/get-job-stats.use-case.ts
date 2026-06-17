@@ -20,7 +20,7 @@ export class GetJobStatsUseCase implements IExecutable<string, JobStatsResponse>
 
 	async execute(jobId: string): Promise<JobStatsResponse> {
 		const applications = await this._jobApplicationRepository.findByJobId(jobId);
-		
+
 		return {
 			total: applications.length,
 			reviewing: applications.filter((a) => a.status === "REVIEWING").length,
