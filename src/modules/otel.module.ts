@@ -9,15 +9,6 @@ import { APP_INTERCEPTOR } from "@nestjs/core";
 		OpenTelemetryModule.forRoot({
 			metrics: {
 				hostMetrics: true,
-				apiMetrics: {
-					enable: true,
-					defaultAttributes: {
-						service: "nexthire-backend",
-					},
-					ignoreRoutes: ["/favicon.ico", "/health", "/metrics"],
-					ignoreUndefinedRoutes: false,
-					prefix: "nexthire",
-				},
 			},
 		}),
 	],
