@@ -20,7 +20,7 @@ export class UpdateCertificateUseCase implements IExecutable<UpdateCertificateDt
 	) {}
 
 	async execute(data: UpdateCertificateDto): Promise<ResponseCertificateDto> {
-		const certificate = await this._certificateRepository.findById(data.id);
+		const certificate = await this._certificateRepository.findById(data.id as string);
 		if (!certificate) {
 			throw new NotFoundException(USER_PROFILE_MESSAGES.CERTIFICATE_NOT_FOUND);
 		}
