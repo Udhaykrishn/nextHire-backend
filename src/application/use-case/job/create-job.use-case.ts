@@ -37,13 +37,6 @@ export class CreateJobUseCase implements IExecutable<CreateJobDto, JobEntity> {
 			throw new ForbiddenException(RECRUITER_MESSAGES.RECRUITER_NOT_VERIFIED);
 		}
 
-		const isSubscribed = recruiter.subscription?.is_subscribed || false;
-		const jobCount = recruiter.job_count || 0;
-
-		if (!isSubscribed && jobCount >= 2) {
-			throw new ForbiddenException(RECRUITER_MESSAGES.SUBSCRIPTION_REQUIRED);
-		}
-
 		const job = JobEntity.create({
 			...data,
 			company_id: data.company_id,
