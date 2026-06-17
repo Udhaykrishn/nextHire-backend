@@ -22,6 +22,7 @@ import { ThrottlerModule, ThrottlerGuard } from "@nestjs/throttler";
 import { APP_GUARD } from "@nestjs/core";
 import { SecurityMiddleware } from "@/presentation/middleware/security.middleware";
 import { CsrfMiddleware } from "@/presentation/middleware/csrf.middleware";
+import { PlanModule } from "./plan/plan.module";
 
 @Module({
 	imports: [
@@ -69,6 +70,7 @@ import { CsrfMiddleware } from "@/presentation/middleware/csrf.middleware";
 		NotificationModule,
 		JobModule,
 		StripeModule,
+		PlanModule,
 	],
 	controllers: [HealthController],
 	providers: [

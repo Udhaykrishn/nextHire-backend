@@ -27,7 +27,14 @@ async function bootstrap() {
 	const server = app.getHttpAdapter().getInstance();
 	server.set("trust proxy", 1);
 
-	app.use(json({ limit: "100kb" }));
+	app.use(
+		json({
+			limit: "100kb",
+			verify: (req: Record<string, unknown>, _res, buf) => {
+				req.rawBody = buf;
+			},
+		}),
+	);
 	app.use(urlencoded({ extended: true, limit: "100kb" }));
 
 	app.use((req, _res, next) => {
