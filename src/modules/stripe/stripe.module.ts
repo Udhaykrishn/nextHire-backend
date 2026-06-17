@@ -2,7 +2,7 @@ import { Module } from "@nestjs/common";
 import { StripeModule as GoLevelUpStripeModule } from "@golevelup/nestjs-stripe";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { StripeService } from "@/infrastructure/services/stripe/stripe.service";
-import { StripeController } from "@/presentation/controllers/stripe/stripe.controller";
+import { StripeController } from "@/presentation/controller/stripe/stripe.controller";
 
 @Module({
 	imports: [

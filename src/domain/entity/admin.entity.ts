@@ -10,7 +10,7 @@ export class AdminEntity {
 	}
 
 	static create(data: { email: string; password: string; id?: string }): AdminEntity {
-		return new AdminEntity(data.email, data.password);
+		return new AdminEntity(data.email, data.password, data.id);
 	}
 
 	get id(): string | undefined {

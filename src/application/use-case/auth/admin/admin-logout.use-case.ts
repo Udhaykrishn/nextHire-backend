@@ -21,19 +21,24 @@ export class AdminLogoutUseCase implements IExecutable<string, boolean> {
 		const refreshToken = await this._redisService.get(REDIS_KEYS.REFRESH.concat(sessionId));
 
 		if (!refreshToken) {
-			throw new UnauthorizedException("Token missing");
+			return true;
 		}
 
-		const payload = this._jwtService.verifyToken<{
-			id: string;
-			email: string;
-			role: string;
-		}>(refreshToken);
+		try {
+			const payload = this._jwtService.verifyToken<{
+				id: string;
+				email: string;
+				role: string;
+			}>(refreshToken);
 
-		const admin = await this._adminRepository.findById(payload.id);
+			const admin = await this._adminRepository.findById(payload.id);
 
-		if (!admin) {
-			throw new BadRequestException("Admin not found");
+			if (!admin) {
+				this._redisService.del(REDIS_KEYS.REFRESH.concat(sessionId));
+				return true;
+			}
+		} catch (error) {
+			// Ignore token verification errors during logout to allow cleanup
 		}
 
 		this._redisService.del(REDIS_KEYS.REFRESH.concat(sessionId));

@@ -17,7 +17,7 @@ import { AddressModule } from "./address/address.module";
 import { OTelModule } from "./otel.module";
 import { JobModule } from "./job/job.module";
 import { CompanyModule } from "./company/company.module";
-import { HealthController } from "@/presentation/controllers/health.controller";
+import { HealthController } from "@/presentation/controller/health.controller";
 import { ThrottlerModule, ThrottlerGuard } from "@nestjs/throttler";
 import { APP_GUARD } from "@nestjs/core";
 import { SecurityMiddleware } from "@/presentation/middleware/security.middleware";
