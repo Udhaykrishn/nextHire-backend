@@ -1,4 +1,5 @@
 import { MongoDbModule } from "./mongodb.module";
+import { StripeModule } from "./stripe/stripe.module";
 import { type NestModule, type MiddlewareConsumer, Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { EventEmitterModule } from "@nestjs/event-emitter";
@@ -67,6 +68,7 @@ import { CsrfMiddleware } from "@/presentation/middleware/csrf.middleware";
 		AddressModule,
 		NotificationModule,
 		JobModule,
+		StripeModule,
 	],
 	controllers: [HealthController],
 	providers: [
