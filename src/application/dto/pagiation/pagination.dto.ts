@@ -36,6 +36,11 @@ export class PaginationDto {
 	jobTypes?: string[];
 
 	@IsOptional()
+	@IsArray()
+	@IsString({ each: true })
+	locationTypes?: string[];
+
+	@IsOptional()
 	@IsString()
 	sort?: string;
 

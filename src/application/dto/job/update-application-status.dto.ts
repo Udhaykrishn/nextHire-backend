@@ -1,8 +1,8 @@
-import { IsEnum, IsNotEmpty, IsString } from "class-validator";
+import { IsEnum, IsOptional, IsString, IsNotEmpty } from "class-validator";
 import { APPLICATION_STATUS } from "@/domain/entity/job-application.entity";
 
 export class UpdateApplicationStatusDto {
-	@IsNotEmpty()
+	@IsOptional()
 	@IsString()
 	applicationId: string;
 

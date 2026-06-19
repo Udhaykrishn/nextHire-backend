@@ -210,6 +210,7 @@ export class JobController implements IJobController {
 			experience: parseArray(experience),
 			salary: parseArray(salary),
 			jobTypes: parseArray(jobTypes),
+			locationTypes: parseArray(req.query.locationTypes as string | string[]),
 			sort: typeof req.query.sort === "string" ? req.query.sort : undefined,
 			minSalary: typeof req.query.minSalary === "string" ? parseInt(req.query.minSalary, 10) : undefined,
 			maxSalary: typeof req.query.maxSalary === "string" ? parseInt(req.query.maxSalary, 10) : undefined,

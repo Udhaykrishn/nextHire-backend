@@ -8,7 +8,7 @@ import { JobEntity } from "@/domain/entity/job.entity";
 import type { IJobRepository } from "@/application/interface/repository/job-repository.interface";
 import type { IRecruiterRepository } from "@/application/interface/repository/recruiter-repository.interface";
 import type { RecruiterEntity } from "@/domain/entity/recruiter.entity";
-import { Inject, Injectable, ForbiddenException, NotFoundException, BadRequestException } from "@nestjs/common";
+import { Inject, Injectable, ForbiddenException, NotFoundException, BadRequestException, ConflictException } from "@nestjs/common";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 import { JOB_EVENTS } from "@/domain/enums/events.enum";
 
@@ -35,6 +35,15 @@ export class CreateJobUseCase implements IExecutable<CreateJobDto, JobEntity> {
 
 		if (!recruiter.is_verified_company) {
 			throw new ForbiddenException(RECRUITER_MESSAGES.RECRUITER_NOT_VERIFIED);
+		}
+
+		const existingJob = await this._jobRepository.findOne({
+			jobTitle: data.jobTitle,
+			company_id: data.company_id,
+		});
+
+		if (existingJob) {
+			throw new ConflictException(JOB_MESSAGES.JOB_ALREADY_EXISTS);
 		}
 
 		const job = JobEntity.create({

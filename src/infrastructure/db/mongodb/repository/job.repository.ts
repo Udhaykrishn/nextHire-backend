@@ -57,6 +57,11 @@ export class JobRepository extends BaseRepository<JobEntity, JobType> implements
 			andConditions.push({ $or: typeRegexes });
 		}
 
+		if (pages.locationTypes && pages.locationTypes.length > 0) {
+			const typeRegexes = pages.locationTypes.map((t) => ({ locationType: { $regex: t, $options: "i" } }));
+			andConditions.push({ $or: typeRegexes });
+		}
+
 		if (pages.experience && pages.experience.length > 0) {
 			const expConditions = pages.experience
 				.map((exp) => {
@@ -71,6 +76,23 @@ export class JobRepository extends BaseRepository<JobEntity, JobType> implements
 
 			if (expConditions.length > 0) {
 				andConditions.push({ $expr: { $or: expConditions } });
+			}
+		}
+
+		if (pages.salary && pages.salary.length > 0) {
+			const salConditions = pages.salary
+				.map((sal) => {
+					const val = { $convert: { input: "$maxSalary", to: "double", onError: 0, onNull: 0 } };
+					if (sal === "₹0 - ₹3L") return { $lte: [val, 300000] };
+					if (sal === "₹3L - ₹5L") return { $and: [{ $gt: [val, 300000] }, { $lte: [val, 500000] }] };
+					if (sal === "₹5L - ₹10L") return { $and: [{ $gt: [val, 500000] }, { $lte: [val, 1000000] }] };
+					if (sal === "₹10L+") return { $gt: [val, 1000000] };
+					return null;
+				})
+				.filter(Boolean);
+
+			if (salConditions.length > 0) {
+				andConditions.push({ $expr: { $or: salConditions } });
 			}
 		}
 
