@@ -10,3 +10,5 @@ export { JobEntity } from "./job.entity";
 export { SubscriptionEntity } from "./subscription.entity";
 export { RoleEntity } from "./role.entity";
 export { JobApplicationEntity } from "./job-application.entity";
+export { ChatEntity } from "./chat.entity";
+export { NotificationEntity } from "./notification.entity";

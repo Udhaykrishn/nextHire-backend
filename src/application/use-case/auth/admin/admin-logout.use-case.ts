@@ -1,4 +1,4 @@
-import { Injectable, Inject, BadRequestException, UnauthorizedException } from "@nestjs/common";
+import { Injectable, Inject } from "@nestjs/common";
 import { IExecutable } from "@/application/interface/executable.interface";
 import type { IAdminRepository } from "@/application/interface/repository";
 import { AdminEntity } from "@/domain/entity";
@@ -37,7 +37,7 @@ export class AdminLogoutUseCase implements IExecutable<string, boolean> {
 				this._redisService.del(REDIS_KEYS.REFRESH.concat(sessionId));
 				return true;
 			}
-		} catch (error) {
+		} catch (_error) {
 			// Ignore token verification errors during logout to allow cleanup
 		}
 

@@ -59,7 +59,17 @@ export class GetCandidateJobsUseCase
 			return jobWithScore;
 		});
 
-		dataWithScore.sort((a, b) => (b.matchScore || 0) - (a.matchScore || 0));
+		const sort = dto.paginationDto.sort;
+		if (sort === "Newest") {
+			dataWithScore.sort((a, b) => new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime());
+		} else if (sort === "Salary (High to Low)") {
+			dataWithScore.sort((a, b) => (parseFloat(b.maxSalary || "0") || 0) - (parseFloat(a.maxSalary || "0") || 0));
+		} else if (sort === "Salary (Low to High)") {
+			dataWithScore.sort((a, b) => (parseFloat(a.maxSalary || "0") || 0) - (parseFloat(b.maxSalary || "0") || 0));
+		} else {
+			// Default / "Relevance": best AI match first.
+			dataWithScore.sort((a, b) => (b.matchScore || 0) - (a.matchScore || 0));
+		}
 
 		const page = dto.paginationDto.page || 1;
 		const limit = dto.paginationDto.limit || 10;

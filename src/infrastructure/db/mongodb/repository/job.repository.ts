@@ -62,10 +62,47 @@ export class JobRepository extends BaseRepository<JobEntity, JobType> implements
 			andConditions.push({ $or: typeRegexes });
 		}
 
+		if (pages.jobCategories && pages.jobCategories.length > 0) {
+			const catRegexes = pages.jobCategories.map((c) => ({ jobCategory: { $regex: c, $options: "i" } }));
+			andConditions.push({ $or: catRegexes });
+		}
+
+		if (pages.nightShift) {
+			andConditions.push({ isNightShift: true });
+		}
+
+		if (pages.datePosted) {
+			const days: Record<string, number> = { "24h": 1, "7d": 7, "30d": 30 };
+			const windowDays = days[pages.datePosted];
+			if (windowDays) {
+				// created_at is stored as an ISO 8601 string, which sorts lexicographically,
+				// so compare against an ISO string (a Date object would mismatch BSON types).
+				const since = new Date(Date.now() - windowDays * 24 * 60 * 60 * 1000).toISOString();
+				andConditions.push({ created_at: { $gte: since } });
+			}
+		}
+
 		if (pages.experience && pages.experience.length > 0) {
+			// minExperience is free text (e.g. "2 Years"), so extract the leading
+			// number before comparing — a plain $convert would fail and fall back to 0,
+			// mis-bucketing every job with a unit suffix as Entry Level.
+			const val = {
+				$let: {
+					vars: {
+						rf: {
+							$regexFind: {
+								input: { $ifNull: ["$minExperience", ""] },
+								regex: "[0-9]+(\\.[0-9]+)?",
+							},
+						},
+					},
+					in: {
+						$convert: { input: { $ifNull: ["$$rf.match", "0"] }, to: "double", onError: 0, onNull: 0 },
+					},
+				},
+			};
 			const expConditions = pages.experience
 				.map((exp) => {
-					const val = { $convert: { input: "$minExperience", to: "double", onError: 0, onNull: 0 } };
 					if (exp === "Entry Level") return { $lte: [val, 1] };
 					if (exp === "Mid Level") return { $and: [{ $gt: [val, 1] }, { $lte: [val, 3] }] };
 					if (exp === "Senior Level") return { $and: [{ $gt: [val, 3] }, { $lte: [val, 7] }] };

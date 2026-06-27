@@ -23,6 +23,9 @@ import { APP_GUARD } from "@nestjs/core";
 import { SecurityMiddleware } from "@/presentation/middleware/security.middleware";
 import { CsrfMiddleware } from "@/presentation/middleware/csrf.middleware";
 import { PlanModule } from "./plan/plan.module";
+import { FormModule } from "./form/form.module";
+import { ChatModule } from "./chat/chat.module";
+import { InterviewerModule } from "./interviewer/interviewer.module";
 
 @Module({
 	imports: [
@@ -62,7 +65,6 @@ import { PlanModule } from "./plan/plan.module";
 		AuthModule,
 		UserModule,
 		CompanyModule,
-		RecruiterModule,
 		CertificateModule,
 		EducationModule,
 		ProjectModule,
@@ -71,6 +73,15 @@ import { PlanModule } from "./plan/plan.module";
 		JobModule,
 		StripeModule,
 		PlanModule,
+		FormModule,
+		ChatModule,
+		InterviewerModule,
+		// RecruiterModule must be registered LAST: it owns the greedy
+		// `GET/PATCH recruiter/:id` catch-all, which otherwise shadows static
+		// `recruiter/*` routes (e.g. recruiter/interviewers, recruiter/templates)
+		// declared by controllers in other modules. Route registration follows
+		// this import order, and the first match wins.
+		RecruiterModule,
 	],
 	controllers: [HealthController],
 	providers: [

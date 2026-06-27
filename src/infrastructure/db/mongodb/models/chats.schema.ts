@@ -19,6 +19,21 @@ export class Chat {
 
 	@Prop({ required: true })
 	message: string;
+
+	@Prop({ type: String, default: "text", enum: ["text", "image", "document"] })
+	message_type: string;
+
+	@Prop({ type: String, default: null })
+	file_url: string | null;
+
+	@Prop({ type: String, default: null })
+	file_name: string | null;
+
+	@Prop({ type: Number, default: null })
+	file_size: number | null;
+
+	@Prop({ type: String, default: null })
+	file_key: string | null;
 }
 
 export const ChatSchema = SchemaFactory.createForClass(Chat);

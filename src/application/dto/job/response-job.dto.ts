@@ -180,4 +180,7 @@ export class ResponseJobDto {
 
 	@Expose()
 	is_published: boolean;
+
+	@Expose()
+	is_chat_enabled: boolean;
 }

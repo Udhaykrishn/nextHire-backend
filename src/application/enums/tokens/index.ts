@@ -9,3 +9,5 @@ export { PROJECT_TOKEN } from "./project-token.enum";
 export { ADDRESS_TOKEN } from "./address-token.enum";
 export { JOB_TOKEN } from "./job-token.enum";
 export { COMPANY_TOKEN } from "./company-token.enum";
+export { CHAT_TOKEN } from "./chat-token.enum";
+export { NOTIFICATION_TOKEN } from "./notification-token.enum";

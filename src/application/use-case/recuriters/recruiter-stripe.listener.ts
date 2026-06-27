@@ -37,10 +37,67 @@ export class RecruiterStripeListener {
 				status: payload.status,
 			});
 
-			await this.recruiterRepository.save(recruiter);
+			await this.recruiterRepository.findByIdAndUpdate(recruiter.id ?? "", recruiter);
 			this.logger.log(`Successfully updated subscription for recruiter ${payload.userId}`);
 		} catch (error) {
 			this.logger.error(`Failed to handle stripe.subscription.created for ${payload.userId}:`, error);
+		}
+	}
+
+	@OnEvent("stripe.subscription.updated")
+	async handleSubscriptionUpdated(payload: {
+		stripeCustomerId: string;
+		stripeSubscriptionId: string;
+		status: string;
+		currentPlan: string;
+	}) {
+		this.logger.log(`Handling stripe.subscription.updated for customer ${payload.stripeCustomerId}`);
+
+		try {
+			const recruiter = await this.recruiterRepository.findByStripeCustomerId(payload.stripeCustomerId);
+			if (!recruiter) {
+				this.logger.error(`Recruiter not found with Stripe Customer ID: ${payload.stripeCustomerId}`);
+				return;
+			}
+
+			recruiter.changeSubscription({
+				current_plan: payload.status === "active" ? "pro" : "free",
+				is_subscribed: payload.status === "active" || payload.status === "trialing",
+				stripe_customer_id: payload.stripeCustomerId,
+				stripe_subscription_id: payload.stripeSubscriptionId,
+				status: payload.status,
+			});
+
+			await this.recruiterRepository.findByIdAndUpdate(recruiter.id ?? "", recruiter);
+			this.logger.log(`Successfully updated subscription for recruiter ${recruiter.id}`);
+		} catch (error) {
+			this.logger.error(`Failed to handle stripe.subscription.updated for ${payload.stripeCustomerId}:`, error);
+		}
+	}
+
+	@OnEvent("stripe.subscription.deleted")
+	async handleSubscriptionDeleted(payload: { stripeCustomerId: string; stripeSubscriptionId: string }) {
+		this.logger.log(`Handling stripe.subscription.deleted for customer ${payload.stripeCustomerId}`);
+
+		try {
+			const recruiter = await this.recruiterRepository.findByStripeCustomerId(payload.stripeCustomerId);
+			if (!recruiter) {
+				this.logger.error(`Recruiter not found with Stripe Customer ID: ${payload.stripeCustomerId}`);
+				return;
+			}
+
+			recruiter.changeSubscription({
+				current_plan: "free",
+				is_subscribed: false,
+				stripe_customer_id: payload.stripeCustomerId,
+				stripe_subscription_id: payload.stripeSubscriptionId,
+				status: "canceled",
+			});
+
+			await this.recruiterRepository.findByIdAndUpdate(recruiter.id ?? "", recruiter);
+			this.logger.log(`Successfully canceled subscription for recruiter ${recruiter.id}`);
+		} catch (error) {
+			this.logger.error(`Failed to handle stripe.subscription.deleted for ${payload.stripeCustomerId}:`, error);
 		}
 	}
 }

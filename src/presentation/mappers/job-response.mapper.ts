@@ -62,6 +62,7 @@ export function toJobResponse(job: JobEntity): ResponseJobDto {
 		posted_by: job.posted_by,
 		status: job.status,
 		is_published: job.is_published,
+		is_chat_enabled: job.is_chat_enabled,
 		created_at: job.created_at,
 		updated_at: job.updated_at,
 	} as unknown as ResponseJobDto;

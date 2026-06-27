@@ -102,6 +102,9 @@ export class ApplyJobUseCase implements IExecutable<ApplyJobDto, JobApplicationE
 				recruiterName: recruiter.name,
 				jobTitle: job.jobTitle,
 				companyName: job.hiringCompany,
+				candidateId: user.id,
+				recruiterId: recruiter.id,
+				jobId: job.id,
 			});
 		}
 

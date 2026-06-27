@@ -56,4 +56,9 @@ export class RecruiterRepository
 			total,
 		};
 	}
+
+	async findByStripeCustomerId(stripeCustomerId: string): Promise<RecruiterEntity | null> {
+		const doc = await this.recruiterModel.findOne({ "subscription.stripe_customer_id": stripeCustomerId }).exec();
+		return doc ? this.mapper.fromMongo(doc) : null;
+	}
 }

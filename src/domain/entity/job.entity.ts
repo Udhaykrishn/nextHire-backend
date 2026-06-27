@@ -70,6 +70,7 @@ export interface IJobEntityData {
 	posted_by: string;
 	status: string;
 	is_published: boolean;
+	is_chat_enabled: boolean;
 	created_at: string;
 	updated_at: string;
 }
@@ -144,6 +145,7 @@ export class JobEntity {
 	private _posted_by: string;
 	private _status: string;
 	private _is_published: boolean;
+	private _is_chat_enabled: boolean;
 	private _created_at: string;
 	private _updated_at: string;
 
@@ -212,6 +214,7 @@ export class JobEntity {
 		this._posted_by = data.posted_by;
 		this._status = data.status;
 		this._is_published = data.is_published;
+		this._is_chat_enabled = data.is_chat_enabled;
 		this._created_at = data.created_at;
 		this._updated_at = data.updated_at;
 	}
@@ -287,6 +290,7 @@ export class JobEntity {
 			posted_by: data.posted_by,
 			status: data.status || JOB_STATUS.OPEN,
 			is_published: data.is_published || false,
+			is_chat_enabled: data.is_chat_enabled !== false,
 			created_at: data.created_at || new Date().toISOString(),
 			updated_at: data.updated_at || new Date().toISOString(),
 			id: data.id,
@@ -479,6 +483,9 @@ export class JobEntity {
 	}
 	get is_published(): boolean {
 		return this._is_published;
+	}
+	get is_chat_enabled(): boolean {
+		return this._is_chat_enabled;
 	}
 	get created_at(): string {
 		return this._created_at;

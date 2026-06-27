@@ -72,6 +72,7 @@ export class JobPersistenceMapper implements IJobPersistenceMapper<JobEntity, Jo
 			posted_by: data.posted_by,
 			status: data.status,
 			is_published: data.is_published,
+			is_chat_enabled: data.is_chat_enabled,
 			created_at: data.created_at,
 			updated_at: data.updated_at,
 		} as unknown as JobType;
@@ -143,6 +144,7 @@ export class JobPersistenceMapper implements IJobPersistenceMapper<JobEntity, Jo
 			posted_by: data.posted_by || "",
 			status: data.status || JOB_STATUS.OPEN,
 			is_published: data.is_published || false,
+			is_chat_enabled: data.is_chat_enabled !== false,
 			created_at: data.created_at || "",
 			updated_at: data.updated_at || "",
 		});

@@ -44,12 +44,17 @@ export class UpdateApplicationStatusUseCase implements IExecutable<UpdateApplica
 			throw new ForbiddenException("You don't have permission to modify this application");
 		}
 
+		const previousStatus = application.status;
 		application.changeStatus(dto.status);
 		await this._jobApplicationRepository.findByIdAndUpdate(dto.applicationId, application);
 
 		const user = await this._userRepository.findById(application.userId);
 		if (user?.email) {
 			this.eventEmitter.emit(JOB_EVENTS.APPLICATION_STATUS_UPDATED, {
+				candidateId: user.id,
+				jobId: job.id,
+				recruiterId: job.company_id,
+				previousStatus,
 				candidateEmail: user.email,
 				candidateName: user.name,
 				jobTitle: job.jobTitle,

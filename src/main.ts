@@ -57,7 +57,14 @@ async function bootstrap() {
 	app.use(cookieParser());
 	app.use(compression());
 	app.use(mongoSanitize());
-	app.use(hpp());
+	// hpp collapses repeat query params to their last value to block parameter
+	// pollution. Whitelist the multi-select job filters so selecting more than one
+	// option in a group (e.g. Entry + Mid) keeps the full array instead of just the last.
+	app.use(
+		hpp({
+			whitelist: ["experience", "salary", "jobTypes", "locationTypes", "jobCategories"],
+		}),
+	);
 	app.use(xssMiddleware);
 
 	app.useGlobalPipes(

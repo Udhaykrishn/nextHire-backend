@@ -21,4 +21,15 @@ export class StripeController {
 			return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ error: (error as Error).message });
 		}
 	}
+
+	@Post("mock-success")
+	async mockSuccess(@Body() body: { userId: string }, @Res() res: Response) {
+		try {
+			const { userId } = body;
+			this.stripeService.mockSuccess(userId);
+			return res.status(HttpStatus.OK).json({ message: "Mock subscription created successfully" });
+		} catch (error) {
+			return res.status(HttpStatus.BAD_REQUEST).json({ error: (error as Error).message });
+		}
+	}
 }

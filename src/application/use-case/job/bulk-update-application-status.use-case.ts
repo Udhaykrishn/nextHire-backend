@@ -59,6 +59,7 @@ export class BulkUpdateApplicationStatusUseCase implements IExecutable<BulkUpdat
 
 		// Update all statuses
 		for (const application of applications) {
+			const previousStatus = application.status;
 			application.changeStatus(dto.status);
 			await this._jobApplicationRepository.findByIdAndUpdate(application.id as string, application);
 
@@ -67,6 +68,10 @@ export class BulkUpdateApplicationStatusUseCase implements IExecutable<BulkUpdat
 
 			if (user?.email && job) {
 				this.eventEmitter.emit(JOB_EVENTS.APPLICATION_STATUS_UPDATED, {
+					candidateId: user.id,
+					jobId: job.id,
+					recruiterId: job.company_id,
+					previousStatus,
 					candidateEmail: user.email,
 					candidateName: user.name,
 					jobTitle: job.jobTitle,

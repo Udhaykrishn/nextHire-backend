@@ -9,6 +9,8 @@ import { USER_MESSAGES } from "@/domain/enums";
 import { USER_STATUS } from "@/domain/enums/status/user-status.enum";
 import { NotFoundException } from "@nestjs/common";
 import { Inject, Injectable } from "@nestjs/common";
+import { EventEmitter2 } from "@nestjs/event-emitter";
+import { ADMIN_EVENTS } from "@/domain/enums/events.enum";
 
 @Injectable()
 export class BlockUnblockUserUseCase implements IExecutable<{ userId: string; description?: string }, ResponseUserDto> {
@@ -17,6 +19,7 @@ export class BlockUnblockUserUseCase implements IExecutable<{ userId: string; de
 		private readonly _userMapper: IUserApplicationMappers<UserEntity>,
 		@Inject(USERS_TOKEN.USER_REPOSITORY)
 		private readonly _userRepository: IUserRepository<UserEntity>,
+		private readonly eventEmitter: EventEmitter2,
 	) {}
 
 	async execute(input: { userId: string; description?: string }): Promise<ResponseUserDto> {
@@ -42,6 +45,14 @@ export class BlockUnblockUserUseCase implements IExecutable<{ userId: string; de
 		if (!updateUser) {
 			throw new NotFoundException("Error uding update");
 		}
+
+		this.eventEmitter.emit(ADMIN_EVENTS.USER_BLOCKED_UNBLOCKED, {
+			userId: updateUser.id,
+			status: updateUser.status,
+			name: updateUser.name,
+			description: updateUser.block_description,
+		});
+
 		return this._userMapper.toResponse(updateUser);
 	}
 }

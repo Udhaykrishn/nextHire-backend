@@ -10,3 +10,5 @@ export { ADDRESS_ROUTER } from "./address-router.enum";
 export { COMPANY_ROUTERS } from "./recuriter/company.router";
 export { STRIPE_ROUTERS, STRIPE_WEBHOOK_EVENTS, STRIPE_REDIRECT_PATHS } from "./stripe-router.enum";
 export { STRIPE_MESSAGES } from "./stripe-messages.enum";
+export { NOTIFICATION_ROUTERS } from "./notification-router.enum";
+export { CHATS_ROUTERS } from "./chats-router.enum";

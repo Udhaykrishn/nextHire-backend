@@ -8,7 +8,14 @@ import { JobEntity } from "@/domain/entity/job.entity";
 import type { IJobRepository } from "@/application/interface/repository/job-repository.interface";
 import type { IRecruiterRepository } from "@/application/interface/repository/recruiter-repository.interface";
 import type { RecruiterEntity } from "@/domain/entity/recruiter.entity";
-import { Inject, Injectable, ForbiddenException, NotFoundException, BadRequestException, ConflictException } from "@nestjs/common";
+import {
+	Inject,
+	Injectable,
+	ForbiddenException,
+	NotFoundException,
+	BadRequestException,
+	ConflictException,
+} from "@nestjs/common";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 import { JOB_EVENTS } from "@/domain/enums/events.enum";
 
@@ -35,6 +42,10 @@ export class CreateJobUseCase implements IExecutable<CreateJobDto, JobEntity> {
 
 		if (!recruiter.is_verified_company) {
 			throw new ForbiddenException(RECRUITER_MESSAGES.RECRUITER_NOT_VERIFIED);
+		}
+
+		if (!recruiter.subscription.is_subscribed) {
+			throw new ForbiddenException(RECRUITER_MESSAGES.SUBSCRIPTION_REQUIRED);
 		}
 
 		const existingJob = await this._jobRepository.findOne({
@@ -64,6 +75,7 @@ export class CreateJobUseCase implements IExecutable<CreateJobDto, JobEntity> {
 			name: recruiter.name,
 			jobTitle: job.jobTitle,
 			companyName: recruiter.name,
+			recruiterId: recruiter.id,
 		});
 
 		return savedJob;

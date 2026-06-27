@@ -9,6 +9,8 @@ import { RECRUITER_MESSAGES } from "@/domain/enums/messages";
 import { RECRUITER_STATUS } from "@/domain/enums/status/recruiter-status.enum";
 import { NotFoundException } from "@nestjs/common";
 import { Inject, Injectable } from "@nestjs/common";
+import { EventEmitter2 } from "@nestjs/event-emitter";
+import { ADMIN_EVENTS } from "@/domain/enums/events.enum";
 
 @Injectable()
 export class BlockUnblockRecruiterUseCase implements IExecutable<string, ResponseRecruiterDto> {
@@ -18,6 +20,7 @@ export class BlockUnblockRecruiterUseCase implements IExecutable<string, Respons
 
 		@Inject(RECRUITER_TOKEN.RECRUITER_REPOSITORY)
 		private readonly _recruiterRepository: IRecruiterRepository<RecruiterEntity>,
+		private readonly eventEmitter: EventEmitter2,
 	) {}
 
 	async execute(recruiterId: string): Promise<ResponseRecruiterDto> {
@@ -38,6 +41,12 @@ export class BlockUnblockRecruiterUseCase implements IExecutable<string, Respons
 		if (!updatedRecruiter) {
 			throw new NotFoundException(RECRUITER_MESSAGES.RECRUITER_UPDATE_FAILED);
 		}
+
+		this.eventEmitter.emit(ADMIN_EVENTS.RECRUITER_BLOCKED_UNBLOCKED, {
+			recruiterId: updatedRecruiter.id,
+			status: updatedRecruiter.status,
+			companyName: updatedRecruiter.name,
+		});
 
 		return this._recruiterMapper.toResponse(updatedRecruiter);
 	}

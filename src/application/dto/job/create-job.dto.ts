@@ -232,5 +232,9 @@ export class CreateJobDto {
 
 	@IsBoolean()
 	@IsOptional()
+	is_chat_enabled?: boolean;
+
+	@IsBoolean()
+	@IsOptional()
 	is_published?: boolean;
 }

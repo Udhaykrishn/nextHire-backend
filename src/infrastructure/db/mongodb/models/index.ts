@@ -81,3 +81,30 @@ export {
 	AdminSchema,
 	type AdminType,
 } from "./admin.schema";
+
+export {
+	Notification,
+	type NotificationDocument,
+	NotificationSchema,
+} from "./notification.schema";
+
+export {
+	Interview,
+	type InterviewDocument,
+	InterviewSchema,
+	type InterviewType,
+} from "./interview.schema";
+
+export {
+	InterviewerTemplate,
+	type InterviewerTemplateDocument,
+	type InterviewerTemplateType,
+	InterviewerTemplateSchema,
+} from "./interviewer-template.schema";
+
+export {
+	InterviewRound,
+	type InterviewRoundDocument,
+	type InterviewRoundType,
+	InterviewRoundSchema,
+} from "./interview-round.schema";

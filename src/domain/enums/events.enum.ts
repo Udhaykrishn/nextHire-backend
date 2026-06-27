@@ -10,3 +10,9 @@ export enum JOB_EVENTS {
 	JOB_APPLIED = "job.applied",
 	APPLICATION_STATUS_UPDATED = "job.application.status_updated",
 }
+
+export enum ADMIN_EVENTS {
+	USER_BLOCKED_UNBLOCKED = "admin.user.blocked_unblocked",
+	RECRUITER_BLOCKED_UNBLOCKED = "admin.recruiter.blocked_unblocked",
+	JOB_BLOCKED_UNBLOCKED = "admin.job.blocked_unblocked",
+}

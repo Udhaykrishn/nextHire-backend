@@ -185,6 +185,9 @@ export class Jobs {
 	@Prop({ type: Boolean, default: false })
 	is_published: boolean;
 
+	@Prop({ type: Boolean, default: true })
+	is_chat_enabled: boolean;
+
 	@Prop({ type: String, default: null })
 	created_at: string | null;
 
