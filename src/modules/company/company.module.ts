@@ -7,11 +7,10 @@ import { GetCompaniesUseCase } from "../../application/use-case/company/get-comp
 import { CompanyController } from "../../presentation/controller/company/implements/company.controller";
 import { COMPANY_TOKEN } from "../../application/enums/tokens";
 import { COMPANY_MAPPER } from "../../application/enums/mappers/company-mapper.enum";
-import { JwtModule } from "@nestjs/jwt";
 import { CompanyPresistanceMapper } from "../../infrastructure/mappers/company-presistance.mapper";
 
 @Module({
-	imports: [MongooseModule.forFeature([{ name: "Company", schema: CompanySchema }]), JwtModule.register({})],
+	imports: [MongooseModule.forFeature([{ name: "Company", schema: CompanySchema }])],
 	controllers: [CompanyController],
 	providers: [
 		{

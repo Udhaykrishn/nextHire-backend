@@ -15,3 +15,4 @@ export { DeleteVerificationSessionUseCase } from "./delete-verification-session.
 export { RevokeCompanyVerificationUseCase } from "./revoke-company-verification.use-case";
 export { SubscribeRecruiterUseCase } from "./recruiter-subscribe.use-case";
 export { DeleteRecruiterProfileImageUseCase } from "./delete-profile-image.use-case";
+export { GetSubscriptionHistoryUseCase } from "./get-subscription-history.use-case";

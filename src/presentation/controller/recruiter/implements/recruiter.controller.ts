@@ -98,6 +98,8 @@ export class RecruiterController implements IRecruiterController {
 			{ recruiterId: string; dto: RevokeCompanyVerificationDto },
 			ResponseRecruiterDto
 		>,
+		@Inject(RECRUITER_TOKEN.GET_SUBSCRIPTION_HISTORY_USE_CASE)
+		private readonly _getSubscriptionHistoryUseCase: IExecutable<string, unknown[]>,
 	) {}
 
 	@Post(RECRUITER_ROUTERS.DEFAULT)
@@ -244,5 +246,12 @@ export class RecruiterController implements IRecruiterController {
 		@Body() dto: RevokeCompanyVerificationDto,
 	): Promise<ResponseRecruiterDto> {
 		return this._revokeCompanyVerificationUseCase.execute({ recruiterId, dto });
+	}
+
+	@UseGuards(RecruiterBlockedGuard)
+	@Get("subscription-history")
+	@HttpCode(HttpStatus.OK)
+	async getSubscriptionHistory(@Req() req: Request) {
+		return this._getSubscriptionHistoryUseCase.execute(req.user.id);
 	}
 }

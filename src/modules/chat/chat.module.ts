@@ -1,6 +1,5 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
-import { JwtModule } from "@nestjs/jwt";
 import { Chat, ChatSchema } from "@/infrastructure/db/mongodb/models/chats.schema";
 import { ChatRepository } from "@/infrastructure/db/mongodb/repository/chat.repository";
 import { ChatPersistenceMapper } from "@/infrastructure/mappers/chat-persistence.mapper";
@@ -20,7 +19,6 @@ import { NotificationModule } from "../notification/notification.module";
 @Module({
 	imports: [
 		MongooseModule.forFeature([{ name: Chat.name, schema: ChatSchema }]),
-		JwtModule.register({}),
 		JobLiteModule,
 		UserLiteModule,
 		RecruiterLiteModule,

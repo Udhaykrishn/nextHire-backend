@@ -121,7 +121,7 @@ export class JobController implements IJobController {
 	@Roles(ROLES.RECRUITER)
 	async getRecruiterJobs(@Req() req: AuthenticatedRequest) {
 		const jobs = await this._getRecruiterJobsUseCase.execute(req.user.id);
-		return (jobs as unknown as JobEntity[]).map(toJobResponse);
+		return (jobs as unknown as (JobEntity & { stats?: Record<string, unknown> })[]).map(toJobResponseWithScore);
 	}
 
 	@Get(`${JOB_ROUTERS.RECRUITER}/:${JOB_ROUTERS.ID_PARAM}`)
@@ -129,7 +129,7 @@ export class JobController implements IJobController {
 	@HttpCode(HttpStatus.OK)
 	async getJobsByRecruiterId(@Param(JOB_ROUTERS.ID_PARAM) recruiterId: string) {
 		const jobs = await this._getRecruiterJobsUseCase.execute(recruiterId);
-		return (jobs as unknown as JobEntity[]).map(toJobResponse);
+		return (jobs as unknown as (JobEntity & { stats?: Record<string, unknown> })[]).map(toJobResponseWithScore);
 	}
 
 	@Get(JOB_ROUTERS.ALL)

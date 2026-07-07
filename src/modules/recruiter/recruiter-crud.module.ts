@@ -19,6 +19,7 @@ import {
 	VerifyOtpSessionUseCase,
 	DeleteVerificationSessionUseCase,
 	RevokeCompanyVerificationUseCase,
+	GetSubscriptionHistoryUseCase,
 } from "@/application/use-case/recuriters";
 import { RecruiterStripeListener } from "@/application/use-case/recuriters/recruiter-stripe.listener";
 
@@ -103,6 +104,10 @@ import { RedisModule } from "../redis.module";
 			provide: RECRUITER_TOKEN.REVOKE_COMPANY_VERIFICATION_USE_CASE,
 			useClass: RevokeCompanyVerificationUseCase,
 		},
+		{
+			provide: RECRUITER_TOKEN.GET_SUBSCRIPTION_HISTORY_USE_CASE,
+			useClass: GetSubscriptionHistoryUseCase,
+		},
 		RecruiterStripeListener,
 	],
 	exports: [
@@ -123,6 +128,7 @@ import { RedisModule } from "../redis.module";
 		RECRUITER_TOKEN.VERIFY_OTP_SESSION_USE_CASE,
 		RECRUITER_TOKEN.DELETE_VERIFICATION_SESSION_USE_CASE,
 		RECRUITER_TOKEN.REVOKE_COMPANY_VERIFICATION_USE_CASE,
+		RECRUITER_TOKEN.GET_SUBSCRIPTION_HISTORY_USE_CASE,
 	],
 })
 export class RecruiterCrudModule {}

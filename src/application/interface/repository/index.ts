@@ -6,6 +6,9 @@ export type { ICertificateRepository } from "./certificate-repository.interface"
 export type { IEducationRepository } from "./education-repository.interface";
 export type { IProjectRepository } from "./project-repository.interface";
 export type { IAddressRepository } from "./address-repository.interface";
+export type { IChatRepository } from "./chat-repository.interface";
+export type { INotificationRepository } from "./notification-repository.interface";
+export type { ISubscriptionHistoryRepository } from "./subscription-history-repository.interface";
 export type { IJobRepository } from "./job-repository.interface";
 export type { ISubscriptionRepository } from "./subscription-repository.interface";
 export type { IJobApplicationRepository } from "./job-application-repository.interface";

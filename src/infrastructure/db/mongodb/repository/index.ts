@@ -4,3 +4,4 @@ export { AdminRepository } from "./admin.repository";
 export { InterviewerRepository } from "./interviewer.repository";
 export { InterviewerTemplateRepository } from "./interviewer-template.repository";
 export { InterviewRoundRepository } from "./interview-round.repository";
+export { SubscriptionHistoryRepository } from "./subscription-history.repository";
