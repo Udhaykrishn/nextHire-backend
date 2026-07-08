@@ -27,7 +27,7 @@ export class GetRecruiterJobsUseCase
 
 		const jobsWithStats = await Promise.all(
 			result.data.map(async (job) => {
-				const applications = await this._jobApplicationRepository.findByJobId(job.id!);
+				const applications = await this._jobApplicationRepository.findByJobId(job.id as string);
 				return Object.assign(job, {
 					stats: {
 						total: applications.length,

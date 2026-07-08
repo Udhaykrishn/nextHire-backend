@@ -10,6 +10,7 @@ import {
 import { RecruiterRepository } from "@/infrastructure/db/mongodb/repository/recruiter.repository";
 import { SubscriptionHistoryRepository } from "@/infrastructure/db/mongodb/repository/subscription-history.repository";
 import { RecruiterPresitanceMapper } from "@/infrastructure/mappers/recruiter-presistance.mapper";
+import { SubscriptionHistoryPersistenceMapper } from "@/infrastructure/mappers/subscription-history-persistence.mapper";
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 
@@ -38,6 +39,10 @@ import { S3Service } from "@/infrastructure/services/implements";
 		{
 			provide: RECRUITER_TOKEN.SUBSCRIPTION_HISTORY_REPOSITORY,
 			useClass: SubscriptionHistoryRepository,
+		},
+		{
+			provide: RECRUITER_TOKEN.SUBSCRIPTION_HISTORY_MAPPER,
+			useClass: SubscriptionHistoryPersistenceMapper,
 		},
 		{
 			provide: "S3_SERVICE",
