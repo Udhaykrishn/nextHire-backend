@@ -3,13 +3,15 @@ import { IExecutable } from "@/application/interface/executable.interface";
 import { COMMON_TOKEN } from "@/application/enums/tokens";
 import type { IOtpService, IRedisService } from "@/infrastructure/services/interface";
 import { USER_MESSAGES } from "@/domain/enums";
+import { USER_ROLE } from "@/domain/enums/status";
 import { REDIS_KEYS } from "@/domain/enums/keys";
-import { VerifyOTPDto } from "@/application/dto/auth/otp";
 import { AUTH_EVENTS } from "@/domain/enums/events.enum";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 
+type ResendOtpInput = { email: string; role?: string };
+
 @Injectable()
-export class UserResendOtpUseCase implements IExecutable<VerifyOTPDto, { message: string }> {
+export class UserResendOtpUseCase implements IExecutable<ResendOtpInput, { message: string }> {
 	constructor(
 		@Inject(COMMON_TOKEN.REDIS_SERVICE)
 		private readonly _redisService: IRedisService,
@@ -18,12 +20,15 @@ export class UserResendOtpUseCase implements IExecutable<VerifyOTPDto, { message
 		private readonly eventEmitter: EventEmitter2,
 	) {}
 
-	async execute(dto: VerifyOTPDto): Promise<{ message: string }> {
+	async execute(dto: ResendOtpInput): Promise<{ message: string }> {
 		const email = dto.email;
 
-		const verifyKey = REDIS_KEYS.VERIFY_OTP.concat(email);
-		const otpKey = REDIS_KEYS.OTP.concat(email);
-		const countKey = REDIS_KEYS.RESEND_COUNT.concat(email);
+		// Recruiter signup/verify store OTP under a ":recruiter"-suffixed key, so
+		// the resend must target the same key or it "can't find the user".
+		const suffix = dto.role === USER_ROLE.RECRUITER ? ":".concat(USER_ROLE.RECRUITER) : "";
+		const verifyKey = REDIS_KEYS.VERIFY_OTP.concat(email, suffix);
+		const otpKey = REDIS_KEYS.OTP.concat(email, suffix);
+		const countKey = REDIS_KEYS.RESEND_COUNT.concat(email, suffix);
 
 		const userDataString = await this._redisService.get(verifyKey);
 		if (!userDataString) {

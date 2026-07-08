@@ -27,4 +27,23 @@ export class SubscriptionHistoryRepository
 		if (!documents || documents.length === 0) return null;
 		return Promise.all(documents.map((doc) => this.mapper.fromMongo(doc)));
 	}
+
+	async findPageByUserId(
+		userId: string,
+		page: number,
+		limit: number,
+	): Promise<{ data: SubscriptionHistoryEntity[]; total: number }> {
+		const skip = (page - 1) * limit;
+		const [documents, total] = await Promise.all([
+			this._subscriptionHistoryModel
+				.find({ user_id: userId })
+				.sort({ _id: -1 })
+				.skip(skip)
+				.limit(limit)
+				.exec(),
+			this._subscriptionHistoryModel.countDocuments({ user_id: userId }).exec(),
+		]);
+		const data = await Promise.all(documents.map((doc) => this.mapper.fromMongo(doc)));
+		return { data, total };
+	}
 }

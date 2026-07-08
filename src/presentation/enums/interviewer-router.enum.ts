@@ -9,6 +9,7 @@ export enum INTERVIEWER_ROUTERS {
 	DEFAULT = "",
 	ID = ":id",
 	APPROVE_RESCHEDULE = ":id/approve-reschedule",
+	END_ROUND = ":id/end",
 	APPLICATION_ROUNDS = "application/:applicationId",
 	FEEDBACK = ":roundId/feedback",
 	CONFIRM = ":roundId/confirm",

@@ -210,6 +210,15 @@ export class InterviewRoundEntity {
 		return this._updatedAt;
 	}
 
+	// HR ends the live session, opening evaluation for the interviewer.
+	endForEvaluation(): void {
+		this._status = INTERVIEW_ROUND_STATUS.AWAITING_EVALUATION;
+	}
+
+	get canBeEvaluated(): boolean {
+		return this._status === INTERVIEW_ROUND_STATUS.AWAITING_EVALUATION;
+	}
+
 	complete(score: number, feedback: string, rubricRatings: Map<string, number>): void {
 		this._status = INTERVIEW_ROUND_STATUS.COMPLETED;
 		this._score = score;

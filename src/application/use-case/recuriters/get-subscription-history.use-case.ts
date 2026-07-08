@@ -10,8 +10,8 @@ export class GetSubscriptionHistoryUseCase {
 		private readonly subscriptionHistoryRepository: ISubscriptionHistoryRepository<SubscriptionHistoryEntity>,
 	) {}
 
-	async execute(userId: string) {
-		const history = await this.subscriptionHistoryRepository.findByUserId(userId);
-		return history || [];
+	async execute(input: { userId: string; page: number; limit: number }) {
+		const { userId, page, limit } = input;
+		return this.subscriptionHistoryRepository.findPageByUserId(userId, page, limit);
 	}
 }

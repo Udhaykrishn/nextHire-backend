@@ -115,7 +115,9 @@ export class AuthUserController implements IAuthUserController {
 	}
 
 	@Post(USER_AUTH_ROUTER.OTP_RESEND)
-	async resendOtp(@Body() data: { email: string }): Promise<{ otp: string }> {
+	async resendOtp(
+		@Body() data: { email: string; role?: string },
+	): Promise<{ otp: string }> {
 		const otp = await this._resendOtp.execute(data);
 
 		return otp;

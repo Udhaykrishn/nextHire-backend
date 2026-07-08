@@ -99,7 +99,10 @@ export class RecruiterController implements IRecruiterController {
 			ResponseRecruiterDto
 		>,
 		@Inject(RECRUITER_TOKEN.GET_SUBSCRIPTION_HISTORY_USE_CASE)
-		private readonly _getSubscriptionHistoryUseCase: IExecutable<string, unknown[]>,
+		private readonly _getSubscriptionHistoryUseCase: IExecutable<
+			{ userId: string; page: number; limit: number },
+			{ data: unknown[]; total: number }
+		>,
 	) {}
 
 	@Post(RECRUITER_ROUTERS.DEFAULT)
@@ -126,6 +129,51 @@ export class RecruiterController implements IRecruiterController {
 	@HttpCode(HttpStatus.OK)
 	async getProfile(@Req() req: Request): Promise<ResponseRecruiterDto> {
 		return this._findByEmailUseCase.execute(req.user.email);
+	}
+
+	// Must be declared before the ":id" route below, otherwise the literal
+	// "subscription-history" path is captured as an :id and cast to ObjectId.
+	@UseGuards(RecruiterBlockedGuard)
+	@Get("subscription-history")
+	@HttpCode(HttpStatus.OK)
+	async getSubscriptionHistory(
+		@Req() req: Request,
+		@Query("page") pageParam?: string,
+		@Query("limit") limitParam?: string,
+	) {
+		const page = Math.max(1, Number(pageParam) || 1);
+		const limit = Math.max(1, Number(limitParam) || 10);
+		const { data, total } = (await this._getSubscriptionHistoryUseCase.execute({
+			userId: req.user.id,
+			page,
+			limit,
+		})) as {
+			data: Array<{
+				id?: string;
+				status: string;
+				payment_method: string;
+				subscription_id: string;
+				role: string;
+				created_at: string;
+			}>;
+			total: number;
+		};
+		// Map entity getters to a plain shape; the raw entity would serialize as
+		// "_"-prefixed private fields, which the UI can't read.
+		return {
+			data: data.map((h) => ({
+				id: h.id,
+				status: h.status,
+				payment_method: h.payment_method,
+				subscription_id: h.subscription_id,
+				role: h.role,
+				created_at: h.created_at,
+			})),
+			page,
+			limit,
+			total,
+			totalPages: Math.max(1, Math.ceil(total / limit)),
+		};
 	}
 
 	@UseGuards(RecruiterBlockedGuard)
@@ -246,12 +294,5 @@ export class RecruiterController implements IRecruiterController {
 		@Body() dto: RevokeCompanyVerificationDto,
 	): Promise<ResponseRecruiterDto> {
 		return this._revokeCompanyVerificationUseCase.execute({ recruiterId, dto });
-	}
-
-	@UseGuards(RecruiterBlockedGuard)
-	@Get("subscription-history")
-	@HttpCode(HttpStatus.OK)
-	async getSubscriptionHistory(@Req() req: Request) {
-		return this._getSubscriptionHistoryUseCase.execute(req.user.id);
 	}
 }

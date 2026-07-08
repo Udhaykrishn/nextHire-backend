@@ -24,6 +24,13 @@ export class SubmitFeedbackUseCase implements IExecutable<SubmitFeedbackDto, Int
 			throw new NotFoundException("Interview round not found");
 		}
 
+		// Evaluation is only allowed once HR has ended the session.
+		if (!round.canBeEvaluated) {
+			throw new BadRequestException(
+				"This interview can't be evaluated yet. HR must end the session first.",
+			);
+		}
+
 		const ratingMap = new Map<string, number>();
 		for (const [key, value] of Object.entries(dto.rubricRatings)) {
 			ratingMap.set(key, value);

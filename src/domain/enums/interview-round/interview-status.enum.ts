@@ -1,6 +1,8 @@
 export enum INTERVIEW_ROUND_STATUS {
 	SCHEDULED = "SCHEDULED",
 	RESCHEDULED = "RESCHEDULED",
+	// HR has ended the live session; the interviewer may now submit their evaluation.
+	AWAITING_EVALUATION = "AWAITING_EVALUATION",
 	COMPLETED = "COMPLETED",
 	CANCELLED = "CANCELLED",
 	NO_SHOW = "NO_SHOW",

@@ -1,7 +1,7 @@
 import type { IBaseRepository } from "@/application/interface/repository";
 import type { IBaseMapper } from "@/application/mappers/base-repository.mapper";
 import { Injectable } from "@nestjs/common";
-import type { Model, UpdateQuery } from "mongoose";
+import { Error as MongooseError, type Model, type UpdateQuery } from "mongoose";
 
 @Injectable()
 export abstract class BaseRepository<TEntity, TDocument> implements IBaseRepository<TEntity> {
@@ -21,8 +21,17 @@ export abstract class BaseRepository<TEntity, TDocument> implements IBaseReposit
 	}
 
 	async findById(id: string): Promise<TEntity | null> {
-		const doc = await this.model.findById(id).exec();
-		return doc ? this.mapper.fromMongo(doc) : null;
+		try {
+			const doc = await this.model.findById(id).exec();
+			return doc ? this.mapper.fromMongo(doc) : null;
+		} catch (err) {
+			// A malformed id (e.g. a route segment mistaken for an :id) must not
+			// crash the process — treat it as "not found".
+			if (err instanceof MongooseError.CastError) {
+				return null;
+			}
+			throw err;
+		}
 	}
 
 	async findAll(): Promise<TEntity[]> {

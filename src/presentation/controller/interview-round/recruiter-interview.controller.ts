@@ -10,6 +10,7 @@ import { ScheduleRoundUseCase } from "@/application/use-case/interview-round/sch
 import { UpdateInterviewRoundUseCase } from "@/application/use-case/interview-round/update-interview-round.use-case";
 import { ApproveRescheduleUseCase } from "@/application/use-case/interview-round/approve-reschedule.use-case";
 import { ListRoundsForApplicationUseCase } from "@/application/use-case/interview-round/list-rounds-for-application.use-case";
+import { EndInterviewRoundUseCase } from "@/application/use-case/interview-round/end-interview-round.use-case";
 
 @UseGuards(AuthGuard, RoleGuard)
 @Controller(INTERVIEWER_ROUTERS.RECRUITER_ROUNDS)
@@ -19,6 +20,7 @@ export class RecruiterInterviewController {
 		private readonly _updateInterviewRoundUseCase: UpdateInterviewRoundUseCase,
 		private readonly _approveRescheduleUseCase: ApproveRescheduleUseCase,
 		private readonly _listRoundsUseCase: ListRoundsForApplicationUseCase,
+		private readonly _endInterviewRoundUseCase: EndInterviewRoundUseCase,
 	) {}
 
 	private toRoundResponse(entity: InterviewRoundEntity) {
@@ -62,6 +64,14 @@ export class RecruiterInterviewController {
 	@HttpCode(HttpStatus.OK)
 	async approveReschedule(@Req() req: Request, @Param("id") id: string) {
 		const round = await this._approveRescheduleUseCase.execute({ roundId: id, recruiterId: req.user.id });
+		return this.toRoundResponse(round);
+	}
+
+	@Roles(ROLES.RECRUITER)
+	@Patch(INTERVIEWER_ROUTERS.END_ROUND)
+	@HttpCode(HttpStatus.OK)
+	async endRound(@Param("id") id: string) {
+		const round = await this._endInterviewRoundUseCase.execute(id);
 		return this.toRoundResponse(round);
 	}
 

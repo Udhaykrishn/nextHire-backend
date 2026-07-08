@@ -9,6 +9,7 @@ import { UpdateInterviewRoundUseCase } from "@/application/use-case/interview-ro
 import { RequestRescheduleUseCase } from "@/application/use-case/interview-round/request-reschedule.use-case";
 import { ApproveRescheduleUseCase } from "@/application/use-case/interview-round/approve-reschedule.use-case";
 import { ListRoundsForApplicationUseCase } from "@/application/use-case/interview-round/list-rounds-for-application.use-case";
+import { EndInterviewRoundUseCase } from "@/application/use-case/interview-round/end-interview-round.use-case";
 import { ListAssignedRoundsUseCase } from "@/application/use-case/interview-round/list-assigned-rounds.use-case";
 import { SubmitFeedbackUseCase } from "@/application/use-case/interview-round/submit-feedback.use-case";
 import { ConfirmRoundUseCase } from "@/application/use-case/interview-round/confirm-round.use-case";
@@ -52,6 +53,7 @@ import { COMMON_TOKEN } from "@/application/enums/tokens";
 		RequestRescheduleUseCase,
 		ApproveRescheduleUseCase,
 		ListRoundsForApplicationUseCase,
+		EndInterviewRoundUseCase,
 		ListAssignedRoundsUseCase,
 		SubmitFeedbackUseCase,
 		ConfirmRoundUseCase,

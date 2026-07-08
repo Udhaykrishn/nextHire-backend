@@ -31,6 +31,13 @@ export class RecruiterStripeListener {
 				return;
 			}
 
+			// Idempotency: if already active, don't re-activate or write a duplicate
+			// history row (guards StrictMode double-calls and webhook retries).
+			if (recruiter.subscription?.is_subscribed && recruiter.subscription?.status === "active") {
+				this.logger.log(`Recruiter ${payload.userId} already active; skipping duplicate.`);
+				return;
+			}
+
 			recruiter.changeSubscription({
 				current_plan: "pro", // Subscription plans can be dynamic later
 				is_subscribed: true,
@@ -49,7 +56,7 @@ export class RecruiterStripeListener {
 				status: payload.status,
 				role: "recruiter",
 			});
-			await this.subscriptionHistoryRepository.create(history);
+			await this.subscriptionHistoryRepository.save(history);
 
 			this.logger.log(`Successfully updated subscription and history for recruiter ${payload.userId}`);
 		} catch (error) {
@@ -91,7 +98,7 @@ export class RecruiterStripeListener {
 				status: payload.status,
 				role: "recruiter",
 			});
-			await this.subscriptionHistoryRepository.create(history);
+			await this.subscriptionHistoryRepository.save(history);
 
 			this.logger.log(`Successfully updated subscription and history for recruiter ${recruiter.id}`);
 		} catch (error) {
