@@ -20,9 +20,23 @@ export class JobRepository extends BaseRepository<JobEntity, JobType> implements
 		super(_jobModel, _mapper);
 	}
 
-	async findByRecruiterId(recruiterId: string): Promise<JobEntity[]> {
-		const jobs = await this.model.find({ company_id: recruiterId }).exec();
-		return Promise.all(jobs.map((job) => this.mapper.fromMongo(job as JobType)));
+	async findByRecruiterId(
+		recruiterId: string,
+		page: number = 1,
+		limit: number = 10,
+	): Promise<{ data: JobEntity[]; total: number; page: number; limit: number; totalPages: number }> {
+		const skip = (page - 1) * limit;
+		const query = this.model.find({ company_id: recruiterId }).sort({ created_at: -1 });
+		const docs = await query.skip(skip).limit(limit).exec();
+		const total = await this.model.countDocuments({ company_id: recruiterId });
+		const data = await Promise.all(docs.map((doc) => this.mapper.fromMongo(doc as JobType)));
+		return {
+			data,
+			total,
+			page,
+			limit,
+			totalPages: Math.ceil(total / limit),
+		};
 	}
 
 	private buildFilter(pages: PaginationDto): FilterQuery<JobType> {

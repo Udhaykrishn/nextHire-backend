@@ -12,3 +12,4 @@ export { STRIPE_ROUTERS, STRIPE_WEBHOOK_EVENTS, STRIPE_REDIRECT_PATHS } from "./
 export { STRIPE_MESSAGES } from "./stripe-messages.enum";
 export { NOTIFICATION_ROUTERS } from "./notification-router.enum";
 export { CHATS_ROUTERS } from "./chats-router.enum";
+export { STATS_ROUTERS } from "./stats-router.enum";

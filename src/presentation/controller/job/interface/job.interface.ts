@@ -10,8 +10,16 @@ import type { PaginationResponse } from "@/domain/types/paginations";
 export interface IJobController {
 	create(req: AuthenticatedRequest, dto: CreateJobDto): Promise<ResponseJobDto>;
 	apply(req: AuthenticatedRequest, jobId: string): Promise<JobApplicationResponse>;
-	getRecruiterJobs(req: AuthenticatedRequest): Promise<ResponseJobDto[]>;
-	getJobsByRecruiterId(recruiterId: string): Promise<ResponseJobDto[]>;
+	getRecruiterJobs(
+		req: AuthenticatedRequest,
+		page?: string,
+		limit?: string,
+	): Promise<PaginationResponse<ResponseJobDto>>;
+	getJobsByRecruiterId(
+		recruiterId: string,
+		page?: string,
+		limit?: string,
+	): Promise<PaginationResponse<ResponseJobDto>>;
 	getAllJobs(
 		search?: string,
 		page?: string,

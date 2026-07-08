@@ -1,5 +1,6 @@
 import { MongoDbModule } from "./mongodb.module";
 import { StripeModule } from "./stripe/stripe.module";
+import { StatsModule } from "./stats/stats.module";
 import { type NestModule, type MiddlewareConsumer, Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { EventEmitterModule } from "@nestjs/event-emitter";
@@ -76,6 +77,7 @@ import { InterviewerModule } from "./interviewer/interviewer.module";
 		FormModule,
 		ChatModule,
 		InterviewerModule,
+		StatsModule,
 		// RecruiterModule must be registered LAST: it owns the greedy
 		// `GET/PATCH recruiter/:id` catch-all, which otherwise shadows static
 		// `recruiter/*` routes (e.g. recruiter/interviewers, recruiter/templates)

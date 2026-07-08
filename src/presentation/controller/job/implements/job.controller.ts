@@ -54,7 +54,10 @@ export class JobController implements IJobController {
 		@Inject(JOB_TOKEN.APPLY_JOB_USE_CASE)
 		private readonly _applyJobUseCase: IExecutable<ApplyJobDto, JobApplicationResponse>,
 		@Inject(JOB_TOKEN.GET_RECRUITER_JOBS_USE_CASE)
-		private readonly _getRecruiterJobsUseCase: IExecutable<string, ResponseJobDto[]>,
+		private readonly _getRecruiterJobsUseCase: IExecutable<
+			{ recruiterId: string; page?: number; limit?: number },
+			PaginationResponse<JobEntity & { stats?: { total: number; interviews: number } }>
+		>,
 		@Inject(JOB_TOKEN.GET_ALL_JOBS_USE_CASE)
 		private readonly _getAllJobsUseCase: IExecutable<PaginationDto, PaginationResponse<ResponseJobDto> | null>,
 		@Inject(JOB_TOKEN.GET_CANDIDATE_JOBS_USE_CASE)
@@ -119,17 +122,43 @@ export class JobController implements IJobController {
 
 	@Get(JOB_ROUTERS.RECRUITER)
 	@Roles(ROLES.RECRUITER)
-	async getRecruiterJobs(@Req() req: AuthenticatedRequest) {
-		const jobs = await this._getRecruiterJobsUseCase.execute(req.user.id);
-		return (jobs as unknown as (JobEntity & { stats?: Record<string, unknown> })[]).map(toJobResponseWithScore);
+	async getRecruiterJobs(
+		@Req() req: AuthenticatedRequest,
+		@Query("page") page: string = "1",
+		@Query("limit") limit: string = "10",
+	) {
+		const result = await this._getRecruiterJobsUseCase.execute({
+			recruiterId: req.user.id,
+			page: parseInt(page, 10) || 1,
+			limit: parseInt(limit, 10) || 10,
+		});
+		return {
+			...result,
+			data: (result.data as unknown as (JobEntity & { stats?: Record<string, unknown> })[]).map(
+				toJobResponseWithScore,
+			),
+		};
 	}
 
 	@Get(`${JOB_ROUTERS.RECRUITER}/:${JOB_ROUTERS.ID_PARAM}`)
 	@Roles(ROLES.ADMIN)
 	@HttpCode(HttpStatus.OK)
-	async getJobsByRecruiterId(@Param(JOB_ROUTERS.ID_PARAM) recruiterId: string) {
-		const jobs = await this._getRecruiterJobsUseCase.execute(recruiterId);
-		return (jobs as unknown as (JobEntity & { stats?: Record<string, unknown> })[]).map(toJobResponseWithScore);
+	async getJobsByRecruiterId(
+		@Param(JOB_ROUTERS.ID_PARAM) recruiterId: string,
+		@Query("page") page: string = "1",
+		@Query("limit") limit: string = "10",
+	) {
+		const result = await this._getRecruiterJobsUseCase.execute({
+			recruiterId,
+			page: parseInt(page, 10) || 1,
+			limit: parseInt(limit, 10) || 10,
+		});
+		return {
+			...result,
+			data: (result.data as unknown as (JobEntity & { stats?: Record<string, unknown> })[]).map(
+				toJobResponseWithScore,
+			),
+		};
 	}
 
 	@Get(JOB_ROUTERS.ALL)
