@@ -19,6 +19,12 @@ export class InterviewerTemplate {
 
 	@Prop({ type: [String], required: true, default: [] })
 	rubric: string[];
+
+	@Prop({ required: false, enum: ["VIDEO", "PHONE", "IN_PERSON"], default: "VIDEO" })
+	defaultType?: string;
+
+	@Prop({ required: false })
+	defaultInstructions?: string;
 }
 
 export const InterviewerTemplateSchema = SchemaFactory.createForClass(InterviewerTemplate);

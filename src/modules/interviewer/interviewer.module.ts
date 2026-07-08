@@ -21,7 +21,11 @@ import { DeleteInterviewerUseCase } from "@/application/use-case/interviewer/del
 import { CreateTemplateUseCase } from "@/application/use-case/interviewer/create-template.use-case";
 import { ListTemplatesUseCase } from "@/application/use-case/interviewer/list-templates.use-case";
 import { DeleteTemplateUseCase } from "@/application/use-case/interviewer/delete-template.use-case";
+import { UpdateTemplateUseCase } from "@/application/use-case/interviewer/update-template.use-case";
 import { ScheduleRoundUseCase } from "@/application/use-case/interviewer/schedule-round.use-case";
+import { UpdateInterviewRoundUseCase } from "@/application/use-case/interviewer/update-interview-round.use-case";
+import { RequestRescheduleUseCase } from "@/application/use-case/interviewer/request-reschedule.use-case";
+import { ApproveRescheduleUseCase } from "@/application/use-case/interviewer/approve-reschedule.use-case";
 import { ListRoundsForApplicationUseCase } from "@/application/use-case/interviewer/list-rounds-for-application.use-case";
 import { InterviewerLoginUseCase } from "@/application/use-case/interviewer/interviewer-login.use-case";
 import { InterviewerRefreshUseCase } from "@/application/use-case/interviewer/interviewer-refresh.use-case";
@@ -37,6 +41,7 @@ import { InterviewerController } from "@/presentation/controller/interviewer/int
 import { JobLiteModule } from "../job/job-lite.module";
 import { UserLiteModule } from "../user/user-db.module";
 import { CommonModule } from "../common.module";
+import { RecruiterLiteModule } from "../recruiter/recuriter-lite.module";
 import { JwtService } from "@/infrastructure/services/implements";
 import { COMMON_TOKEN } from "@/application/enums/tokens";
 
@@ -50,6 +55,7 @@ import { COMMON_TOKEN } from "@/application/enums/tokens";
 		JobLiteModule,
 		UserLiteModule,
 		CommonModule,
+		RecruiterLiteModule,
 	],
 	controllers: [InterviewerController],
 	providers: [
@@ -66,7 +72,11 @@ import { COMMON_TOKEN } from "@/application/enums/tokens";
 		CreateTemplateUseCase,
 		ListTemplatesUseCase,
 		DeleteTemplateUseCase,
+		UpdateTemplateUseCase,
 		ScheduleRoundUseCase,
+		UpdateInterviewRoundUseCase,
+		RequestRescheduleUseCase,
+		ApproveRescheduleUseCase,
 		ListRoundsForApplicationUseCase,
 		InterviewerLoginUseCase,
 		InterviewerRefreshUseCase,

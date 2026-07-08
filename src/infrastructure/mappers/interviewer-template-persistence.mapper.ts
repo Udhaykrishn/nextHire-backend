@@ -12,6 +12,8 @@ export class InterviewerTemplatePersistenceMapper
 			description: entity.description,
 			duration: entity.duration,
 			rubric: entity.rubric,
+			defaultType: entity.defaultType,
+			defaultInstructions: entity.defaultInstructions,
 			createdAt: entity.createdAt || new Date(),
 			updatedAt: entity.updatedAt || new Date(),
 		} as InterviewerTemplateType;
@@ -32,6 +34,8 @@ export class InterviewerTemplatePersistenceMapper
 			description: doc.description,
 			duration: doc.duration,
 			rubric: doc.rubric,
+			defaultType: doc.defaultType,
+			defaultInstructions: doc.defaultInstructions,
 			createdAt: doc.createdAt,
 			updatedAt: doc.updatedAt,
 		});

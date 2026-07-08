@@ -8,16 +8,35 @@ export class InterviewRound {
 	@Prop({ required: true, ref: "Application", index: true })
 	applicationId: string;
 
-	@Prop({ required: true, ref: "CompanyInterviewer", index: true })
-	interviewerId: string;
+	@Prop({ type: [String], required: true, ref: "CompanyInterviewer", index: true })
+	interviewerIds: string[];
 
 	@Prop({ required: true, ref: "InterviewerTemplate" })
 	templateId: string;
 
 	@Prop({ required: true })
+	title: string;
+
+	@Prop({ required: true, enum: ["VIDEO", "PHONE", "IN_PERSON"], default: "VIDEO" })
+	type: string;
+
+	@Prop({ required: true })
 	scheduledAt: Date;
 
-	@Prop({ required: true, enum: ["PENDING", "COMPLETED", "CANCELLED"], default: "PENDING" })
+	@Prop({ required: true })
+	timeZone: string;
+
+	@Prop({ required: false })
+	instructions?: string;
+
+	@Prop({ required: false })
+	internalNotes?: string;
+
+	@Prop({
+		required: true,
+		enum: ["SCHEDULED", "RESCHEDULED", "COMPLETED", "CANCELLED", "NO_SHOW"],
+		default: "SCHEDULED",
+	})
 	status: string;
 
 	@Prop({ required: true, unique: true, index: true })

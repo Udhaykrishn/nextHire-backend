@@ -1,10 +1,15 @@
 export class InterviewRoundEntity {
 	private readonly _id?: string;
 	private _applicationId: string;
-	private _interviewerId: string;
+	private _interviewerIds: string[];
 	private _templateId: string;
+	private _title: string;
+	private _type: string;
+	private _timeZone: string;
+	private _instructions?: string;
+	private _internalNotes?: string;
 	private _scheduledAt: Date;
-	private _status: string; // PENDING, COMPLETED, CANCELLED
+	private _status: string; // SCHEDULED, RESCHEDULED, COMPLETED, CANCELLED, NO_SHOW
 	private _meetingCode: string;
 	private _duration: number;
 	private _candidateConfirmation: string; // PENDING, CONFIRMED, DECLINED
@@ -19,8 +24,13 @@ export class InterviewRoundEntity {
 
 	private constructor(
 		applicationId: string,
-		interviewerId: string,
+		interviewerIds: string[],
 		templateId: string,
+		title: string,
+		type: string,
+		timeZone: string,
+		instructions: string | undefined,
+		internalNotes: string | undefined,
 		scheduledAt: Date,
 		status: string,
 		meetingCode: string,
@@ -37,8 +47,11 @@ export class InterviewRoundEntity {
 		id?: string,
 	) {
 		this._applicationId = applicationId;
-		this._interviewerId = interviewerId;
+		this._interviewerIds = interviewerIds;
 		this._templateId = templateId;
+		this._title = title;
+		this._type = type;
+		this._timeZone = timeZone;
 		this._scheduledAt = scheduledAt;
 		this._status = status;
 		this._meetingCode = meetingCode;
@@ -53,12 +66,19 @@ export class InterviewRoundEntity {
 		this._createdAt = createdAt;
 		this._updatedAt = updatedAt;
 		this._id = id;
+		this._instructions = instructions;
+		this._internalNotes = internalNotes;
 	}
 
 	static create(data: {
 		applicationId: string;
-		interviewerId: string;
+		interviewerIds: string[];
 		templateId: string;
+		title: string;
+		type: string;
+		timeZone: string;
+		instructions?: string;
+		internalNotes?: string;
 		scheduledAt: Date;
 		status: string;
 		meetingCode: string;
@@ -76,8 +96,13 @@ export class InterviewRoundEntity {
 	}): InterviewRoundEntity {
 		return new InterviewRoundEntity(
 			data.applicationId,
-			data.interviewerId,
+			data.interviewerIds,
 			data.templateId,
+			data.title,
+			data.type,
+			data.timeZone,
+			data.instructions,
+			data.internalNotes,
 			data.scheduledAt,
 			data.status,
 			data.meetingCode,
@@ -103,12 +128,32 @@ export class InterviewRoundEntity {
 		return this._applicationId;
 	}
 
-	get interviewerId(): string {
-		return this._interviewerId;
+	get interviewerIds(): string[] {
+		return this._interviewerIds;
 	}
 
 	get templateId(): string {
 		return this._templateId;
+	}
+
+	get title(): string {
+		return this._title;
+	}
+
+	get type(): string {
+		return this._type;
+	}
+
+	get timeZone(): string {
+		return this._timeZone;
+	}
+
+	get instructions(): string | undefined {
+		return this._instructions;
+	}
+
+	get internalNotes(): string | undefined {
+		return this._internalNotes;
 	}
 
 	get scheduledAt(): Date {

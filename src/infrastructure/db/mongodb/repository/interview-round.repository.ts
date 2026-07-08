@@ -25,7 +25,7 @@ export class InterviewRoundRepository
 	}
 
 	async findByInterviewerId(interviewerId: string): Promise<InterviewRoundEntity[]> {
-		const docs = await this.roundModel.find({ interviewerId }).exec();
+		const docs = await this.roundModel.find({ interviewerIds: interviewerId }).exec();
 		return Promise.all(docs.map((doc) => this.mapper.fromMongo(doc)));
 	}
 

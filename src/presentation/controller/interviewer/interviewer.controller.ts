@@ -29,7 +29,11 @@ import { DeleteInterviewerUseCase } from "@/application/use-case/interviewer/del
 import { CreateTemplateUseCase } from "@/application/use-case/interviewer/create-template.use-case";
 import { ListTemplatesUseCase } from "@/application/use-case/interviewer/list-templates.use-case";
 import { DeleteTemplateUseCase } from "@/application/use-case/interviewer/delete-template.use-case";
+import { UpdateTemplateUseCase } from "@/application/use-case/interviewer/update-template.use-case";
 import { ScheduleRoundUseCase } from "@/application/use-case/interviewer/schedule-round.use-case";
+import { UpdateInterviewRoundUseCase } from "@/application/use-case/interviewer/update-interview-round.use-case";
+import { RequestRescheduleUseCase } from "@/application/use-case/interviewer/request-reschedule.use-case";
+import { ApproveRescheduleUseCase } from "@/application/use-case/interviewer/approve-reschedule.use-case";
 import { ListRoundsForApplicationUseCase } from "@/application/use-case/interviewer/list-rounds-for-application.use-case";
 import { InterviewerLoginUseCase } from "@/application/use-case/interviewer/interviewer-login.use-case";
 import { InterviewerRefreshUseCase } from "@/application/use-case/interviewer/interviewer-refresh.use-case";
@@ -51,7 +55,11 @@ export class InterviewerController {
 		private readonly _createTemplateUseCase: CreateTemplateUseCase,
 		private readonly _listTemplatesUseCase: ListTemplatesUseCase,
 		private readonly _deleteTemplateUseCase: DeleteTemplateUseCase,
+		private readonly _updateTemplateUseCase: UpdateTemplateUseCase,
 		private readonly _scheduleRoundUseCase: ScheduleRoundUseCase,
+		private readonly _updateInterviewRoundUseCase: UpdateInterviewRoundUseCase,
+		private readonly _requestRescheduleUseCase: RequestRescheduleUseCase,
+		private readonly _approveRescheduleUseCase: ApproveRescheduleUseCase,
 		private readonly _listRoundsUseCase: ListRoundsForApplicationUseCase,
 		private readonly _loginUseCase: InterviewerLoginUseCase,
 		private readonly _refreshUseCase: InterviewerRefreshUseCase,
@@ -133,8 +141,13 @@ export class InterviewerController {
 		return {
 			id: entity.id,
 			applicationId: entity.applicationId,
-			interviewerId: entity.interviewerId,
+			interviewerIds: entity.interviewerIds,
 			templateId: entity.templateId,
+			title: entity.title,
+			type: entity.type,
+			timeZone: entity.timeZone,
+			instructions: entity.instructions,
+			internalNotes: entity.internalNotes,
 			scheduledAt: entity.scheduledAt,
 			status: entity.status,
 			meetingCode: entity.meetingCode,
@@ -219,16 +232,104 @@ export class InterviewerController {
 	}
 
 	@Roles(ROLES.RECRUITER)
+	@Patch("recruiter/templates/:id")
+	@HttpCode(HttpStatus.OK)
+	async updateTemplate(
+		@Req() req: Request,
+		@Param("id") id: string,
+		@Body() body: {
+			name?: string;
+			description?: string;
+			duration?: number;
+			rubric?: string[];
+			defaultType?: string;
+			defaultInstructions?: string;
+		},
+	) {
+		const template = await this._updateTemplateUseCase.execute({
+			templateId: id,
+			companyId: req.user.id,
+			name: body.name,
+			description: body.description,
+			duration: body.duration ? Number(body.duration) : undefined,
+			rubric: body.rubric,
+			defaultType: body.defaultType,
+			defaultInstructions: body.defaultInstructions,
+		});
+		return this.toTemplateResponse(template);
+	}
+
+	@Roles(ROLES.RECRUITER)
 	@Post("recruiter/interview-rounds")
 	@HttpCode(HttpStatus.CREATED)
 	async scheduleRound(
-		@Body() body: { applicationId: string; interviewerId: string; templateId: string; scheduledAt: string },
+		@Req() req: Request,
+		@Body() body: {
+			applicationId: string;
+			interviewerIds: string[];
+			templateId: string;
+			title: string;
+			type: string;
+			timeZone: string;
+			instructions?: string;
+			internalNotes?: string;
+			scheduledAt: string;
+		},
 	) {
 		const round = await this._scheduleRoundUseCase.execute({
+			recruiterId: req.user.id,
 			applicationId: body.applicationId,
-			interviewerId: body.interviewerId,
+			interviewerIds: body.interviewerIds,
 			templateId: body.templateId,
+			title: body.title,
+			type: body.type,
+			timeZone: body.timeZone,
+			instructions: body.instructions,
+			internalNotes: body.internalNotes,
 			scheduledAt: new Date(body.scheduledAt),
+		});
+		return this.toRoundResponse(round);
+	}
+
+	@Roles(ROLES.RECRUITER)
+	@Patch("recruiter/interview-rounds/:id")
+	@HttpCode(HttpStatus.OK)
+	async updateRound(
+		@Param("id") id: string,
+		@Body() body: {
+			interviewerIds?: string[];
+			templateId?: string;
+			title?: string;
+			type?: string;
+			timeZone?: string;
+			instructions?: string;
+			internalNotes?: string;
+			scheduledAt?: string;
+			duration?: number;
+		},
+	) {
+		const round = await this._updateInterviewRoundUseCase.execute({
+			roundId: id,
+			interviewerIds: body.interviewerIds,
+			templateId: body.templateId,
+			title: body.title,
+			type: body.type,
+			timeZone: body.timeZone,
+			instructions: body.instructions,
+			internalNotes: body.internalNotes,
+			scheduledAt: body.scheduledAt ? new Date(body.scheduledAt) : undefined,
+			duration: body.duration,
+		});
+		return this.toRoundResponse(round);
+	}
+
+	@Roles(ROLES.RECRUITER)
+	@Patch("recruiter/interview-rounds/:id/approve-reschedule")
+	@HttpCode(HttpStatus.OK)
+	async approveReschedule(@Req() req: Request, @Param("id") id: string) {
+		const round = await this._approveRescheduleUseCase.execute({
+			roundId: id,
+			recruiterId: req.user.id,
 		});
 		return this.toRoundResponse(round);
 	}
@@ -284,6 +385,23 @@ export class InterviewerController {
 		const round = await this._confirmRoundUseCase.execute({
 			roundId,
 			status: body.status,
+		});
+		return this.toRoundResponse(round);
+	}
+
+	@Roles(ROLES.USER, ROLES.INTERVIEWER)
+	@Patch("candidate/interview-rounds/:roundId/reschedule")
+	@HttpCode(HttpStatus.OK)
+	async requestReschedule(
+		@Req() req: Request,
+		@Param("roundId") roundId: string,
+		@Body() body: { newScheduledAt: string; reason?: string },
+	) {
+		const round = await this._requestRescheduleUseCase.execute({
+			roundId,
+			requestedByUserId: req.user.id,
+			newScheduledAt: new Date(body.newScheduledAt),
+			reason: body.reason,
 		});
 		return this.toRoundResponse(round);
 	}

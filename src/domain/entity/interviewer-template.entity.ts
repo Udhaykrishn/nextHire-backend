@@ -5,6 +5,8 @@ export class InterviewerTemplateEntity {
 	private _description?: string;
 	private _duration: number;
 	private _rubric: string[];
+	private _defaultType?: string;
+	private _defaultInstructions?: string;
 	private _createdAt?: Date;
 	private _updatedAt?: Date;
 
@@ -14,6 +16,8 @@ export class InterviewerTemplateEntity {
 		duration: number,
 		rubric: string[],
 		description?: string,
+		defaultType?: string,
+		defaultInstructions?: string,
 		createdAt?: Date,
 		updatedAt?: Date,
 		id?: string,
@@ -23,6 +27,8 @@ export class InterviewerTemplateEntity {
 		this._duration = duration;
 		this._rubric = rubric;
 		this._description = description;
+		this._defaultType = defaultType;
+		this._defaultInstructions = defaultInstructions;
 		this._createdAt = createdAt;
 		this._updatedAt = updatedAt;
 		this._id = id;
@@ -34,6 +40,8 @@ export class InterviewerTemplateEntity {
 		duration: number;
 		rubric: string[];
 		description?: string;
+		defaultType?: string;
+		defaultInstructions?: string;
 		createdAt?: Date;
 		updatedAt?: Date;
 		id?: string;
@@ -44,6 +52,8 @@ export class InterviewerTemplateEntity {
 			data.duration,
 			data.rubric,
 			data.description,
+			data.defaultType,
+			data.defaultInstructions,
 			data.createdAt,
 			data.updatedAt,
 			data.id,
@@ -72,6 +82,14 @@ export class InterviewerTemplateEntity {
 
 	get rubric(): string[] {
 		return this._rubric;
+	}
+
+	get defaultType(): string | undefined {
+		return this._defaultType;
+	}
+
+	get defaultInstructions(): string | undefined {
+		return this._defaultInstructions;
 	}
 
 	get createdAt(): Date | undefined {
