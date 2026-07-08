@@ -15,6 +15,7 @@ import { InterviewerAuthProfileController } from "@/presentation/controller/inte
 import { RecruiterInterviewerController } from "@/presentation/controller/interviewer/recruiter-interviewer.controller";
 
 import { CommonModule } from "../common.module";
+import { InterviewRoundLiteModule } from "../interview-round/interview-round-lite.module";
 import { JwtService } from "@/infrastructure/services/implements";
 import { COMMON_TOKEN } from "@/application/enums/tokens";
 
@@ -22,6 +23,7 @@ import { COMMON_TOKEN } from "@/application/enums/tokens";
 	imports: [
 		MongooseModule.forFeature([{ name: CompanyInterviewer.name, schema: CompanyInterviewerSchema }]),
 		CommonModule,
+		InterviewRoundLiteModule,
 	],
 	controllers: [InterviewerAuthProfileController, RecruiterInterviewerController],
 	providers: [
