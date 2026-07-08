@@ -1,5 +1,5 @@
-import { InterviewerTemplateEntity } from "@/domain/entity/interviewer-template.entity";
-import type { IInterviewerTemplatePersistenceMapper } from "@/application/interface/mappers/interviewer-template/interviewer-template-persistence.mapper";
+import { InterviewerTemplateEntity } from "@/domain/entity/template/interviewer-template.entity";
+import type { IInterviewerTemplatePersistenceMapper } from "@/application/interface/mappers/template/interviewer-template-persistence.mapper";
 import type { InterviewerTemplateType } from "../db/mongodb/models/interviewer-template.schema";
 
 export class InterviewerTemplatePersistenceMapper

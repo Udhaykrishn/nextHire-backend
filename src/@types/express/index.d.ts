@@ -7,6 +7,7 @@ declare global {
 			user: {
 				email: string;
 				id: string;
+				companyId?: string;
 				role: string;
 				permissions: string[];
 			};

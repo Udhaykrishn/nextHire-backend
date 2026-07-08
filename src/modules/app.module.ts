@@ -27,6 +27,9 @@ import { PlanModule } from "./plan/plan.module";
 import { FormModule } from "./form/form.module";
 import { ChatModule } from "./chat/chat.module";
 import { InterviewerModule } from "./interviewer/interviewer.module";
+import { TemplateModule } from "./template/template.module";
+import { InterviewRoundModule } from "./interview-round/interview-round.module";
+import { VideoCallModule } from "./video-call/video-call.module";
 
 @Module({
 	imports: [
@@ -77,6 +80,9 @@ import { InterviewerModule } from "./interviewer/interviewer.module";
 		FormModule,
 		ChatModule,
 		InterviewerModule,
+		TemplateModule,
+		InterviewRoundModule,
+		VideoCallModule,
 		StatsModule,
 		// RecruiterModule must be registered LAST: it owns the greedy
 		// `GET/PATCH recruiter/:id` catch-all, which otherwise shadows static

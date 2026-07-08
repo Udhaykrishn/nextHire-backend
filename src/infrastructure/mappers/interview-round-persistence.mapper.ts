@@ -1,4 +1,4 @@
-import { InterviewRoundEntity } from "@/domain/entity/interview-round.entity";
+import { InterviewRoundEntity } from "@/domain/entity/interview-round/interview-round.entity";
 import type { IInterviewRoundPersistenceMapper } from "@/application/interface/mappers/interview-round/interview-round-persistence.mapper";
 import type { InterviewRoundType } from "../db/mongodb/models/interview-round.schema";
 

@@ -7,7 +7,7 @@ import type { IJwtService, IRedisService } from "@/infrastructure/services/inter
 import { USER_ROLE, ROLE_PERMISSIONS } from "@/domain/enums";
 import { ConfigService } from "@nestjs/config";
 import { EnvConfig } from "@/infrastructure/config/env.schema";
-import { InterviewerRepository } from "@/infrastructure/db/mongodb/repository/interviewer.repository";
+import { InterviewerRepository } from "@/infrastructure/db/mongodb/repository/interviewer/interviewer.repository";
 
 export interface InterviewerRefreshResponseDto {
 	accessToken: string;

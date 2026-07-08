@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import { InterviewerEntity } from "@/domain/entity/interviewer.entity";
-import { InterviewerRepository } from "@/infrastructure/db/mongodb/repository/interviewer.repository";
+import { InterviewerEntity } from "@/domain/entity/interviewer/interviewer.entity";
+import { InterviewerRepository } from "@/infrastructure/db/mongodb/repository/interviewer/interviewer.repository";
 
 @Injectable()
 export class ListInterviewersUseCase {

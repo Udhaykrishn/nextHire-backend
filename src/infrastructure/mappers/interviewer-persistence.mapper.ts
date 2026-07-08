@@ -1,4 +1,4 @@
-import { InterviewerEntity } from "@/domain/entity/interviewer.entity";
+import { InterviewerEntity } from "@/domain/entity/interviewer/interviewer.entity";
 import type { IInterviewerPersistenceMapper } from "@/application/interface/mappers/interviewer/interviewer-persistence.mapper";
 import type { CompanyInterviewer } from "../db/mongodb/models/interviewer.schema";
 
