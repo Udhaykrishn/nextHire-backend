@@ -5,6 +5,7 @@ import { ROLES, INTERVIEWER_ROUTERS } from "@/presentation/enums";
 
 import { JoinRoundRoomUseCase } from "@/application/use-case/interview-round/join-round-room.use-case";
 import { GetRoundByCodeUseCase } from "@/application/use-case/interview-round/get-round-by-code.use-case";
+import { JoinRoundRoomDto } from "@/application/dto/interview-round/interview-round.dto";
 
 @UseGuards(AuthGuard, RoleGuard)
 @Controller(INTERVIEWER_ROUTERS.ROOM_ROUNDS)
@@ -24,7 +25,7 @@ export class VideoCallController {
 	@Roles(ROLES.USER, ROLES.INTERVIEWER, ROLES.RECRUITER)
 	@Post(INTERVIEWER_ROUTERS.JOIN_ROOM)
 	@HttpCode(HttpStatus.OK)
-	async joinRoundRoom(@Param("meetingCode") meetingCode: string, @Body() body: { role: string }) {
+	async joinRoundRoom(@Param("meetingCode") meetingCode: string, @Body() body: JoinRoundRoomDto) {
 		return this._joinRoundRoomUseCase.execute({
 			meetingCode,
 			role: body.role,
