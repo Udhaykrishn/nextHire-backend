@@ -15,13 +15,6 @@ import { InterviewerPersistenceMapper } from "@/infrastructure/mappers/interview
 import { InterviewerTemplatePersistenceMapper } from "@/infrastructure/mappers/interviewer-template-persistence.mapper";
 import { InterviewRoundPersistenceMapper } from "@/infrastructure/mappers/interview-round-persistence.mapper";
 
-import { CreateInterviewerUseCase } from "@/application/use-case/interviewer/create-interviewer.use-case";
-import { ListInterviewersUseCase } from "@/application/use-case/interviewer/list-interviewers.use-case";
-import { DeleteInterviewerUseCase } from "@/application/use-case/interviewer/delete-interviewer.use-case";
-import { CreateTemplateUseCase } from "@/application/use-case/interviewer/create-template.use-case";
-import { ListTemplatesUseCase } from "@/application/use-case/interviewer/list-templates.use-case";
-import { DeleteTemplateUseCase } from "@/application/use-case/interviewer/delete-template.use-case";
-import { UpdateTemplateUseCase } from "@/application/use-case/interviewer/update-template.use-case";
 import { ScheduleRoundUseCase } from "@/application/use-case/interviewer/schedule-round.use-case";
 import { UpdateInterviewRoundUseCase } from "@/application/use-case/interviewer/update-interview-round.use-case";
 import { RequestRescheduleUseCase } from "@/application/use-case/interviewer/request-reschedule.use-case";
@@ -66,13 +59,7 @@ import { COMMON_TOKEN } from "@/application/enums/tokens";
 		InterviewerTemplateRepository,
 		InterviewRoundRepository,
 		{ provide: COMMON_TOKEN.JWT_SERVICE, useClass: JwtService },
-		CreateInterviewerUseCase,
-		ListInterviewersUseCase,
-		DeleteInterviewerUseCase,
-		CreateTemplateUseCase,
-		ListTemplatesUseCase,
-		DeleteTemplateUseCase,
-		UpdateTemplateUseCase,
+
 		ScheduleRoundUseCase,
 		UpdateInterviewRoundUseCase,
 		RequestRescheduleUseCase,

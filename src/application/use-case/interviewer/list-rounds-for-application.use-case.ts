@@ -6,9 +6,8 @@ import { InterviewerTemplateRepository } from "@/infrastructure/db/mongodb/repos
 export interface PopulatedInterviewRoundDto {
 	id: string;
 	applicationId: string;
-	interviewerId: string;
-	interviewerEmail: string;
-	interviewerDepartment: string;
+	interviewerIds: string[];
+	interviewers: { id: string; email: string; department: string }[];
 	templateId: string;
 	templateName: string;
 	templateDuration: number;
@@ -35,7 +34,18 @@ export class ListRoundsForApplicationUseCase {
 		const result: PopulatedInterviewRoundDto[] = [];
 
 		for (const round of rounds) {
-			const interviewer = await this._interviewerRepository.findById(round.interviewerId);
+			const interviewersData: { id: string; email: string; department: string }[] = [];
+			for (const id of round.interviewerIds || []) {
+				const interviewer = await this._interviewerRepository.findById(id);
+				if (interviewer) {
+					interviewersData.push({
+						id: interviewer.id || "",
+						email: interviewer.email,
+						department: interviewer.department,
+					});
+				}
+			}
+
 			const template = await this._templateRepository.findById(round.templateId);
 
 			const rubricRatingsRecord: Record<string, number> = {};
@@ -48,9 +58,8 @@ export class ListRoundsForApplicationUseCase {
 			result.push({
 				id: round.id || "",
 				applicationId: round.applicationId,
-				interviewerId: round.interviewerId,
-				interviewerEmail: interviewer?.email || "Unknown Interviewer",
-				interviewerDepartment: interviewer?.department || "N/A",
+				interviewerIds: round.interviewerIds || [],
+				interviewers: interviewersData,
 				templateId: round.templateId,
 				templateName: template?.name || "Unknown Template",
 				templateDuration: template?.duration || 0,
