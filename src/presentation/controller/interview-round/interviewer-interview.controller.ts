@@ -26,10 +26,7 @@ export class InterviewerInterviewController {
 	@Roles(ROLES.INTERVIEWER, ROLES.RECRUITER)
 	@Post(INTERVIEWER_ROUTERS.FEEDBACK)
 	@HttpCode(HttpStatus.OK)
-	async submitFeedback(
-		@Param("roundId") roundId: string,
-		@Body() dto: Omit<SubmitFeedbackDto, "roundId">,
-	) {
+	async submitFeedback(@Param("roundId") roundId: string, @Body() dto: Omit<SubmitFeedbackDto, "roundId">) {
 		return this._submitFeedbackUseCase.execute({
 			...dto,
 			roundId,

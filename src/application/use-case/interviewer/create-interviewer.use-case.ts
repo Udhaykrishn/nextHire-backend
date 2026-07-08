@@ -15,7 +15,7 @@ export class CreateInterviewerUseCase implements IExecutable<CreateInterviewerDt
 		private readonly _interviewerRepository: InterviewerRepository,
 		@Inject(COMMON_TOKEN.PASSWORD_HASH)
 		private readonly _passwordHasher: IPasswordHash,
-	) { }
+	) {}
 
 	async execute(dto: CreateInterviewerDto): Promise<InterviewerEntity> {
 		const existing = await this._interviewerRepository.findByEmail(dto.email);

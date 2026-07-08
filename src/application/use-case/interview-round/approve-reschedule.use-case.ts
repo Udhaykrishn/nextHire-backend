@@ -8,7 +8,7 @@ import type { IExecutable } from "@/application/interface/executable.interface";
 
 @Injectable()
 export class ApproveRescheduleUseCase implements IExecutable<ApproveRescheduleDto, InterviewRoundEntity> {
-	constructor(private readonly _roundRepository: InterviewRoundRepository) { }
+	constructor(private readonly _roundRepository: InterviewRoundRepository) {}
 
 	async execute(dto: ApproveRescheduleDto): Promise<InterviewRoundEntity> {
 		const round = await this._roundRepository.findById(dto.roundId as string);

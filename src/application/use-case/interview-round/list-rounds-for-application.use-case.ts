@@ -11,7 +11,7 @@ export class ListRoundsForApplicationUseCase implements IExecutable<string, Popu
 		private readonly _roundRepository: InterviewRoundRepository,
 		private readonly _interviewerRepository: InterviewerRepository,
 		private readonly _templateRepository: InterviewerTemplateRepository,
-	) { }
+	) {}
 
 	async execute(applicationId: string): Promise<PopulatedInterviewRoundDto[]> {
 		const rounds = await this._roundRepository.findByApplicationId(applicationId);

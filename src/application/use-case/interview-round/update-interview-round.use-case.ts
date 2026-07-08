@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException, NotFoundException } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { InterviewRoundEntity } from "@/domain/entity/interview-round/interview-round.entity";
 import { InterviewRoundRepository } from "@/infrastructure/db/mongodb/repository/interview-round/interview-round.repository";
 import { UpdateInterviewRoundDto } from "@/application/dto/interview-round/interview-round.dto";

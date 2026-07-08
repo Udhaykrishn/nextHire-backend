@@ -1,4 +1,8 @@
-import { INTERVIEW_ROUND_STATUS, CANDIDATE_CONFIRMATION_STATUS, CANDIDATE_INTERVIEW_STATUS } from "@/domain/enums/interview-round/interview-status.enum";
+import {
+	INTERVIEW_ROUND_STATUS,
+	CANDIDATE_CONFIRMATION_STATUS,
+	CANDIDATE_INTERVIEW_STATUS,
+} from "@/domain/enums/interview-round/interview-status.enum";
 
 export class InterviewRoundEntity {
 	private readonly _id?: string;

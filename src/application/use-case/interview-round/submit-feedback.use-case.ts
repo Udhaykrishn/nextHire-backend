@@ -16,7 +16,7 @@ export class SubmitFeedbackUseCase implements IExecutable<SubmitFeedbackDto, Int
 		private readonly _roundRepository: InterviewRoundRepository,
 		@Inject(JOB_TOKEN.JOB_APPLICATION_REPOSITORY)
 		private readonly _jobApplicationRepository: IJobApplicationRepository<JobApplicationEntity>,
-	) { }
+	) {}
 
 	async execute(dto: SubmitFeedbackDto): Promise<InterviewRoundEntity> {
 		const round = await this._roundRepository.findById(dto.roundId as string);
@@ -26,9 +26,7 @@ export class SubmitFeedbackUseCase implements IExecutable<SubmitFeedbackDto, Int
 
 		// Evaluation is only allowed once HR has ended the session.
 		if (!round.canBeEvaluated) {
-			throw new BadRequestException(
-				"This interview can't be evaluated yet. HR must end the session first.",
-			);
+			throw new BadRequestException("This interview can't be evaluated yet. HR must end the session first.");
 		}
 
 		const ratingMap = new Map<string, number>();

@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException, NotFoundException } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { InterviewRoundEntity } from "@/domain/entity/interview-round/interview-round.entity";
 import { InterviewRoundRepository } from "@/infrastructure/db/mongodb/repository/interview-round/interview-round.repository";
 import { RequestRescheduleDto } from "@/application/dto/interview-round/interview-round.dto";
@@ -7,7 +7,7 @@ import type { IExecutable } from "@/application/interface/executable.interface";
 
 @Injectable()
 export class RequestRescheduleUseCase implements IExecutable<RequestRescheduleDto, InterviewRoundEntity> {
-	constructor(private readonly _roundRepository: InterviewRoundRepository) { }
+	constructor(private readonly _roundRepository: InterviewRoundRepository) {}
 
 	async execute(dto: RequestRescheduleDto): Promise<InterviewRoundEntity> {
 		const round = await this._roundRepository.findById(dto.roundId as string);

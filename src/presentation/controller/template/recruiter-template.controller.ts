@@ -1,4 +1,16 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Patch, UseGuards, Req } from "@nestjs/common";
+import {
+	Body,
+	Controller,
+	Delete,
+	Get,
+	HttpCode,
+	HttpStatus,
+	Param,
+	Post,
+	Patch,
+	UseGuards,
+	Req,
+} from "@nestjs/common";
 import { AuthGuard, RoleGuard } from "@/presentation/guards";
 import { Roles } from "@/presentation/decorators";
 import { ROLES, INTERVIEWER_ROUTERS } from "@/presentation/enums";
@@ -39,11 +51,7 @@ export class RecruiterTemplateController {
 
 	@Patch(INTERVIEWER_ROUTERS.ID)
 	@HttpCode(HttpStatus.OK)
-	async updateTemplate(
-		@Req() req: Request,
-		@Param("id") id: string,
-		@Body() dto: UpdateTemplateDto
-	) {
+	async updateTemplate(@Req() req: Request, @Param("id") id: string, @Body() dto: UpdateTemplateDto) {
 		return this._updateTemplateUseCase.execute({
 			...dto,
 			templateId: id,

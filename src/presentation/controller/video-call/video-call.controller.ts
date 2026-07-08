@@ -24,10 +24,7 @@ export class VideoCallController {
 	@Roles(ROLES.USER, ROLES.INTERVIEWER, ROLES.RECRUITER)
 	@Post(INTERVIEWER_ROUTERS.JOIN_ROOM)
 	@HttpCode(HttpStatus.OK)
-	async joinRoundRoom(
-		@Param("meetingCode") meetingCode: string,
-		@Body() body: any,
-	) {
+	async joinRoundRoom(@Param("meetingCode") meetingCode: string, @Body() body: { role: string }) {
 		return this._joinRoundRoomUseCase.execute({
 			meetingCode,
 			role: body.role,

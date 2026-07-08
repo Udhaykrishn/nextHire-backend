@@ -11,7 +11,7 @@ const GRACE_AFTER_MINUTES = 60;
 
 @Injectable()
 export class JoinRoundRoomUseCase implements IExecutable<JoinRoundRoomDto, InterviewRoundEntity> {
-	constructor(private readonly _roundRepository: InterviewRoundRepository) { }
+	constructor(private readonly _roundRepository: InterviewRoundRepository) {}
 
 	async execute(dto: JoinRoundRoomDto): Promise<InterviewRoundEntity> {
 		const round = await this._roundRepository.findByMeetingCode(dto.meetingCode);

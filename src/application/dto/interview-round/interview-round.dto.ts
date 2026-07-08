@@ -1,5 +1,19 @@
-import { IsString, IsNotEmpty, IsOptional, IsNumber, Min, Max, IsEnum, IsArray, IsDateString, IsObject } from "class-validator";
-import { CANDIDATE_INTERVIEW_STATUS, CANDIDATE_CONFIRMATION_STATUS } from "@/domain/enums/interview-round/interview-status.enum";
+import {
+	IsString,
+	IsNotEmpty,
+	IsOptional,
+	IsNumber,
+	Min,
+	Max,
+	IsEnum,
+	IsArray,
+	IsDateString,
+	IsObject,
+} from "class-validator";
+import {
+	CANDIDATE_INTERVIEW_STATUS,
+	CANDIDATE_CONFIRMATION_STATUS,
+} from "@/domain/enums/interview-round/interview-status.enum";
 
 export class ScheduleRoundDto {
 	@IsString()
@@ -42,7 +56,7 @@ export class ScheduleRoundDto {
 	@Min(1)
 	@IsOptional()
 	duration?: number;
-	
+
 	recruiterId?: string;
 }
 
@@ -84,7 +98,7 @@ export class UpdateInterviewRoundDto {
 	@IsString()
 	@IsOptional()
 	templateId?: string;
-	
+
 	roundId?: string;
 	recruiterId?: string;
 }
@@ -97,7 +111,7 @@ export class RequestRescheduleDto {
 	@IsString()
 	@IsOptional()
 	reason?: string;
-	
+
 	roundId?: string;
 	requestedByUserId?: string;
 }
@@ -122,14 +136,14 @@ export class SubmitFeedbackDto {
 
 	@IsEnum(CANDIDATE_INTERVIEW_STATUS)
 	candidateStatus: CANDIDATE_INTERVIEW_STATUS;
-	
+
 	roundId?: string;
 }
 
 export class ConfirmRoundDto {
 	@IsEnum(CANDIDATE_CONFIRMATION_STATUS)
 	status: CANDIDATE_CONFIRMATION_STATUS;
-	
+
 	roundId?: string;
 }
 

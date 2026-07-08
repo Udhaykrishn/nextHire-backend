@@ -10,11 +10,7 @@ import { JwtService } from "@/infrastructure/services/implements";
 import { COMMON_TOKEN } from "@/application/enums/tokens";
 
 @Module({
-	imports: [
-		InterviewRoundModule,
-		InterviewerModule,
-		CommonModule,
-	],
+	imports: [InterviewRoundModule, InterviewerModule, CommonModule],
 	controllers: [VideoCallController],
 	providers: [
 		{ provide: COMMON_TOKEN.JWT_SERVICE, useClass: JwtService },

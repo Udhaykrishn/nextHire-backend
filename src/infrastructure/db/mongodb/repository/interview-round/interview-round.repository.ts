@@ -10,7 +10,8 @@ import { InterviewRoundPersistenceMapper } from "@/infrastructure/mappers/interv
 @Injectable()
 export class InterviewRoundRepository
 	extends BaseRepository<InterviewRoundEntity, InterviewRoundType>
-	implements IInterviewRoundRepository {
+	implements IInterviewRoundRepository
+{
 	constructor(
 		@InjectModel(InterviewRound.name) private roundModel: Model<InterviewRoundType>,
 		mapper: InterviewRoundPersistenceMapper,

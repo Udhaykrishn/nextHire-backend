@@ -21,14 +21,28 @@ export class CandidateInterviewController {
 
 	private toRoundResponse(entity: InterviewRoundEntity) {
 		return {
-			id: entity.id, applicationId: entity.applicationId, interviewerIds: entity.interviewerIds,
-			templateId: entity.templateId, title: entity.title, type: entity.type, timeZone: entity.timeZone,
-			instructions: entity.instructions, internalNotes: entity.internalNotes, scheduledAt: entity.scheduledAt,
-			status: entity.status, meetingCode: entity.meetingCode, duration: entity.duration,
-			candidateConfirmation: entity.candidateConfirmation, candidateJoined: entity.candidateJoined,
-			interviewerJoined: entity.interviewerJoined, candidateStatus: entity.candidateStatus,
-			feedback: entity.feedback, score: entity.score, rubricRatings: entity.rubricRatings,
-			createdAt: entity.createdAt, updatedAt: entity.updatedAt,
+			id: entity.id,
+			applicationId: entity.applicationId,
+			interviewerIds: entity.interviewerIds,
+			templateId: entity.templateId,
+			title: entity.title,
+			type: entity.type,
+			timeZone: entity.timeZone,
+			instructions: entity.instructions,
+			internalNotes: entity.internalNotes,
+			scheduledAt: entity.scheduledAt,
+			status: entity.status,
+			meetingCode: entity.meetingCode,
+			duration: entity.duration,
+			candidateConfirmation: entity.candidateConfirmation,
+			candidateJoined: entity.candidateJoined,
+			interviewerJoined: entity.interviewerJoined,
+			candidateStatus: entity.candidateStatus,
+			feedback: entity.feedback,
+			score: entity.score,
+			rubricRatings: entity.rubricRatings,
+			createdAt: entity.createdAt,
+			updatedAt: entity.updatedAt,
 		};
 	}
 
@@ -54,11 +68,7 @@ export class CandidateInterviewController {
 	@Roles(ROLES.USER, ROLES.INTERVIEWER)
 	@Patch(INTERVIEWER_ROUTERS.RESCHEDULE)
 	@HttpCode(HttpStatus.OK)
-	async requestReschedule(
-		@Req() req: Request,
-		@Param("roundId") roundId: string,
-		@Body() dto: RequestRescheduleDto,
-	) {
+	async requestReschedule(@Req() req: Request, @Param("roundId") roundId: string, @Body() dto: RequestRescheduleDto) {
 		const round = await this._requestRescheduleUseCase.execute({
 			...dto,
 			roundId,

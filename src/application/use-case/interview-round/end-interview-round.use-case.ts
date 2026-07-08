@@ -16,14 +16,9 @@ export class EndInterviewRoundUseCase implements IExecutable<string, InterviewRo
 			throw new NotFoundException("Interview round not found");
 		}
 
-		const endable: string[] = [
-			INTERVIEW_ROUND_STATUS.SCHEDULED,
-			INTERVIEW_ROUND_STATUS.RESCHEDULED,
-		];
+		const endable: string[] = [INTERVIEW_ROUND_STATUS.SCHEDULED, INTERVIEW_ROUND_STATUS.RESCHEDULED];
 		if (!endable.includes(round.status)) {
-			throw new BadRequestException(
-				"Only a scheduled interview that hasn't ended yet can be ended.",
-			);
+			throw new BadRequestException("Only a scheduled interview that hasn't ended yet can be ended.");
 		}
 
 		round.endForEvaluation();

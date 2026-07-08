@@ -5,7 +5,7 @@ export enum INTERVIEWER_ROUTERS {
 	INTERVIEWER_ROUNDS = "interviewer/rounds",
 	CANDIDATE_ROUNDS = "candidate/interview-rounds",
 	ROOM_ROUNDS = "room/interview-rounds",
-	
+
 	DEFAULT = "",
 	ID = ":id",
 	APPROVE_RESCHEDULE = ":id/approve-reschedule",
@@ -16,7 +16,7 @@ export enum INTERVIEWER_ROUTERS {
 	RESCHEDULE = ":roundId/reschedule",
 	JOIN_ROOM = ":meetingCode/join",
 	MEETING_CODE = ":meetingCode",
-	
+
 	AUTH_INTERVIEWER_LOGIN = "auth/interviewer/login",
 	AUTH_INTERVIEWER_LOGOUT = "auth/interviewer/logout",
 	AUTH_INTERVIEWER_REFRESH = "auth/interviewer/refresh",

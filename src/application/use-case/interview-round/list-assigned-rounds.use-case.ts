@@ -19,7 +19,7 @@ export class ListAssignedRoundsUseCase implements IExecutable<string, AssignedIn
 		private readonly _templateRepository: InterviewerTemplateRepository,
 		@Inject(JOB_TOKEN.JOB_REPOSITORY)
 		private readonly _jobRepository: JobRepository,
-	) { }
+	) {}
 
 	async execute(interviewerId: string): Promise<AssignedInterviewRoundDto[]> {
 		const rounds = await this._roundRepository.findByInterviewerId(interviewerId);

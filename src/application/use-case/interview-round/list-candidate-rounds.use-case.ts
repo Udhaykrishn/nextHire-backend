@@ -5,7 +5,7 @@ import type { IExecutable } from "@/application/interface/executable.interface";
 
 @Injectable()
 export class ListCandidateRoundsUseCase implements IExecutable<string, InterviewRoundEntity[]> {
-	constructor(private readonly _roundRepository: InterviewRoundRepository) { }
+	constructor(private readonly _roundRepository: InterviewRoundRepository) {}
 
 	async execute(candidateId: string): Promise<InterviewRoundEntity[]> {
 		return this._roundRepository.findByCandidateId(candidateId);

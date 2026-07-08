@@ -1,6 +1,9 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
-import { InterviewerTemplate, InterviewerTemplateSchema } from "@/infrastructure/db/mongodb/models/interviewer-template.schema";
+import {
+	InterviewerTemplate,
+	InterviewerTemplateSchema,
+} from "@/infrastructure/db/mongodb/models/interviewer-template.schema";
 import { InterviewerTemplateRepository } from "@/infrastructure/db/mongodb/repository/template/interviewer-template.repository";
 import { InterviewerTemplatePersistenceMapper } from "@/infrastructure/mappers/interviewer-template-persistence.mapper";
 
@@ -12,9 +15,7 @@ import { DeleteTemplateUseCase } from "@/application/use-case/template/delete-te
 import { RecruiterTemplateController } from "@/presentation/controller/template/recruiter-template.controller";
 
 @Module({
-	imports: [
-		MongooseModule.forFeature([{ name: InterviewerTemplate.name, schema: InterviewerTemplateSchema }]),
-	],
+	imports: [MongooseModule.forFeature([{ name: InterviewerTemplate.name, schema: InterviewerTemplateSchema }])],
 	controllers: [RecruiterTemplateController],
 	providers: [
 		InterviewerTemplatePersistenceMapper,

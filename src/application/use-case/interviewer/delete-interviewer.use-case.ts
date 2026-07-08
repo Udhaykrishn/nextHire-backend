@@ -24,9 +24,7 @@ export class DeleteInterviewerUseCase implements IExecutable<string, boolean> {
 		}
 
 		const rounds = await this._roundRepository.findByInterviewerId(id);
-		const activeRounds = rounds.filter(
-			(round) => !CLOSED_ROUND_STATUSES.includes(round.status),
-		);
+		const activeRounds = rounds.filter((round) => !CLOSED_ROUND_STATUSES.includes(round.status));
 		if (activeRounds.length > 0) {
 			throw new ConflictException(
 				`Cannot delete this interviewer: they are assigned to ${activeRounds.length} active interview round(s). Reassign or cancel those rounds first.`,

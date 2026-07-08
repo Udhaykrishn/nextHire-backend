@@ -38,11 +38,7 @@ import { COMMON_TOKEN } from "@/application/enums/tokens";
 		InterviewerModule,
 		TemplateModule,
 	],
-	controllers: [
-		RecruiterInterviewController,
-		InterviewerInterviewController,
-		CandidateInterviewController,
-	],
+	controllers: [RecruiterInterviewController, InterviewerInterviewController, CandidateInterviewController],
 	providers: [
 		InterviewRoundPersistenceMapper,
 		InterviewRoundRepository,

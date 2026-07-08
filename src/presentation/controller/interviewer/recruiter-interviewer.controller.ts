@@ -17,7 +17,7 @@ export class RecruiterInterviewerController {
 		private readonly _createInterviewerUseCase: CreateInterviewerUseCase,
 		private readonly _listInterviewersUseCase: ListInterviewersUseCase,
 		private readonly _deleteInterviewerUseCase: DeleteInterviewerUseCase,
-	) { }
+	) {}
 
 	@Post(INTERVIEWER_ROUTERS.DEFAULT)
 	@HttpCode(HttpStatus.CREATED)
