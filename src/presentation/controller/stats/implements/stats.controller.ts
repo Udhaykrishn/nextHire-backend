@@ -25,7 +25,7 @@ export class StatsController implements IStatsController {
 		@Req() req: Request & { user?: { id?: string; _id?: string } },
 		@Query("range") range?: string,
 	): Promise<DashboardMetricsDto> {
-		const recruiterId = req.user?.id || req.user?._id || "default-recruiter-id";
+		const recruiterId = req.user?._id as string;
 		return this._getOverviewStatsUseCase.execute({ recruiterId, range });
 	}
 }
