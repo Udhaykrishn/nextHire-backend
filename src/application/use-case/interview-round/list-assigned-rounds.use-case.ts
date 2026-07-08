@@ -60,6 +60,10 @@ export class ListAssignedRoundsUseCase implements IExecutable<string, AssignedIn
 
 			result.push({
 				id: round.id ?? "",
+				title: round.title,
+				type: round.type,
+				duration: round.duration,
+				meetingCode: round.meetingCode,
 				scheduledAt: round.scheduledAt,
 				status: round.status,
 				feedback: round.feedback,

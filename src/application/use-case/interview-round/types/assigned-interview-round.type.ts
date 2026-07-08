@@ -1,5 +1,9 @@
 export interface AssignedInterviewRoundDto {
 	id: string;
+	title: string;
+	type: string;
+	duration: number;
+	meetingCode: string;
 	scheduledAt: Date;
 	status: string;
 	feedback?: string;
